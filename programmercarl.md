@@ -800,29 +800,6 @@ func min(x, y int) int {
 }
 ```
 
-```go
-func largestSumAfterKNegations(nums []int, k int) int {
-	sort.Slice(nums, func(i, j int) bool {
-		return math.Abs(float64(nums[i])) > math.Abs(float64(nums[j]))
-	})
-
-	for i := 0; i < len(nums); i++ {
-		if k > 0 && nums[i] < 0 {
-			nums[i] = -nums[i]
-			k--
-		}
-	}
-	if k%2 == 1 {
-		nums[len(nums)-1] = -nums[len(nums)-1]
-	}
-	restul := 0
-	for i := 0; i < len(nums); i++ {
-		restul += nums[i]
-	}
-	return restul
-}
-```
-
 #### [1005. K 次取反后最大化的数组和](https://leetcode-cn.com/problems/maximize-sum-of-array-after-k-negations/)
 
 给你一个整数数组 `nums` 和一个整数 `k` ，按以下方法修改该数组：
@@ -862,6 +839,716 @@ func largestSumAfterKNegations(nums []int, k int) int {
 - `1 <= nums.length <= 104`
 - `-100 <= nums[i] <= 100`
 - `1 <= k <= 104`
+
+```go
+func largestSumAfterKNegations(nums []int, k int) int {
+	sort.Slice(nums, func(i, j int) bool {
+		return math.Abs(float64(nums[i])) > math.Abs(float64(nums[j]))
+	})
+
+	for i := 0; i < len(nums); i++ {
+		if k > 0 && nums[i] < 0 {
+			nums[i] = -nums[i]
+			k--
+		}
+	}
+	if k%2 == 1 {
+		nums[len(nums)-1] = -nums[len(nums)-1]
+	}
+	restul := 0
+	for i := 0; i < len(nums); i++ {
+		restul += nums[i]
+	}
+	return restul
+}
+```
+
+#### [134. 加油站](https://leetcode-cn.com/problems/gas-station/)
+
+在一条环路上有 *N* 个加油站，其中第 *i* 个加油站有汽油 `gas[i]` 升。
+
+你有一辆油箱容量无限的的汽车，从第 *i* 个加油站开往第 *i+1* 个加油站需要消耗汽油 `cost[i]` 升。你从其中的一个加油站出发，开始时油箱为空。
+
+如果你可以绕环路行驶一周，则返回出发时加油站的编号，否则返回 -1。
+
+**说明:** 
+
+- 如果题目有解，该答案即为唯一答案。
+- 输入数组均为非空数组，且长度相同。
+- 输入数组中的元素均为非负数。
+
+**示例 1:**
+
+```
+输入: 
+gas  = [1,2,3,4,5]
+cost = [3,4,5,1,2]
+
+输出: 3
+
+解释:
+从 3 号加油站(索引为 3 处)出发，可获得 4 升汽油。此时油箱有 = 0 + 4 = 4 升汽油
+开往 4 号加油站，此时油箱有 4 - 1 + 5 = 8 升汽油
+开往 0 号加油站，此时油箱有 8 - 2 + 1 = 7 升汽油
+开往 1 号加油站，此时油箱有 7 - 3 + 2 = 6 升汽油
+开往 2 号加油站，此时油箱有 6 - 4 + 3 = 5 升汽油
+开往 3 号加油站，你需要消耗 5 升汽油，正好足够你返回到 3 号加油站。
+因此，3 可为起始索引。
+```
+
+**示例 2:**
+
+```
+输入: 
+gas  = [2,3,4]
+cost = [3,4,3]
+
+输出: -1
+
+解释:
+你不能从 0 号或 1 号加油站出发，因为没有足够的汽油可以让你行驶到下一个加油站。
+我们从 2 号加油站出发，可以获得 4 升汽油。 此时油箱有 = 0 + 4 = 4 升汽油
+开往 0 号加油站，此时油箱有 4 - 3 + 2 = 3 升汽油
+开往 1 号加油站，此时油箱有 3 - 3 + 3 = 3 升汽油
+你无法返回 2 号加油站，因为返程需要消耗 4 升汽油，但是你的油箱只有 3 升汽油。
+因此，无论怎样，你都不可能绕环路行驶一周。
+```
+
+```go
+func canCompleteCircuit(gas []int, cost []int) int {
+	curSum := 0
+	totalSum := 0
+	start := 0
+	for i := 0; i < len(gas); i++ {
+		curSum += gas[i] - cost[i]
+		totalSum += gas[i] - cost[i]
+		if curSum < 0 {
+			start = i + 1
+			curSum = 0
+		}
+	}
+	if totalSum < 0 {
+		return -1
+	}
+	return start
+}
+```
+
+#### [135. 分发糖果](https://leetcode-cn.com/problems/candy/)
+
+老师想给孩子们分发糖果，有 *N* 个孩子站成了一条直线，老师会根据每个孩子的表现，预先给他们评分。
+
+你需要按照以下要求，帮助老师给这些孩子分发糖果：
+
+- 每个孩子至少分配到 1 个糖果。
+- 评分更高的孩子必须比他两侧的邻位孩子获得更多的糖果。
+
+那么这样下来，老师至少需要准备多少颗糖果呢？
+
+**示例 1：**
+
+```
+输入：[1,0,2]
+输出：5
+解释：你可以分别给这三个孩子分发 2、1、2 颗糖果。
+```
+
+**示例 2：**
+
+```
+输入：[1,2,2]
+输出：4
+解释：你可以分别给这三个孩子分发 1、2、1 颗糖果。
+     第三个孩子只得到 1 颗糖果，这已满足上述两个条件。
+```
+
+```go
+func candy(ratings []int) int {
+	sum := 0
+	need := make([]int, len(ratings))
+	for k, _ := range need {
+		need[k] = 1
+	}
+	for i := 0; i < len(ratings)-1; i++ {
+		if ratings[i+1] > ratings[i] {
+			need[i+1] = need[i] + 1
+		}
+	}
+	for i := len(ratings) - 1; i > 0; i-- {
+		if ratings[i-1] > ratings[i] {
+			need[i-1] = max(need[i-1], need[i]+1)
+		}
+	}
+	for _, v := range need {
+		sum += v
+	}
+	return sum
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+
+}
+```
+
+#### [860. 柠檬水找零](https://leetcode-cn.com/problems/lemonade-change/)
+
+在柠檬水摊上，每一杯柠檬水的售价为 `5` 美元。顾客排队购买你的产品，（按账单 `bills` 支付的顺序）一次购买一杯。
+
+每位顾客只买一杯柠檬水，然后向你付 `5` 美元、`10` 美元或 `20` 美元。你必须给每个顾客正确找零，也就是说净交易是每位顾客向你支付 `5` 美元。
+
+注意，一开始你手头没有任何零钱。
+
+给你一个整数数组 `bills` ，其中 `bills[i]` 是第 `i` 位顾客付的账。如果你能给每位顾客正确找零，返回 `true` ，否则返回 `false` 。
+
+**示例 1：**
+
+```
+输入：bills = [5,5,5,10,20]
+输出：true
+解释：
+前 3 位顾客那里，我们按顺序收取 3 张 5 美元的钞票。
+第 4 位顾客那里，我们收取一张 10 美元的钞票，并返还 5 美元。
+第 5 位顾客那里，我们找还一张 10 美元的钞票和一张 5 美元的钞票。
+由于所有客户都得到了正确的找零，所以我们输出 true。
+```
+
+**示例 2：**
+
+```
+输入：bills = [5,5,10,10,20]
+输出：false
+解释：
+前 2 位顾客那里，我们按顺序收取 2 张 5 美元的钞票。
+对于接下来的 2 位顾客，我们收取一张 10 美元的钞票，然后返还 5 美元。
+对于最后一位顾客，我们无法退回 15 美元，因为我们现在只有两张 10 美元的钞票。
+由于不是每位顾客都得到了正确的找零，所以答案是 false。
+```
+
+**示例 3：**
+
+```
+输入：bills = [5,5,10]
+输出：true
+```
+
+**示例 4：**
+
+```
+输入：bills = [10,10]
+输出：false
+```
+
+**提示：**
+
+- `1 <= bills.length <= 105`
+- `bills[i]` 不是 `5` 就是 `10` 或是 `20` 
+
+```go
+func lemonadeChange(bills []int) bool {
+   left := [2]int{}
+   if bills[0] != 5 {
+      return false
+   }
+   for _, v := range bills {
+      if v == 5 {
+         left[0] += 1
+      }
+
+      if v == 10 {
+         left[1] += 1
+      }
+
+      tmp := v - 5
+
+      if tmp == 5 {
+         if left[0] > 0 {
+            left[0] -= 1
+         } else {
+            return false
+         }
+      }
+
+      if tmp == 15 {
+         if left[0] > 0 && left[1] > 0 {
+            left[0] -= 1
+            left[1] -= 1
+         } else if left[1] == 0 && left[0] > 2 {
+            left[0] -= 3
+         } else {
+            return false
+         }
+      }
+   }
+   return true
+}
+```
+
+#### [406. 根据身高重建队列](https://leetcode-cn.com/problems/queue-reconstruction-by-height/)
+
+假设有打乱顺序的一群人站成一个队列，数组 `people` 表示队列中一些人的属性（不一定按顺序）。每个 `people[i] = [hi, ki]` 表示第 `i` 个人的身高为 `hi` ，前面 **正好** 有 `ki` 个身高大于或等于 `hi` 的人。
+
+请你重新构造并返回输入数组 `people` 所表示的队列。返回的队列应该格式化为数组 `queue` ，其中 `queue[j] = [hj, kj]` 是队列中第 `j` 个人的属性（`queue[0]` 是排在队列前面的人）。
+
+**示例 1：**
+
+```
+输入：people = [[7,0],[4,4],[7,1],[5,0],[6,1],[5,2]]
+输出：[[5,0],[7,0],[5,2],[6,1],[4,4],[7,1]]
+解释：
+编号为 0 的人身高为 5 ，没有身高更高或者相同的人排在他前面。
+编号为 1 的人身高为 7 ，没有身高更高或者相同的人排在他前面。
+编号为 2 的人身高为 5 ，有 2 个身高更高或者相同的人排在他前面，即编号为 0 和 1 的人。
+编号为 3 的人身高为 6 ，有 1 个身高更高或者相同的人排在他前面，即编号为 1 的人。
+编号为 4 的人身高为 4 ，有 4 个身高更高或者相同的人排在他前面，即编号为 0、1、2、3 的人。
+编号为 5 的人身高为 7 ，有 1 个身高更高或者相同的人排在他前面，即编号为 1 的人。
+因此 [[5,0],[7,0],[5,2],[6,1],[4,4],[7,1]] 是重新构造后的队列。
+```
+
+**示例 2：**
+
+```
+输入：people = [[6,0],[5,0],[4,0],[3,2],[2,2],[1,4]]
+输出：[[4,0],[5,0],[2,2],[3,2],[1,4],[6,0]]
+```
+
+**提示：**
+
+- `1 <= people.length <= 2000`
+- `0 <= hi <= 106`
+- `0 <= ki < people.length`
+- 题目数据确保队列可以被重建
+
+```go
+func reconstructQueue(people [][]int) [][]int {
+	sort.Slice(people, func(i, j int) bool {
+		if people[i][0] == people[j][0] {
+			return people[i][1] < people[j][1]
+		}
+		return people[i][0] > people[j][0]
+	})
+
+	result := make([][]int, 0)
+	for _, info := range people {
+		result = append(result, info)
+		copy(result[info[1]+1:], result[info[1]:])
+		result[info[1]] = info
+	}
+	return result
+}
+```
+
+#### [452. 用最少数量的箭引爆气球](https://leetcode-cn.com/problems/minimum-number-of-arrows-to-burst-balloons/)
+
+在二维空间中有许多球形的气球。对于每个气球，提供的输入是水平方向上，气球直径的开始和结束坐标。由于它是水平的，所以纵坐标并不重要，因此只要知道开始和结束的横坐标就足够了。开始坐标总是小于结束坐标。
+
+一支弓箭可以沿着 x 轴从不同点完全垂直地射出。在坐标 x 处射出一支箭，若有一个气球的直径的开始和结束坐标为 `x``start`，`x``end`， 且满足  `xstart ≤ x ≤ x``end`，则该气球会被引爆。可以射出的弓箭的数量没有限制。 弓箭一旦被射出之后，可以无限地前进。我们想找到使得所有气球全部被引爆，所需的弓箭的最小数量。
+
+给你一个数组 `points` ，其中 `points [i] = [xstart,xend]` ，返回引爆所有气球所必须射出的最小弓箭数。
+
+**示例 1：**
+
+```
+输入：points = [[10,16],[2,8],[1,6],[7,12]]
+输出：2
+解释：对于该样例，x = 6 可以射爆 [2,8],[1,6] 两个气球，以及 x = 11 射爆另外两个气球
+```
+
+**示例 2：**
+
+```
+输入：points = [[1,2],[3,4],[5,6],[7,8]]
+输出：4
+```
+
+**示例 3：**
+
+```
+输入：points = [[1,2],[2,3],[3,4],[4,5]]
+输出：2
+```
+
+**示例 4：**
+
+```
+输入：points = [[1,2]]
+输出：1
+```
+
+**示例 5：**
+
+```
+输入：points = [[2,3],[2,3]]
+输出：1
+```
+
+**提示：**
+
+- `1 <= points.length <= 104`
+- `points[i].length == 2`
+- `-231 <= xstart < xend <= 231 - 1`
+
+```go
+func findMinArrowShots(points [][]int) int {
+	res := 1
+	sort.Slice(points, func(i, j int) bool {
+		return points[i][0] < points[j][0]
+	})
+
+	for i := 1; i < len(points); i++ {
+		if points[i-1][1] < points[i][0] {
+			res++
+		} else {
+			points[i][1] = min(points[i][1], points[i-1][1])
+		}
+	}
+	return res
+}
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
+```
+
+#### [435. 无重叠区间](https://leetcode-cn.com/problems/non-overlapping-intervals/)
+
+给定一个区间的集合，找到需要移除区间的最小数量，使剩余区间互不重叠。
+
+**注意:**
+
+1. 可以认为区间的终点总是大于它的起点。
+2. 区间 [1,2] 和 [2,3] 的边界相互“接触”，但没有相互重叠。
+
+**示例 1:**
+
+```
+输入: [ [1,2], [2,3], [3,4], [1,3] ]
+
+输出: 1
+
+解释: 移除 [1,3] 后，剩下的区间没有重叠。
+```
+
+**示例 2:**
+
+```
+输入: [ [1,2], [1,2], [1,2] ]
+
+输出: 2
+
+解释: 你需要移除两个 [1,2] 来使剩下的区间没有重叠。
+```
+
+**示例 3:**
+
+```
+输入: [ [1,2], [2,3] ]
+
+输出: 0
+
+解释: 你不需要移除任何区间，因为它们已经是无重叠的了。
+```
+
+```go
+func eraseOverlapIntervals(intervals [][]int) int {
+	var res int
+	sort.Slice(intervals, func(i, j int) bool {
+		return intervals[i][0] < intervals[j][0]
+	})
+
+	for i := 1; i < len(intervals); i++ {
+		if intervals[i-1][1] > intervals[i][0] {
+			res++
+			intervals[i][1] = min(intervals[i][1], intervals[i-1][1])
+		}
+	}
+	return res
+}
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
+```
+
+#### [763. 划分字母区间](https://leetcode-cn.com/problems/partition-labels/)
+
+字符串 `S` 由小写字母组成。我们要把这个字符串划分为尽可能多的片段，同一字母最多出现在一个片段中。返回一个表示每个字符串片段的长度的列表。
+
+**示例：**
+
+```
+输入：S = "ababcbacadefegdehijhklij"
+输出：[9,7,8]
+解释：
+划分结果为 "ababcbaca", "defegde", "hijhklij"。
+每个字母最多出现在一个片段中。
+像 "ababcbacadefegde", "hijhklij" 的划分是错误的，因为划分的片段数较少。
+```
+
+**提示：**
+
+- `S`的长度在`[1, 500]`之间。
+- `S`只包含小写字母 `'a'` 到 `'z'` 。
+
+```go
+func partitionLabels(s string) []int {
+    var res []int
+    var marks [26]int
+    size,left,right := len(s),0,0
+    for i:=0;i<size;i++{
+        marks[s[i] - 'a'] = i
+    }
+
+    for i:=0;i<size;i++{
+        right = max(right,marks[s[i] - 'a'])
+        if i==right{
+            res = append(res,right-left+1)
+            left = i+1
+        }
+    }
+    return res
+}
+
+func max(x,y int) int{
+    if x > y{
+        return x
+    }
+    return y
+}
+```
+
+#### [56. 合并区间](https://leetcode-cn.com/problems/merge-intervals/)
+
+以数组 `intervals` 表示若干个区间的集合，其中单个区间为 `intervals[i] = [starti, endi]` 。请你合并所有重叠的区间，并返回一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间。
+
+**示例 1：**
+
+```
+输入：intervals = [[1,3],[2,6],[8,10],[15,18]]
+输出：[[1,6],[8,10],[15,18]]
+解释：区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].
+```
+
+**示例 2：**
+
+```
+输入：intervals = [[1,4],[4,5]]
+输出：[[1,5]]
+解释：区间 [1,4] 和 [4,5] 可被视为重叠区间。
+```
+
+**提示：**
+
+- `1 <= intervals.length <= 104`
+- `intervals[i].length == 2`
+- `0 <= starti <= endi <= 104`
+
+```go
+func merge(intervals [][]int) [][]int {
+	sort.Slice(intervals, func(i, j int) bool {
+		return intervals[i][0] < intervals[j][0]
+	})
+
+	for i := 0; i < len(intervals)-1; i++ {
+		if intervals[i][1] >= intervals[i+1][0] {
+			intervals[i][1] = max(intervals[i][1], intervals[i+1][1])
+			intervals = append(intervals[:i+1], intervals[i+2:]...)
+			i--
+		}
+	}
+	return intervals
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+```
+
+#### [738. 单调递增的数字](https://leetcode-cn.com/problems/monotone-increasing-digits/)
+
+给定一个非负整数 `N`，找出小于或等于 `N` 的最大的整数，同时这个整数需要满足其各个位数上的数字是单调递增。
+
+（当且仅当每个相邻位数上的数字 `x` 和 `y` 满足 `x <= y` 时，我们称这个整数是单调递增的。）
+
+**示例 1:**
+
+```
+输入: N = 10
+输出: 9
+```
+
+**示例 2:**
+
+```
+输入: N = 1234
+输出: 1234
+```
+
+**示例 3:**
+
+```
+输入: N = 332
+输出: 299
+```
+
+**说明:** `N` 是在 `[0, 10^9]` 范围内的一个整数。
+
+```go
+func monotoneIncreasingDigits(n int) int {
+	s := strconv.Itoa(n)
+	ss := []byte(s)
+	if len(ss) <= 1 {
+		return n
+	}
+	for i := len(ss) - 1; i > 0; i-- {
+		if ss[i-1] > ss[i] {
+			ss[i-1] -= 1
+			for j := i; j < len(ss); j++ {
+				ss[j] = '9'
+			}
+		}
+	}
+	res, _ := strconv.Atoi(string(ss))
+	return res
+}
+```
+
+#### [714. 买卖股票的最佳时机含手续费](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/)
+
+给定一个整数数组 `prices`，其中第 `i` 个元素代表了第 `i` 天的股票价格 ；整数 `fee` 代表了交易股票的手续费用。
+
+你可以无限次地完成交易，但是你每笔交易都需要付手续费。如果你已经购买了一个股票，在卖出它之前你就不能再继续购买股票了。
+
+返回获得利润的最大值。
+
+**注意：**这里的一笔交易指买入持有并卖出股票的整个过程，每笔交易你只需要为支付一次手续费。
+
+**示例 1：**
+
+```
+输入：prices = [1, 3, 2, 8, 4, 9], fee = 2
+输出：8
+解释：能够达到的最大利润:  
+在此处买入 prices[0] = 1
+在此处卖出 prices[3] = 8
+在此处买入 prices[4] = 4
+在此处卖出 prices[5] = 9
+总利润: ((8 - 1) - 2) + ((9 - 4) - 2) = 8
+```
+
+**示例 2：**
+
+```
+输入：prices = [1,3,7,5,10,3], fee = 3
+输出：6
+```
+
+**提示：**
+
+- `1 <= prices.length <= 5 * 104`
+- `1 <= prices[i] < 5 * 104`
+- `0 <= fee < 5 * 104`
+
+```go
+func maxProfit(prices []int, fee int) int {
+	var minBuy = prices[0]
+	var res int
+	for i := 0; i < len(prices); i++ {
+		if prices[i] < minBuy {
+			minBuy = prices[i]
+		}
+		if prices[i] >= minBuy && prices[i]-minBuy-fee <= 0 {
+			continue
+		}
+		if prices[i]-minBuy-fee > 0 {
+			res += prices[i] - minBuy - fee
+			minBuy = prices[i] - fee
+		}
+	}
+	return res
+}
+```
+
+#### [968. 监控二叉树](https://leetcode-cn.com/problems/binary-tree-cameras/)
+
+给定一个二叉树，我们在树的节点上安装摄像头。
+
+节点上的每个摄影头都可以监视**其父对象、自身及其直接子对象。**
+
+计算监控树的所有节点所需的最小摄像头数量。
+
+**示例 1：**
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/29/bst_cameras_01.png)
+
+```
+输入：[0,0,null,0,0]
+输出：1
+解释：如图所示，一台摄像头足以监控所有节点。
+```
+
+**示例 2：**
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/29/bst_cameras_02.png)
+
+```
+输入：[0,0,null,0,null,0,null,null,0]
+输出：2
+解释：需要至少两个摄像头来监视树的所有节点。 上图显示了摄像头放置的有效位置之一。
+```
+
+
+**提示：**
+
+1. 给定树的节点数的范围是 `[1, 1000]`。
+2. 每个节点的值都是 0。
+
+```go
+func minCameraCover(root *TreeNode) int {
+	var res int
+	var run func(root *TreeNode) int
+	run = func(root *TreeNode) int {
+		if root == nil {
+			return 2
+		}
+		left := run(root.Left)
+		right := run(root.Right)
+
+		if left == 2 && right == 2 {
+			return 0
+		}
+
+		if left == 0 || right == 0 {
+			res++
+			return 1
+		}
+
+		if left == 1 || right == 1 {
+			return 2
+		}
+		return -1
+	}
+	num := run(root)
+	if num == 0 {
+		res++
+	}
+	return res
+}
+```
+
+
 
 ## 动态规划
 
