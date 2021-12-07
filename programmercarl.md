@@ -1552,4 +1552,377 @@ func minCameraCover(root *TreeNode) int {
 
 ## 动态规划
 
+#### [509. 斐波那契数](https://leetcode-cn.com/problems/fibonacci-number/)
+
+**斐波那契数**，通常用 `F(n)` 表示，形成的序列称为 **斐波那契数列** 。该数列由 `0` 和 `1` 开始，后面的每一项数字都是前面两项数字的和。也就是：
+
+```
+F(0) = 0，F(1) = 1
+F(n) = F(n - 1) + F(n - 2)，其中 n > 1
+```
+
+给你 `n` ，请计算 `F(n)` 。
+
+**示例 1：**
+
+```
+输入：2
+输出：1
+解释：F(2) = F(1) + F(0) = 1 + 0 = 1
+```
+
+**示例 2：**
+
+```
+输入：3
+输出：2
+解释：F(3) = F(2) + F(1) = 1 + 1 = 2
+```
+
+**示例 3：**
+
+```
+输入：4
+输出：3
+解释：F(4) = F(3) + F(2) = 2 + 1 = 3
+```
+
+**提示：**
+
+- `0 <= n <= 30`
+
+```go
+func fib(n int) int {
+	if n <= 1 {
+		return n
+	}
+	dp := make([]int, n+1)
+	dp[0] = 0
+	dp[1] = 1
+	for i := 2; i <= n; i++ {
+		dp[i] = dp[i-1] + dp[i-2]
+	}
+	return dp[n]
+}
+```
+
+#### [70. 爬楼梯](https://leetcode-cn.com/problems/climbing-stairs/)
+
+假设你正在爬楼梯。需要 *n* 阶你才能到达楼顶。
+
+每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+
+**注意：**给定 *n* 是一个正整数。
+
+**示例 1：**
+
+```
+输入： 2
+输出： 2
+解释： 有两种方法可以爬到楼顶。
+1.  1 阶 + 1 阶
+2.  2 阶
+```
+
+**示例 2：**
+
+```
+输入： 3
+输出： 3
+解释： 有三种方法可以爬到楼顶。
+1.  1 阶 + 1 阶 + 1 阶
+2.  1 阶 + 2 阶
+3.  2 阶 + 1 阶
+```
+
+```go
+func climbStairs(n int) int {
+	if n < 2 {
+		return n
+	}
+	dp := make([]int, n+1)
+	dp[1] = 1
+	dp[2] = 2
+	for i := 3; i <= n; i++ {
+		dp[i] = dp[i-1] + dp[i-2]
+	}
+	return dp[n]
+}
+```
+
+#### [746. 使用最小花费爬楼梯](https://leetcode-cn.com/problems/min-cost-climbing-stairs/)
+
+数组的每个下标作为一个阶梯，第 `i` 个阶梯对应着一个非负数的体力花费值 `cost[i]`（下标从 `0` 开始）。
+
+每当你爬上一个阶梯你都要花费对应的体力值，一旦支付了相应的体力值，你就可以选择向上爬一个阶梯或者爬两个阶梯。
+
+请你找出达到楼层顶部的最低花费。在开始时，你可以选择从下标为 0 或 1 的元素作为初始阶梯。
+
+**示例 1：**
+
+```
+输入：cost = [10, 15, 20]
+输出：15
+解释：最低花费是从 cost[1] 开始，然后走两步即可到阶梯顶，一共花费 15 。
+```
+
+ **示例 2：**
+
+```
+输入：cost = [1, 100, 1, 1, 1, 100, 1, 1, 100, 1]
+输出：6
+解释：最低花费方式是从 cost[0] 开始，逐个经过那些 1 ，跳过 cost[3] ，一共花费 6 。
+```
+
+**提示：**
+
+- `cost` 的长度范围是 `[2, 1000]`。
+- `cost[i]` 将会是一个整型数据，范围为 `[0, 999]` 。
+
+```go
+func minCostClimbingStairs(cost []int) int {
+	dp := make([]int, len(cost))
+	dp[0] = cost[0]
+	dp[1] = cost[1]
+	for i := 2; i < len(cost); i++ {
+		dp[i] = min(dp[i-1], dp[i-2]) + cost[i]
+	}
+	return min(dp[len(cost)-1], dp[len(cost)-2])
+}
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
+
+```
+
+#### [62. 不同路径](https://leetcode-cn.com/problems/unique-paths/)
+
+一个机器人位于一个 `m x n` 网格的左上角 （起始点在下图中标记为 “Start” ）。
+
+机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。
+
+问总共有多少条不同的路径？
+
+ 
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2018/10/22/robot_maze.png)
+
+```
+输入：m = 3, n = 7
+输出：28
+```
+
+**示例 2：**
+
+```
+输入：m = 3, n = 2
+输出：3
+解释：
+从左上角开始，总共有 3 条路径可以到达右下角。
+1. 向右 -> 向下 -> 向下
+2. 向下 -> 向下 -> 向右
+3. 向下 -> 向右 -> 向下
+```
+
+**示例 3：**
+
+```
+输入：m = 7, n = 3
+输出：28
+```
+
+**示例 4：**
+
+```
+输入：m = 3, n = 3
+输出：6
+```
+
+**提示：**
+
+- `1 <= m, n <= 100`
+- 题目数据保证答案小于等于 `2 * 109`
+
+```go
+func uniquePaths(m int, n int) int {
+	dp := make([][]int, m)
+	for i := range dp {
+		dp[i] = make([]int, n)
+		dp[i][0] = 1
+	}
+	for j := 0; j < n; j++ {
+		dp[0][j] = 1
+	}
+
+	for i := 1; i < m; i++ {
+		for j := 1; j < n; j++ {
+			dp[i][j] = dp[i-1][j] + dp[i][j-1]
+		}
+	}
+	return dp[m-1][n-1]
+}
+```
+
+#### [63. 不同路径 II](https://leetcode-cn.com/problems/unique-paths-ii/)
+
+一个机器人位于一个 *m x n* 网格的左上角 （起始点在下图中标记为“Start” ）。
+
+机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为“Finish”）。
+
+现在考虑网格中有障碍物。那么从左上角到右下角将会有多少条不同的路径？
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/10/22/robot_maze.png)
+
+网格中的障碍物和空位置分别用 `1` 和 `0` 来表示。
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2020/11/04/robot1.jpg)
+
+```
+输入：obstacleGrid = [[0,0,0],[0,1,0],[0,0,0]]
+输出：2
+解释：
+3x3 网格的正中间有一个障碍物。
+从左上角到右下角一共有 2 条不同的路径：
+1. 向右 -> 向右 -> 向下 -> 向下
+2. 向下 -> 向下 -> 向右 -> 向右
+```
+
+**示例 2：**
+
+![img](https://assets.leetcode.com/uploads/2020/11/04/robot2.jpg)
+
+```
+输入：obstacleGrid = [[0,1],[0,0]]
+输出：1
+```
+
+**提示：**
+
+- `m == obstacleGrid.length`
+- `n == obstacleGrid[i].length`
+- `1 <= m, n <= 100`
+- `obstacleGrid[i][j]` 为 `0` 或 `1`
+
+```go
+func uniquePathsWithObstacles(obstacleGrid [][]int) int {
+	m, n := len(obstacleGrid), len(obstacleGrid[0])
+	dp := make([][]int, m)
+	for i := range dp {
+		dp[i] = make([]int, n)
+	}
+
+	for i := 0; i < m; i++ {
+		if obstacleGrid[i][0] == 1 {
+			break
+		}
+		dp[i][0] = 1
+	}
+	for j := 0; j < n; j++ {
+		if obstacleGrid[0][j] == 1 {
+			break
+		}
+		dp[0][j] = 1
+	}
+	for i := 1; i < m; i++ {
+		for j := 1; j < n; j++ {
+			if obstacleGrid[i][j] != 1 {
+				dp[i][j] = dp[i-1][j] + dp[i][j-1]
+			}
+		}
+	}
+	return dp[m-1][n-1]
+}
+```
+
+#### [343. 整数拆分](https://leetcode-cn.com/problems/integer-break/)
+
+给定一个正整数 *n*，将其拆分为**至少**两个正整数的和，并使这些整数的乘积最大化。 返回你可以获得的最大乘积。
+
+**示例 1:**
+
+```
+输入: 2
+输出: 1
+解释: 2 = 1 + 1, 1 × 1 = 1。
+```
+
+**示例 2:**
+
+```
+输入: 10
+输出: 36
+解释: 10 = 3 + 3 + 4, 3 × 3 × 4 = 36。
+```
+
+**说明:** 你可以假设 *n* 不小于 2 且不大于 58。
+
+```go
+func integerBreak(n int) int {
+	dp := make([]int, n+1)
+	dp[1] = 1
+	dp[2] = 1
+	for i := 3; i < n+1; i++ {
+		for j := 1; j < i-1; j++ {
+			dp[i] = max(dp[i], max(j*(i-j), j*dp[i-j]))
+		}
+	}
+	return dp[n]
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+```
+
+#### [96. 不同的二叉搜索树](https://leetcode-cn.com/problems/unique-binary-search-trees/)
+
+给你一个整数 `n` ，求恰由 `n` 个节点组成且节点值从 `1` 到 `n` 互不相同的 **二叉搜索树** 有多少种？返回满足题意的二叉搜索树的种数。
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2021/01/18/uniquebstn3.jpg)
+
+```
+输入：n = 3
+输出：5
+```
+
+**示例 2：**
+
+```
+输入：n = 1
+输出：1
+```
+
+**提示：**
+
+- `1 <= n <= 19`
+
+```go
+func numTrees(n int) int {
+	dp := make([]int, n+1)
+	dp[0] = 1
+	dp[1] = 1
+	for i := 2; i < n+1; i++ {
+		for j := 1; j <= i; j++ {
+			dp[i] += dp[j-1] * dp[i-j]
+		}
+	}
+	return dp[n]
+}
+```
+
+
+
 ## 单调栈
