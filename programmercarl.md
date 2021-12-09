@@ -2129,6 +2129,307 @@ func abs(x int) int {
 }
 ```
 
+#### [474. 一和零](https://leetcode-cn.com/problems/ones-and-zeroes/)
+
+给你一个二进制字符串数组 `strs` 和两个整数 `m` 和 `n` 。
+
+请你找出并返回 `strs` 的最大子集的长度，该子集中 **最多** 有 `m` 个 `0` 和 `n` 个 `1` 。
+
+如果 `x` 的所有元素也是 `y` 的元素，集合 `x` 是集合 `y` 的 **子集** 。
+
+**示例 1：**
+
+```
+输入：strs = ["10", "0001", "111001", "1", "0"], m = 5, n = 3
+输出：4
+解释：最多有 5 个 0 和 3 个 1 的最大子集是 {"10","0001","1","0"} ，因此答案是 4 。
+其他满足题意但较小的子集包括 {"0001","1"} 和 {"10","1","0"} 。{"111001"} 不满足题意，因为它含 4 个 1 ，大于 n 的值 3 。
+```
+
+**示例 2：**
+
+```
+输入：strs = ["10", "0", "1"], m = 1, n = 1
+输出：2
+解释：最大的子集是 {"0", "1"} ，所以答案是 2 。
+```
+
+**提示：**
+
+- `1 <= strs.length <= 600`
+- `1 <= strs[i].length <= 100`
+- `strs[i]` 仅由 `'0'` 和 `'1'` 组成
+- `1 <= m, n <= 100`
+
+```go
+func findMaxForm(strs []string, m int, n int) int {
+	dp := make([][]int, m+1)
+	for i, _ := range dp {
+		dp[i] = make([]int, n+1)
+	}
+
+	for _, str := range strs {
+		zeroNum, oneNum := 0, 0
+		for _, v := range str {
+			if v == '0' {
+				zeroNum++
+			}
+		}
+		oneNum = len(str) - zeroNum
+		for i := m; i >= zeroNum; i-- {
+			for j := n; j >= oneNum; j-- {
+				dp[i][j] = max(dp[i][j], dp[i-zeroNum][j-oneNum]+1)
+			}
+		}
+	}
+	return dp[m][n]
+}
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+```
+
+#### [518. 零钱兑换 II](https://leetcode-cn.com/problems/coin-change-2/)
+
+给你一个整数数组 `coins` 表示不同面额的硬币，另给一个整数 `amount` 表示总金额。
+
+请你计算并返回可以凑成总金额的硬币组合数。如果任何硬币组合都无法凑出总金额，返回 `0` 。
+
+假设每一种面额的硬币有无限个。 
+
+题目数据保证结果符合 32 位带符号整数。
+
+**示例 1：**
+
+```
+输入：amount = 5, coins = [1, 2, 5]
+输出：4
+解释：有四种方式可以凑成总金额：
+5=5
+5=2+2+1
+5=2+1+1+1
+5=1+1+1+1+1
+```
+
+**示例 2：**
+
+```
+输入：amount = 3, coins = [2]
+输出：0
+解释：只用面额 2 的硬币不能凑成总金额 3 。
+```
+
+**示例 3：**
+
+```
+输入：amount = 10, coins = [10] 
+输出：1
+```
+
+**提示：**
+
+- `1 <= coins.length <= 300`
+- `1 <= coins[i] <= 5000`
+- `coins` 中的所有值 **互不相同**
+- `0 <= amount <= 5000`
+
+```go
+func change(amount int, coins []int) int {
+	dp := make([]int, amount+1)
+	dp[0] = 1
+	for _, coin := range coins {
+		for i := coin; i <= amount; i++ {
+			dp[i] += dp[i-coin]
+		}
+	}
+	return dp[amount]
+
+```
+
+#### [377. 组合总和 Ⅳ](https://leetcode-cn.com/problems/combination-sum-iv/)
+
+给你一个由 **不同** 整数组成的数组 `nums` ，和一个目标整数 `target` 。请你从 `nums` 中找出并返回总和为 `target` 的元素组合的个数。
+
+题目数据保证答案符合 32 位整数范围。
+
+**示例 1：**
+
+```
+输入：nums = [1,2,3], target = 4
+输出：7
+解释：
+所有可能的组合为：
+(1, 1, 1, 1)
+(1, 1, 2)
+(1, 2, 1)
+(1, 3)
+(2, 1, 1)
+(2, 2)
+(3, 1)
+请注意，顺序不同的序列被视作不同的组合。
+```
+
+**示例 2：**
+
+```
+输入：nums = [9], target = 3
+输出：0
+```
+
+**提示：**
+
+- `1 <= nums.length <= 200`
+- `1 <= nums[i] <= 1000`
+- `nums` 中的所有元素 **互不相同**
+- `1 <= target <= 1000`
+
+```go
+func combinationSum4(nums []int, target int) int {
+	dp := make([]int, target+1)
+	dp[0] = 1
+	for i := 0; i <= target; i++ {
+		for _, num := range nums {
+			if i >= num {
+				dp[i] += dp[i-num]
+			}
+		}
+	}
+	return dp[target]
+}
+```
+
+#### [322. 零钱兑换](https://leetcode-cn.com/problems/coin-change/)
+
+给你一个整数数组 `coins` ，表示不同面额的硬币；以及一个整数 `amount` ，表示总金额。
+
+计算并返回可以凑成总金额所需的 **最少的硬币个数** 。如果没有任何一种硬币组合能组成总金额，返回 `-1` 。
+
+你可以认为每种硬币的数量是无限的。
+
+**示例 1：**
+
+```
+输入：coins = [1, 2, 5], amount = 11
+输出：3 
+解释：11 = 5 + 5 + 1
+```
+
+**示例 2：**
+
+```
+输入：coins = [2], amount = 3
+输出：-1
+```
+
+**示例 3：**
+
+```
+输入：coins = [1], amount = 0
+输出：0
+```
+
+**示例 4：**
+
+```
+输入：coins = [1], amount = 1
+输出：1
+```
+
+**示例 5：**
+
+```
+输入：coins = [1], amount = 2
+输出：2
+```
+
+**提示：**
+
+- `1 <= coins.length <= 12`
+- `1 <= coins[i] <= 231 - 1`
+- `0 <= amount <= 104`
+
+```go
+func coinChange(coins []int, amount int) int {
+	dp := make([]int, amount+1)
+	dp[0] = 0
+	for i := 1; i <= amount; i++ {
+		dp[i] = math.MaxInt32
+	}
+	for _, coin := range coins {
+		for i := coin; i <= amount; i++ {
+			if dp[i-coin] != math.MaxInt32 {
+				dp[i] = min(dp[i], dp[i-coin]+1)
+			}
+		}
+	}
+	if dp[amount] == math.MaxInt32 {
+		return -1
+	}
+	return dp[amount]
+}
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
+```
+
+#### [279. 完全平方数](https://leetcode-cn.com/problems/perfect-squares/)
+
+给定正整数 *n*，找到若干个完全平方数（比如 `1, 4, 9, 16, ...`）使得它们的和等于 *n*。你需要让组成和的完全平方数的个数最少。
+
+给你一个整数 `n` ，返回和为 `n` 的完全平方数的 **最少数量** 。
+
+**完全平方数** 是一个整数，其值等于另一个整数的平方；换句话说，其值等于一个整数自乘的积。例如，`1`、`4`、`9` 和 `16` 都是完全平方数，而 `3` 和 `11` 不是。
+
+**示例 1：**
+
+```
+输入：n = 12
+输出：3 
+解释：12 = 4 + 4 + 4
+```
+
+**示例 2：**
+
+```
+输入：n = 13
+输出：2
+解释：13 = 4 + 9
+```
+
+**提示：**
+
+- `1 <= n <= 104`
+
+```go
+func numSquares(n int) int {
+	dp := make([]int, n+1)
+	dp[0] = 0
+	for i := 1; i <= n; i++ {
+		dp[i] = math.MaxInt32
+	}
+	for i := 1; i <= n; i++ {
+		for j := i * i; j <= n; j++ {
+			dp[j] = min(dp[j], dp[j-i*i]+1)
+		}
+	}
+	return dp[n]
+}
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
+```
+
 
 
 ## 单调栈
