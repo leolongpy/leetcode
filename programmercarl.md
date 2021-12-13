@@ -2963,6 +2963,414 @@ func max(x, y int) int {
 }
 ```
 
+#### [309. 最佳买卖股票时机含冷冻期](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/)
+
+给定一个整数数组，其中第 *i* 个元素代表了第 *i* 天的股票价格 。
+
+设计一个算法计算出最大利润。在满足以下约束条件下，你可以尽可能地完成更多的交易（多次买卖一支股票）:
+
+- 你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
+- 卖出股票后，你无法在第二天买入股票 (即冷冻期为 1 天)。
+
+**示例:**
+
+```
+输入: [1,2,3,0,2]
+输出: 3 
+解释: 对应的交易状态为: [买入, 卖出, 冷冻期, 买入, 卖出]
+```
+
+```go
+func maxProfit(prices []int) int {
+	n := len(prices)
+	if n == 0 {
+		return 0
+	}
+	dp := make([][3]int, n)
+	dp[0][0] = -prices[0]
+	for i := 1; i < n; i++ {
+		dp[i][0] = max(dp[i-1][0], dp[i-1][2]-prices[i])
+		dp[i][1] = dp[i-1][0] + prices[i]
+		dp[i][2] = max(dp[i-1][1], dp[i-1][2])
+	}
+	return max(dp[n-1][1], dp[n-1][2])
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+```
+
+#### [714. 买卖股票的最佳时机含手续费](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/)
+
+给定一个整数数组 `prices`，其中第 `i` 个元素代表了第 `i` 天的股票价格 ；整数 `fee` 代表了交易股票的手续费用。
+
+你可以无限次地完成交易，但是你每笔交易都需要付手续费。如果你已经购买了一个股票，在卖出它之前你就不能再继续购买股票了。
+
+返回获得利润的最大值。
+
+**注意：**这里的一笔交易指买入持有并卖出股票的整个过程，每笔交易你只需要为支付一次手续费。
+
+**示例 1：**
+
+```
+输入：prices = [1, 3, 2, 8, 4, 9], fee = 2
+输出：8
+解释：能够达到的最大利润:  
+在此处买入 prices[0] = 1
+在此处卖出 prices[3] = 8
+在此处买入 prices[4] = 4
+在此处卖出 prices[5] = 9
+总利润: ((8 - 1) - 2) + ((9 - 4) - 2) = 8
+```
+
+**示例 2：**
+
+```
+输入：prices = [1,3,7,5,10,3], fee = 3
+输出：6
+```
+
+**提示：**
+
+- `1 <= prices.length <= 5 * 104`
+- `1 <= prices[i] < 5 * 104`
+- `0 <= fee < 5 * 104`
+
+```go
+func maxProfit(prices []int, fee int) int {
+	n := len(prices)
+	dp := make([][2]int, n)
+	dp[0][0] = -prices[0]
+	for i := 1; i < n; i++ {
+		dp[i][0] = max(dp[i-1][0], dp[i-1][1]-prices[i])
+		dp[i][1] = max(dp[i-1][1], dp[i-1][0]+prices[i]-fee)
+	}
+	return dp[n-1][1]
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+```
+
+#### [300. 最长递增子序列](https://leetcode-cn.com/problems/longest-increasing-subsequence/)
+
+给你一个整数数组 `nums` ，找到其中最长严格递增子序列的长度。
+
+子序列是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。例如，`[3,6,2,7]` 是数组 `[0,3,1,6,2,2,7]` 的子序列。
+
+**示例 1：**
+
+```
+输入：nums = [10,9,2,5,3,7,101,18]
+输出：4
+解释：最长递增子序列是 [2,3,7,101]，因此长度为 4 。
+```
+
+**示例 2：**
+
+```
+输入：nums = [0,1,0,3,2,3]
+输出：4
+```
+
+**示例 3：**
+
+```
+输入：nums = [7,7,7,7,7,7,7]
+输出：1
+```
+
+**提示：**
+
+- `1 <= nums.length <= 2500`
+- `-104 <= nums[i] <= 104`
+
+```go
+func lengthOfLIS(nums []int) int {
+	if len(nums) <= 1 {
+		return len(nums)
+	}
+	dp := make([]int, len(nums))
+	for i := range dp {
+		dp[i] = 1
+	}
+	res := 0
+	for i := 1; i < len(nums); i++ {
+		for j := 0; j < i; j++ {
+			if nums[i] > nums[j] {
+				dp[i] = max(dp[i], dp[j]+1)
+			}
+		}
+		if dp[i] > res {
+			res = dp[i]
+		}
+
+	}
+	return res
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+```
+
+#### [674. 最长连续递增序列](https://leetcode-cn.com/problems/longest-continuous-increasing-subsequence/)
+
+给定一个未经排序的整数数组，找到最长且 **连续递增的子序列**，并返回该序列的长度。
+
+**连续递增的子序列** 可以由两个下标 `l` 和 `r`（`l < r`）确定，如果对于每个 `l <= i < r`，都有 `nums[i] < nums[i + 1]` ，那么子序列 `[nums[l], nums[l + 1], ..., nums[r - 1], nums[r]]` 就是连续递增子序列。
+
+**示例 1：**
+
+```
+输入：nums = [1,3,5,4,7]
+输出：3
+解释：最长连续递增序列是 [1,3,5], 长度为3。
+尽管 [1,3,5,7] 也是升序的子序列, 但它不是连续的，因为 5 和 7 在原数组里被 4 隔开。 
+```
+
+**示例 2：**
+
+```
+输入：nums = [2,2,2,2,2]
+输出：1
+解释：最长连续递增序列是 [2], 长度为1。
+```
+
+**提示：**
+
+- `1 <= nums.length <= 104`
+- `-109 <= nums[i] <= 109`
+
+```go
+//动态规划
+func findLengthOfLCIS(nums []int) int {
+	if len(nums) <= 1 {
+		return len(nums)
+	}
+	dp := make([]int, len(nums))
+	for i := range dp {
+		dp[i] = 1
+	}
+	res := 0
+	for i := 0; i < len(nums)-1; i++ {
+		if nums[i+1] > nums[i] {
+			dp[i+1] = dp[i] + 1
+		}
+		if dp[i+1] > res {
+			res = dp[i+1]
+		}
+	}
+	return res
+}
+//贪心
+func findLengthOfLCIS(nums []int) int {
+	count, res := 1, 1
+	for i := 0; i < len(nums)-1; i++ {
+		if nums[i+1] > nums[i] {
+			count++
+		} else {
+			count = 1
+		}
+		if count > res {
+			res = count
+		}
+	}
+	return res
+
+```
+
+#### [718. 最长重复子数组](https://leetcode-cn.com/problems/maximum-length-of-repeated-subarray/)
+
+给两个整数数组 `A` 和 `B` ，返回两个数组中公共的、长度最长的子数组的长度。
+
+**示例：**
+
+```
+输入：
+A: [1,2,3,2,1]
+B: [3,2,1,4,7]
+输出：3
+解释：
+长度最长的公共子数组是 [3, 2, 1] 。
+```
+
+**提示：**
+
+- `1 <= len(A), len(B) <= 1000`
+- `0 <= A[i], B[i] < 100`
+
+```go
+func findLength(nums1 []int, nums2 []int) int {
+	m, n := len(nums1), len(nums2)
+	dp := make([][]int, m+1)
+	for i := range dp {
+		dp[i] = make([]int, n+1)
+	}
+	res := 0
+	for i := 1; i <= m; i++ {
+		for j := 1; j <= n; j++ {
+			if nums1[i-1] == nums2[j-1] {
+				dp[i][j] = dp[i-1][j-1] + 1
+			}
+			if dp[i][j] > res {
+				res = dp[i][j]
+			}
+		}
+	}
+	return res
+}
+```
+
+#### [1143. 最长公共子序列](https://leetcode-cn.com/problems/longest-common-subsequence/)
+
+给定两个字符串 `text1` 和 `text2`，返回这两个字符串的最长 **公共子序列** 的长度。如果不存在 **公共子序列** ，返回 `0` 。
+
+一个字符串的 **子序列** 是指这样一个新的字符串：它是由原字符串在不改变字符的相对顺序的情况下删除某些字符（也可以不删除任何字符）后组成的新字符串。
+
+- 例如，`"ace"` 是 `"abcde"` 的子序列，但 `"aec"` 不是 `"abcde"` 的子序列。
+
+两个字符串的 **公共子序列** 是这两个字符串所共同拥有的子序列。
+
+**示例 1：**
+
+```
+输入：text1 = "abcde", text2 = "ace" 
+输出：3  
+解释：最长公共子序列是 "ace" ，它的长度为 3 。
+```
+
+**示例 2：**
+
+```
+输入：text1 = "abc", text2 = "abc"
+输出：3
+解释：最长公共子序列是 "abc" ，它的长度为 3 。
+```
+
+**示例 3：**
+
+```
+输入：text1 = "abc", text2 = "def"
+输出：0
+解释：两个字符串没有公共子序列，返回 0 。
+```
+
+**提示：**
+
+- `1 <= text1.length, text2.length <= 1000`
+- `text1` 和 `text2` 仅由小写英文字符组成。
+
+```go
+func longestCommonSubsequence(text1 string, text2 string) int {
+	t1 := len(text1)
+	t2 := len(text2)
+	dp := make([][]int, t1+1)
+	for i := range dp {
+		dp[i] = make([]int, t2+1)
+	}
+	for i := 1; i <= t1; i++ {
+		for j := 1; j <= t2; j++ {
+			if text1[i-1] == text2[j-1] {
+				dp[i][j] = dp[i-1][j-1] + 1
+			} else {
+				dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+			}
+		}
+	}
+	return dp[t1][t2]
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+
+```
+
+#### [1035. 不相交的线](https://leetcode-cn.com/problems/uncrossed-lines/)
+
+在两条独立的水平线上按给定的顺序写下 `nums1` 和 `nums2` 中的整数。
+
+现在，可以绘制一些连接两个数字 `nums1[i]` 和 `nums2[j]` 的直线，这些直线需要同时满足满足：
+
+-  `nums1[i] == nums2[j]`
+- 且绘制的直线不与任何其他连线（非水平线）相交。
+
+请注意，连线即使在端点也不能相交：每个数字只能属于一条连线。
+
+以这种方法绘制线条，并返回可以绘制的最大连线数。
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2019/04/26/142.png)
+
+```
+输入：nums1 = [1,4,2], nums2 = [1,2,4]
+输出：2
+解释：可以画出两条不交叉的线，如上图所示。 
+但无法画出第三条不相交的直线，因为从 nums1[1]=4 到 nums2[2]=4 的直线将与从 nums1[2]=2 到 nums2[1]=2 的直线相交。
+```
+
+**示例 2：**
+
+```
+输入：nums1 = [2,5,1,2,5], nums2 = [10,5,2,1,5,2]
+输出：3
+```
+
+**示例 3：**
+
+```
+输入：nums1 = [1,3,7,1,7,5], nums2 = [1,9,2,5,1]
+输出：2
+```
+
+**提示：**
+
+- `1 <= nums1.length, nums2.length <= 500`
+- `1 <= nums1[i], nums2[j] <= 2000`
+
+```go
+func maxUncrossedLines(nums1 []int, nums2 []int) int {
+	t1 := len(nums1)
+	t2 := len(nums2)
+	dp := make([][]int, t1+1)
+	for i := range dp {
+		dp[i] = make([]int, t2+1)
+	}
+	for i := 1; i <= t1; i++ {
+		for j := 1; j <= t2; j++ {
+			if nums1[i-1] == nums2[j-1] {
+				dp[i][j] = dp[i-1][j-1] + 1
+			} else {
+				dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+			}
+		}
+	}
+	return dp[t1][t2]
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+```
+
 
 
 ## 单调栈
