@@ -3371,6 +3371,318 @@ func max(x, y int) int {
 }
 ```
 
+#### [53. 最大子数组和](https://leetcode-cn.com/problems/maximum-subarray/)
+
+给你一个整数数组 `nums` ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
+
+**子数组** 是数组中的一个连续部分。
+
+**示例 1：**
+
+```
+输入：nums = [-2,1,-3,4,-1,2,1,-5,4]
+输出：6
+解释：连续子数组 [4,-1,2,1] 的和最大，为 6 。
+```
+
+**示例 2：**
+
+```
+输入：nums = [1]
+输出：1
+```
+
+**示例 3：**
+
+```
+输入：nums = [5,4,-1,7,8]
+输出：23
+```
+
+**提示：**
+
+- `1 <= nums.length <= 105`
+- `-104 <= nums[i] <= 104`
+
+```go
+//动态规划
+func maxSubArray(nums []int) int {
+	if len(nums) == 0 {
+		return 0
+	}
+	dp := make([]int, len(nums))
+	dp[0] = nums[0]
+	res := dp[0]
+	for i := 1; i < len(nums); i++ {
+		dp[i] = max(dp[i-1]+nums[i], nums[i])
+		if dp[i] > res {
+			res = dp[i]
+		}
+	}
+	return res
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+//贪心
+func maxSubArray(nums []int) int {
+	maxNum := nums[0]
+	for i := 1; i < len(nums); i++ {
+		if nums[i]+nums[i-1] > nums[i] {
+			nums[i] += nums[i-1]
+		}
+		if nums[i] > maxNum {
+			maxNum = nums[i]
+		}
+	}
+	return maxNum
+}
+```
+
+#### [392. 判断子序列](https://leetcode-cn.com/problems/is-subsequence/)
+
+给定字符串 **s** 和 **t** ，判断 **s** 是否为 **t** 的子序列。
+
+字符串的一个子序列是原始字符串删除一些（也可以不删除）字符而不改变剩余字符相对位置形成的新字符串。（例如，`"ace"`是`"abcde"`的一个子序列，而`"aec"`不是）。 
+
+**示例 1：**
+
+```
+输入：s = "abc", t = "ahbgdc"
+输出：true
+```
+
+**示例 2：**
+
+```
+输入：s = "axc", t = "ahbgdc"
+输出：false
+```
+
+**提示：**
+
+- `0 <= s.length <= 100`
+- `0 <= t.length <= 10^4`
+- 两个字符串都只由小写字符组成。
+
+```go
+//动态规划
+func isSubsequence(s string, t string) bool {
+	dp := make([][]int, len(s)+1)
+	for i := range dp {
+		dp[i] = make([]int, len(t)+1)
+	}
+	for i := 1; i < len(dp); i++ {
+		for j := 1; j < len(dp[i]); j++ {
+			if s[i-1] == t[j-1] {
+				dp[i][j] = dp[i-1][j-1] + 1
+			} else {
+				dp[i][j] = dp[i][j-1]
+			}
+		}
+	}
+	return dp[len(s)][len(t)] == len(s)
+}
+//双指针
+func isSubsequence(s string, t string) bool {
+	lens := len(s)
+	lent := len(t)
+	i, j := 0, 0
+	for i < lens && j < lent {
+		if s[i] == t[j] {
+			i++
+		}
+		j++
+	}
+	return i == lens
+}
+```
+
+#### [115. 不同的子序列](https://leetcode-cn.com/problems/distinct-subsequences/)
+
+给定一个字符串 `s` 和一个字符串 `t` ，计算在 `s` 的子序列中 `t` 出现的个数。
+
+字符串的一个 **子序列** 是指，通过删除一些（也可以不删除）字符且不干扰剩余字符相对位置所组成的新字符串。（例如，`"ACE"` 是 `"ABCDE"` 的一个子序列，而 `"AEC"` 不是）
+
+题目数据保证答案符合 32 位带符号整数范围。
+
+**示例 1：**
+
+```
+输入：s = "rabbbit", t = "rabbit"
+输出：3
+解释：
+如下图所示, 有 3 种可以从 s 中得到 "rabbit" 的方案。
+rabbbit
+rabbbit
+rabbbit
+```
+
+**示例 2：**
+
+```
+输入：s = "babgbag", t = "bag"
+输出：5
+解释：
+如下图所示, 有 5 种可以从 s 中得到 "bag" 的方案。 
+babgbag
+babgbag
+babgbag
+babgbag
+babgbag
+```
+
+**提示：**
+
+- `0 <= s.length, t.length <= 1000`
+- `s` 和 `t` 由英文字母组成
+
+```go
+func numDistinct(s string, t string) int {
+	dp := make([][]int, len(s)+1)
+	for i := range dp {
+		dp[i] = make([]int, len(t)+1)
+		dp[i][0] = 1
+	}
+
+	for i := 1; i < len(dp); i++ {
+		for j := 1; j < len(dp[i]); j++ {
+			if s[i-1] == t[j-1] {
+				dp[i][j] = dp[i-1][j-1] + dp[i-1][j]
+			} else {
+				dp[i][j] = dp[i-1][j]
+			}
+		}
+	}
+	return dp[len(s)][len(t)]
+}
+```
+
+#### [583. 两个字符串的删除操作](https://leetcode-cn.com/problems/delete-operation-for-two-strings/)
+
+给定两个单词 *word1* 和 *word2*，找到使得 *word1* 和 *word2* 相同所需的最小步数，每步可以删除任意一个字符串中的一个字符。
+
+**示例：**
+
+```
+输入: "sea", "eat"
+输出: 2
+解释: 第一步将"sea"变为"ea"，第二步将"eat"变为"ea"
+```
+
+**提示：**
+
+1. 给定单词的长度不超过500。
+2. 给定单词中的字符只含有小写字母。
+
+```go
+func minDistance(word1 string, word2 string) int {
+	dp := make([][]int, len(word1)+1)
+	for i := range dp {
+		dp[i] = make([]int, len(word2)+1)
+		dp[i][0] = i
+	}
+
+	for j := 0; j < len(dp[0]); j++ {
+		dp[0][j] = j
+	}
+
+	for i := 1; i < len(dp); i++ {
+		for j := 1; j < len(dp[i]); j++ {
+			if word1[i-1] == word2[j-1] {
+				dp[i][j] = dp[i-1][j-1]
+			} else {
+				dp[i][j] = min(min(dp[i-1][j]+1, dp[i][j-1]+1), dp[i-1][j-1]+2)
+			}
+		}
+	}
+	return dp[len(word1)][len(word2)]
+
+}
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
+```
+
+#### [72. 编辑距离](https://leetcode-cn.com/problems/edit-distance/)
+
+给你两个单词 `word1` 和 `word2`，请你计算出将 `word1` 转换成 `word2` 所使用的最少操作数 。
+
+你可以对一个单词进行如下三种操作：
+
+- 插入一个字符
+- 删除一个字符
+- 替换一个字符
+
+**示例 1：**
+
+```
+输入：word1 = "horse", word2 = "ros"
+输出：3
+解释：
+horse -> rorse (将 'h' 替换为 'r')
+rorse -> rose (删除 'r')
+rose -> ros (删除 'e')
+```
+
+**示例 2：**
+
+```
+输入：word1 = "intention", word2 = "execution"
+输出：5
+解释：
+intention -> inention (删除 't')
+inention -> enention (将 'i' 替换为 'e')
+enention -> exention (将 'n' 替换为 'x')
+exention -> exection (将 'n' 替换为 'c')
+exection -> execution (插入 'u')
+```
+
+**提示：**
+
+- `0 <= word1.length, word2.length <= 500`
+- `word1` 和 `word2` 由小写英文字母组成
+
+```go
+func minDistance(word1 string, word2 string) int {
+	dp := make([][]int, len(word1)+1)
+	for i := range dp {
+		dp[i] = make([]int, len(word2)+1)
+		dp[i][0] = i
+	}
+
+	for j := 0; j < len(dp[0]); j++ {
+		dp[0][j] = j
+	}
+
+	for i := 1; i < len(dp); i++ {
+		for j := 1; j < len(dp[i]); j++ {
+			if word1[i-1] == word2[j-1] {
+				dp[i][j] = dp[i-1][j-1]
+			} else {
+				dp[i][j] = min(min(dp[i-1][j], dp[i][j-1]), dp[i-1][j-1]) + 1
+			}
+		}
+	}
+	return dp[len(word1)][len(word2)]
+}
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
+```
+
 
 
 ## 单调栈
