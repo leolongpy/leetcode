@@ -3683,6 +3683,325 @@ func min(x, y int) int {
 }
 ```
 
+#### [647. 回文子串](https://leetcode-cn.com/problems/palindromic-substrings/)
+
+给你一个字符串 `s` ，请你统计并返回这个字符串中 **回文子串** 的数目。
+
+**回文字符串** 是正着读和倒过来读一样的字符串。
+
+**子字符串** 是字符串中的由连续字符组成的一个序列。
+
+具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。
+
+**示例 1：**
+
+```
+输入：s = "abc"
+输出：3
+解释：三个回文子串: "a", "b", "c"
+```
+
+**示例 2：**
+
+```
+输入：s = "aaa"
+输出：6
+解释：6个回文子串: "a", "a", "a", "aa", "aa", "aaa"
+```
+
+**提示：**
+
+- `1 <= s.length <= 1000`
+- `s` 由小写英文字母组成
+
+```go
+func countSubstrings(s string) int {
+	dp := make([][]bool, len(s))
+	for i := range dp {
+		dp[i] = make([]bool, len(s))
+	}
+	res := 0
+	for i := len(s); i >= 0; i-- {
+		for j := i; j < len(s); j++ {
+			if s[i] == s[j] {
+				if j-i <= 1 {
+					res++
+					dp[i][j] = true
+				} else if dp[i+1][j-1] {
+					res++
+					dp[i][j] = true
+				}
+			}
+		}
+	}
+	return res
+}
+```
+
+#### [516. 最长回文子序列](https://leetcode-cn.com/problems/longest-palindromic-subsequence/)
+
+难度中等677收藏分享切换为英文接收动态反馈
+
+给你一个字符串 `s` ，找出其中最长的回文子序列，并返回该序列的长度。
+
+子序列定义为：不改变剩余字符顺序的情况下，删除某些字符或者不删除任何字符形成的一个序列。
+
+**示例 1：**
+
+```
+输入：s = "bbbab"
+输出：4
+解释：一个可能的最长回文子序列为 "bbbb" 。
+```
+
+**示例 2：**
+
+```
+输入：s = "cbbd"
+输出：2
+解释：一个可能的最长回文子序列为 "bb" 。
+```
+
+**提示：**
+
+- `1 <= s.length <= 1000`
+- `s` 仅由小写英文字母组成
+
+```go
+func longestPalindromeSubseq(s string) int {
+	dp := make([][]int, len(s))
+	for i := range dp {
+		dp[i] = make([]int, len(s))
+		dp[i][i] = 1
+	}
+
+	for i := len(s) - 1; i >= 0; i-- {
+		for j := i + 1; j < len(s); j++ {
+			if s[i] == s[j] {
+				dp[i][j] = dp[i+1][j-1] + 2
+			} else {
+				dp[i][j] = max(dp[i+1][j], dp[i][j-1])
+			}
+		}
+	}
+	return dp[0][len(s)-1]
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+```
+
 
 
 ## 单调栈
+
+#### [739. 每日温度](https://leetcode-cn.com/problems/daily-temperatures/)
+
+请根据每日 `气温` 列表 `temperatures` ，请计算在每一天需要等几天才会有更高的温度。如果气温在这之后都不会升高，请在该位置用 `0` 来代替。
+
+**示例 1:**
+
+```
+输入: temperatures = [73,74,75,71,69,72,76,73]
+输出: [1,1,4,2,1,1,0,0]
+```
+
+**示例 2:**
+
+```
+输入: temperatures = [30,40,50,60]
+输出: [1,1,1,0]
+```
+
+**示例 3:**
+
+```
+输入: temperatures = [30,60,90]
+输出: [1,1,0]
+```
+
+**提示：**
+
+- `1 <= temperatures.length <= 105`
+- `30 <= temperatures[i] <= 100`
+
+```go
+func dailyTemperatures(temperatures []int) []int {
+	ans := make([]int, len(temperatures))
+	stack := []int{}
+	for i, v := range temperatures {
+		for len(stack) != 0 && v > temperatures[stack[len(stack)-1]] {
+			top := stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+
+			ans[top] = i - top
+		}
+		stack = append(stack, i)
+	}
+	return ans
+}
+```
+
+#### [496. 下一个更大元素 I](https://leetcode-cn.com/problems/next-greater-element-i/)
+
+`nums1` 中数字 `x` 的 **下一个更大元素** 是指 `x` 在 `nums2` 中对应位置 **右侧** 的 **第一个** 比 `x` 大的元素。
+
+给你两个 **没有重复元素** 的数组 `nums1` 和 `nums2` ，下标从 **0** 开始计数，其中`nums1` 是 `nums2` 的子集。
+
+对于每个 `0 <= i < nums1.length` ，找出满足 `nums1[i] == nums2[j]` 的下标 `j` ，并且在 `nums2` 确定 `nums2[j]` 的 **下一个更大元素** 。如果不存在下一个更大元素，那么本次查询的答案是 `-1` 。
+
+返回一个长度为 `nums1.length` 的数组 `ans` 作为答案，满足 `ans[i]` 是如上所述的 **下一个更大元素** 。
+
+**示例 1：**
+
+```
+输入：nums1 = [4,1,2], nums2 = [1,3,4,2].
+输出：[-1,3,-1]
+解释：nums1 中每个值的下一个更大元素如下所述：
+- 4 ，用加粗斜体标识，nums2 = [1,3,4,2]。不存在下一个更大元素，所以答案是 -1 。
+- 1 ，用加粗斜体标识，nums2 = [1,3,4,2]。下一个更大元素是 3 。
+- 2 ，用加粗斜体标识，nums2 = [1,3,4,2]。不存在下一个更大元素，所以答案是 -1 。
+```
+
+**示例 2：**
+
+```
+输入：nums1 = [2,4], nums2 = [1,2,3,4].
+输出：[3,-1]
+解释：nums1 中每个值的下一个更大元素如下所述：
+- 2 ，用加粗斜体标识，nums2 = [1,2,3,4]。下一个更大元素是 3 。
+- 4 ，用加粗斜体标识，nums2 = [1,2,3,4]。不存在下一个更大元素，所以答案是 -1 。
+```
+
+**提示：**
+
+- `1 <= nums1.length <= nums2.length <= 1000`
+- `0 <= nums1[i], nums2[i] <= 104`
+- `nums1`和`nums2`中所有整数 **互不相同**
+- `nums1` 中的所有整数同样出现在 `nums2` 中
+
+```go
+func nextGreaterElement(nums1 []int, nums2 []int) []int {
+	ans := make([]int, len(nums1))
+	for i := range ans {
+		ans[i] = -1
+	}
+	stack := []int{}
+	mp := map[int]int{}
+	for k, v := range nums1 {
+		mp[v] = k
+	}
+
+	for k, v := range nums2 {
+		for len(stack) > 0 && v > nums2[stack[len(stack)-1]] {
+			top := stack[len(stack)-1]
+			if index, ok := mp[nums2[top]]; ok {
+				ans[index] = v
+			}
+			stack = stack[:len(stack)-1]
+		}
+		stack = append(stack, k)
+	}
+	return ans
+}
+```
+
+#### [503. 下一个更大元素 II](https://leetcode-cn.com/problems/next-greater-element-ii/)
+
+给定一个循环数组（最后一个元素的下一个元素是数组的第一个元素），输出每个元素的下一个更大元素。数字 x 的下一个更大的元素是按数组遍历顺序，这个数字之后的第一个比它更大的数，这意味着你应该循环地搜索它的下一个更大的数。如果不存在，则输出 -1。
+
+**示例 1:**
+
+```
+输入: [1,2,1]
+输出: [2,-1,2]
+解释: 第一个 1 的下一个更大的数是 2；
+数字 2 找不到下一个更大的数； 
+第二个 1 的下一个最大的数需要循环搜索，结果也是 2。
+```
+
+**注意:** 输入数组的长度不会超过 10000。
+
+```go
+func nextGreaterElements(nums []int) []int {
+	length := len(nums)
+	ans := make([]int, length)
+	stack := []int{}
+	for i := range ans {
+		ans[i] = -1
+	}
+
+	for i := 0; i < length*2; i++ {
+		for len(stack) > 0 && nums[i%length] > nums[stack[len(stack)-1]] {
+			top := stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			ans[top] = nums[i%length]
+		}
+		stack = append(stack, i%length)
+	}
+	return ans
+
+}
+```
+
+#### [84. 柱状图中最大的矩形](https://leetcode-cn.com/problems/largest-rectangle-in-histogram/)
+
+给定 *n* 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1 。
+
+求在该柱状图中，能够勾勒出来的矩形的最大面积。
+
+ 
+
+**示例 1:**
+
+![img](https://assets.leetcode.com/uploads/2021/01/04/histogram.jpg)
+
+```
+输入：heights = [2,1,5,6,2,3]
+输出：10
+解释：最大的矩形为图中红色区域，面积为 10
+```
+
+**示例 2：**
+
+![img](https://assets.leetcode.com/uploads/2021/01/04/histogram-1.jpg)
+
+```
+输入： heights = [2,4]
+输出： 4
+```
+
+**提示：**
+
+- `1 <= heights.length <=105`
+- `0 <= heights[i] <= 104`
+
+```go
+func largestRectangleArea(heights []int) int {
+	heights = append(heights, 0)
+	stack := []int{-1}
+	res := 0
+	for i := 0; i < len(heights); i++ {
+		for len(stack) > 1 && heights[i] < heights[stack[len(stack)-1]] {
+			top := stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			l := stack[len(stack)-1]
+			res = max(res, (i-l-1)*heights[top])
+		}
+		stack = append(stack, i)
+	}
+	return res
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+```
+
