@@ -1,5 +1,274 @@
 ## 数组
 
+#### [704. 二分查找](https://leetcode-cn.com/problems/binary-search/)
+
+给定一个 `n` 个元素有序的（升序）整型数组 `nums` 和一个目标值 `target` ，写一个函数搜索 `nums` 中的 `target`，如果目标值存在返回下标，否则返回 `-1`。
+**示例 1:**
+
+```
+输入: nums = [-1,0,3,5,9,12], target = 9
+输出: 4
+解释: 9 出现在 nums 中并且下标为 4
+```
+
+**示例 2:**
+
+```
+输入: nums = [-1,0,3,5,9,12], target = 2
+输出: -1
+解释: 2 不存在 nums 中因此返回 -1
+```
+
+**提示：**
+
+1. 你可以假设 `nums` 中的所有元素是不重复的。
+2. `n` 将在 `[1, 10000]`之间。
+3. `nums` 的每个元素都将在 `[-9999, 9999]`之间。
+
+```go
+func search(nums []int, target int) int {
+	left := 0
+	right := len(nums) - 1
+	for left <= right {
+		mid := left + (right-left)/2
+		if nums[mid] == target {
+			return mid
+		} else if target < nums[mid] {
+			right = right - 1
+		} else {
+			left = left + 1
+		}
+	}
+	return -1
+}
+```
+
+#### [27. 移除元素](https://leetcode-cn.com/problems/remove-element/)
+
+给你一个数组 `nums` 和一个值 `val`，你需要 **[原地](https://baike.baidu.com/item/原地算法)** 移除所有数值等于 `val` 的元素，并返回移除后数组的新长度。
+
+不要使用额外的数组空间，你必须仅使用 `O(1)` 额外空间并 **[原地 ](https://baike.baidu.com/item/原地算法)修改输入数组**。
+
+元素的顺序可以改变。你不需要考虑数组中超出新长度后面的元素。
+
+**说明:**
+
+为什么返回数值是整数，但输出的答案是数组呢?
+
+请注意，输入数组是以**「引用」**方式传递的，这意味着在函数里修改输入数组对于调用者是可见的。
+
+你可以想象内部操作如下:
+
+```
+// nums 是以“引用”方式传递的。也就是说，不对实参作任何拷贝
+int len = removeElement(nums, val);
+
+// 在函数里修改输入数组对于调用者是可见的。
+// 根据你的函数返回的长度, 它会打印出数组中 该长度范围内 的所有元素。
+for (int i = 0; i < len; i++) {
+    print(nums[i]);
+}
+```
+
+**示例 1：**
+
+```
+输入：nums = [3,2,2,3], val = 3
+输出：2, nums = [2,2]
+解释：函数应该返回新的长度 2, 并且 nums 中的前两个元素均为 2。你不需要考虑数组中超出新长度后面的元素。例如，函数返回的新长度为 2 ，而 nums = [2,2,3,3] 或 nums = [2,2,0,0]，也会被视作正确答案。
+```
+
+**示例 2：**
+
+```
+输入：nums = [0,1,2,2,3,0,4,2], val = 2
+输出：5, nums = [0,1,4,0,3]
+解释：函数应该返回新的长度 5, 并且 nums 中的前五个元素为 0, 1, 3, 0, 4。注意这五个元素可为任意顺序。你不需要考虑数组中超出新长度后面的元素。
+```
+
+**提示：**
+
+- `0 <= nums.length <= 100`
+- `0 <= nums[i] <= 50`
+- `0 <= val <= 100`
+
+```go
+func removeElement(nums []int, val int) int {
+	res := 0
+	for i := 0; i < len(nums); i++ {
+		if nums[i] != val {
+			nums[res] = nums[i]
+			res++
+		}
+	}
+	return res
+}
+```
+
+#### [977. 有序数组的平方](https://leetcode-cn.com/problems/squares-of-a-sorted-array/)
+
+给你一个按 **非递减顺序** 排序的整数数组 `nums`，返回 **每个数字的平方** 组成的新数组，要求也按 **非递减顺序** 排序。
+
+**示例 1：**
+
+```
+输入：nums = [-4,-1,0,3,10]
+输出：[0,1,9,16,100]
+解释：平方后，数组变为 [16,1,0,9,100]
+排序后，数组变为 [0,1,9,16,100]
+```
+
+**示例 2：**
+
+```
+输入：nums = [-7,-3,2,3,11]
+输出：[4,9,9,49,121]
+```
+
+**提示：**
+
+- `1 <= nums.length <= 104`
+- `-104 <= nums[i] <= 104`
+- `nums` 已按 **非递减顺序** 排序
+
+```go
+func sortedSquares(nums []int) []int {
+	ans := make([]int, len(nums))
+	left, right, k := 0, len(nums)-1, len(nums)-1
+	for left <= right {
+		l, r := nums[left]*nums[left], nums[right]*nums[right]
+		if l > r {
+			ans[k] = l
+			left++
+		} else {
+			ans[k] = r
+			right--
+		}
+		k--
+	}
+	return ans
+}
+```
+
+#### [209. 长度最小的子数组](https://leetcode-cn.com/problems/minimum-size-subarray-sum/)
+
+给定一个含有 `n` 个正整数的数组和一个正整数 `target` **。**
+
+找出该数组中满足其和 `≥ target` 的长度最小的 **连续子数组** `[numsl, numsl+1, ..., numsr-1, numsr]` ，并返回其长度**。**如果不存在符合条件的子数组，返回 `0` 。
+
+**示例 1：**
+
+```
+输入：target = 7, nums = [2,3,1,2,4,3]
+输出：2
+解释：子数组 [4,3] 是该条件下的长度最小的子数组。
+```
+
+**示例 2：**
+
+```
+输入：target = 4, nums = [1,4,4]
+输出：1
+```
+
+**示例 3：**
+
+```
+输入：target = 11, nums = [1,1,1,1,1,1,1,1]
+输出：0
+```
+
+**提示：**
+
+- `1 <= target <= 109`
+- `1 <= nums.length <= 105`
+- `1 <= nums[i] <= 105`
+
+```go
+func minSubArrayLen(target int, nums []int) int {
+	i := 0
+	l := len(nums)
+	res := l + 1
+	sum := 0
+	for j := 0; j < l; j++ {
+		sum += nums[j]
+		for sum >= target {
+			currlen := j - i + 1
+			if currlen < res {
+				res = currlen
+			}
+			sum -= nums[i]
+			i++
+		}
+	}
+	if res == l+1 {
+		return 0
+	}
+	return res
+}
+```
+
+#### [59. 螺旋矩阵 II](https://leetcode-cn.com/problems/spiral-matrix-ii/)
+
+给你一个正整数 `n` ，生成一个包含 `1` 到 `n2` 所有元素，且元素按顺时针顺序螺旋排列的 `n x n` 正方形矩阵 `matrix` 。
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2020/11/13/spiraln.jpg)
+
+```
+输入：n = 3
+输出：[[1,2,3],[8,9,4],[7,6,5]]
+```
+
+**示例 2：**
+
+```
+输入：n = 1
+输出：[[1]]
+```
+
+**提示：**
+
+- `1 <= n <= 20`
+
+```go
+func generateMatrix(n int) [][]int {
+	top, bottom := 0, n-1
+	left, right := 0, n-1
+	num := 1
+	ans := make([][]int, n)
+	for i := range ans {
+		ans[i] = make([]int, n)
+	}
+	for num <= n*n {
+		for i := left; i <= right; i++ {
+			ans[top][i] = num
+			num++
+		}
+		top++
+		for i := top; i <= bottom; i++ {
+			ans[i][right] = num
+			num++
+		}
+		right--
+		for i := right; i >= left; i-- {
+			ans[bottom][i] = num
+			num++
+		}
+		bottom--
+		for i := bottom; i >= top; i-- {
+			ans[i][left] = num
+			num++
+		}
+		left++
+	}
+	return ans
+}
+```
+
+
+
 ## 链表
 
 ## 哈希表
