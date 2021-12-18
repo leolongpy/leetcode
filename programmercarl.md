@@ -267,9 +267,528 @@ func generateMatrix(n int) [][]int {
 }
 ```
 
-
-
 ## 链表
+
+#### [203. 移除链表元素](https://leetcode-cn.com/problems/remove-linked-list-elements/)
+
+给你一个链表的头节点 `head` 和一个整数 `val` ，请你删除链表中所有满足 `Node.val == val` 的节点，并返回 **新的头节点** 。
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2021/03/06/removelinked-list.jpg)
+
+```
+输入：head = [1,2,6,3,4,5,6], val = 6
+输出：[1,2,3,4,5]
+```
+
+**示例 2：**
+
+```
+输入：head = [], val = 1
+输出：[]
+```
+
+**示例 3：**
+
+```
+输入：head = [7,7,7,7], val = 7
+输出：[]
+```
+
+**提示：**
+
+- 列表中的节点数目在范围 `[0, 104]` 内
+- `1 <= Node.val <= 50`
+- `0 <= val <= 50`
+
+```go
+func removeElements(head *ListNode, val int) *ListNode {
+	dummyHead := &ListNode{}
+	dummyHead.Next = head
+	curr := dummyHead
+	for curr != nil && curr.Next != nil {
+		if curr.Next.Val == val {
+			curr.Next = curr.Next.Next
+		} else {
+			curr = curr.Next
+		}
+
+	}
+	return dummyHead.Next
+}
+```
+
+#### [707. 设计链表](https://leetcode-cn.com/problems/design-linked-list/)
+
+设计链表的实现。您可以选择使用单链表或双链表。单链表中的节点应该具有两个属性：`val` 和 `next`。`val` 是当前节点的值，`next` 是指向下一个节点的指针/引用。如果要使用双向链表，则还需要一个属性 `prev` 以指示链表中的上一个节点。假设链表中的所有节点都是 0-index 的。
+
+在链表类中实现这些功能：
+
+- get(index)：获取链表中第 `index` 个节点的值。如果索引无效，则返回`-1`。
+- addAtHead(val)：在链表的第一个元素之前添加一个值为 `val` 的节点。插入后，新节点将成为链表的第一个节点。
+- addAtTail(val)：将值为 `val` 的节点追加到链表的最后一个元素。
+- addAtIndex(index,val)：在链表中的第 `index` 个节点之前添加值为 `val` 的节点。如果 `index` 等于链表的长度，则该节点将附加到链表的末尾。如果 `index` 大于链表长度，则不会插入节点。如果`index`小于0，则在头部插入节点。
+- deleteAtIndex(index)：如果索引 `index` 有效，则删除链表中的第 `index` 个节点。
+
+**示例：**
+
+```
+MyLinkedList linkedList = new MyLinkedList();
+linkedList.addAtHead(1);
+linkedList.addAtTail(3);
+linkedList.addAtIndex(1,2);   //链表变为1-> 2-> 3
+linkedList.get(1);            //返回2
+linkedList.deleteAtIndex(1);  //现在链表是1-> 3
+linkedList.get(1);            //返回3
+```
+
+ 
+
+**提示：**
+
+- 所有`val`值都在 `[1, 1000]` 之内。
+- 操作次数将在 `[1, 1000]` 之内。
+- 请不要使用内置的 LinkedList 库。
+
+```go
+type Node struct {
+	Next *Node
+	Prev *Node
+	Val  int
+}
+
+type MyLinkedList struct {
+	head *Node // 头结点
+	tail *Node // 尾结点
+	size int   // 链表的长度
+}
+
+/** Initialize your data structure here. */
+func Constructor() MyLinkedList {
+	return MyLinkedList{}
+}
+
+/** Get the value of the index-th node in the linked list. If the index is invalid, return -1. */
+func (this *MyLinkedList) Get(index int) int {
+	// index无效
+	if this.size == 0 || index < 0 || index >= this.size {
+		return -1
+	}
+	// index为头尾节点
+	if index == 0 {
+		return this.head.Val
+	}
+	if index == this.size-1 {
+		return this.tail.Val
+	}
+	// 下面选择更快的遍历方向, 查看index在偏头部还是偏尾部
+	cur := this.head
+	count := 0
+	for cur != nil {
+		if count == index {
+			break
+		}
+		count++
+		cur = cur.Next
+	}
+	return cur.Val
+}
+
+/** Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list. */
+func (this *MyLinkedList) AddAtHead(val int) {
+	node := &Node{Val: val}
+	
+	if this.head != nil {
+		node.Next = this.head
+		this.head.Prev = node
+		this.head = node
+	} else {
+		this.head = node
+		this.tail = this.head
+	}
+	this.size++
+}
+
+/** Append a node of value val to the last element of the linked list. */
+func (this *MyLinkedList) AddAtTail(val int) {
+	node := &Node{Val: val}
+	
+	if this.tail != nil {
+		node.Prev = this.tail
+		this.tail.Next = node
+		this.tail = node
+	} else {
+		this.tail = node
+		this.head = this.tail
+	}
+    this.size++
+	
+}
+
+/** Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted. */
+func (this *MyLinkedList) AddAtIndex(index int, val int) {
+	if index > this.size {
+		return
+	}
+	if index <= 0 {
+		this.AddAtHead(val)
+		return
+	}
+	if index == this.size {
+		this.AddAtTail(val)
+		return
+	}
+	cur := this.head
+	count := 0
+	for cur != nil && count < index {
+		count++
+		cur = cur.Next
+	}
+	// 在当前节点cur的前面插入
+	this.size++
+	node := &Node{Val: val, Next: cur, Prev: cur.Prev}
+	cur.Prev.Next = node
+	cur.Prev = node
+}
+
+/** Delete the index-th node in the linked list, if the index is valid. */
+func (this *MyLinkedList) DeleteAtIndex(index int) {
+	// 如果索引无效 || 链表为空
+	if this.size == 0 || index < 0 || index >= this.size {
+		return
+	}
+	if index == 0 {
+		// 如果删除的是头结点
+		this.head = this.head.Next
+	} else if index == this.size-1 {
+		// 如果删除的是尾结点
+		this.tail = this.tail.Prev
+	} else {
+		cur := this.head
+		count := 0
+		for cur != nil && count < index {
+			count++
+			cur = cur.Next
+		}
+		// 找到要删除的节点cur了
+		cur.Next.Prev = cur.Prev
+		cur.Prev.Next = cur.Next
+	}
+	this.size--
+}
+```
+
+#### [206. 反转链表](https://leetcode-cn.com/problems/reverse-linked-list/)
+
+给你单链表的头节点 `head` ，请你反转链表，并返回反转后的链表。
+
+ 
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2021/02/19/rev1ex1.jpg)
+
+```
+输入：head = [1,2,3,4,5]
+输出：[5,4,3,2,1]
+```
+
+**示例 2：**
+
+![img](https://assets.leetcode.com/uploads/2021/02/19/rev1ex2.jpg)
+
+```
+输入：head = [1,2]
+输出：[2,1]
+```
+
+**示例 3：**
+
+```
+输入：head = []
+输出：[]
+```
+
+**提示：**
+
+- 链表中节点的数目范围是 `[0, 5000]`
+- `-5000 <= Node.val <= 5000`
+
+```go
+func reverseList(head *ListNode) *ListNode {
+	var pre *ListNode
+	cur := head
+	for cur != nil {
+		next := cur.Next
+		cur.Next = pre
+		pre = cur
+		cur = next
+	}
+	return pre
+}
+```
+
+#### [24. 两两交换链表中的节点](https://leetcode-cn.com/problems/swap-nodes-in-pairs/)
+
+给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。你必须在不修改节点内部的值的情况下完成本题（即，只能进行节点交换）。
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2020/10/03/swap_ex1.jpg)
+
+```
+输入：head = [1,2,3,4]
+输出：[2,1,4,3]
+```
+
+**示例 2：**
+
+```
+输入：head = []
+输出：[]
+```
+
+**示例 3：**
+
+```
+输入：head = [1]
+输出：[1]
+```
+
+**提示：**
+
+- 链表中节点的数目在范围 `[0, 100]` 内
+- `0 <= Node.val <= 100`
+
+```go
+func swapPairs(head *ListNode) *ListNode {
+	dummyHead := &ListNode{0, head}
+	cur := dummyHead
+	for cur.Next != nil && cur.Next.Next != nil {
+		tmp := cur.Next            //1 2 3 4
+		tmp1 := cur.Next.Next.Next // 3 4
+		cur.Next = cur.Next.Next
+		cur.Next.Next = tmp
+		cur.Next.Next.Next = tmp1
+		cur = cur.Next.Next
+	}
+	return dummyHead.Next
+}
+```
+
+#### [19. 删除链表的倒数第 N 个结点](https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/)
+
+给你一个链表，删除链表的倒数第 `n` 个结点，并且返回链表的头结点。
+
+ 
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2020/10/03/remove_ex1.jpg)
+
+```
+输入：head = [1,2,3,4,5], n = 2
+输出：[1,2,3,5]
+```
+
+**示例 2：**
+
+```
+输入：head = [1], n = 1
+输出：[]
+```
+
+**示例 3：**
+
+```
+输入：head = [1,2], n = 1
+输出：[1]
+```
+
+**提示：**
+
+- 链表中结点的数目为 `sz`
+- `1 <= sz <= 30`
+- `0 <= Node.val <= 100`
+- `1 <= n <= sz`
+
+```go
+func removeNthFromEnd(head *ListNode, n int) *ListNode {
+	dummp := &ListNode{0, head}
+	fast, slow := dummp, dummp
+	for i := 0; i < n+1; i++ {
+		fast = fast.Next
+	}
+	for ; fast != nil; fast = fast.Next {
+		slow = slow.Next
+	}
+	slow.Next = slow.Next.Next
+	return dummp.Next
+}
+```
+
+#### [面试题 02.07. 链表相交](https://leetcode-cn.com/problems/intersection-of-two-linked-lists-lcci/)
+
+给你两个单链表的头节点 `headA` 和 `headB` ，请你找出并返回两个单链表相交的起始节点。如果两个链表没有交点，返回 `null` 。
+
+图示两个链表在节点 `c1` 开始相交**：**
+
+[![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/160_statement.png)](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/160_statement.png)
+
+题目数据 **保证** 整个链式结构中不存在环。
+
+**注意**，函数返回结果后，链表必须 **保持其原始结构** 。
+
+ 
+
+**示例 1：**
+
+[![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/160_example_1.png)](https://assets.leetcode.com/uploads/2018/12/13/160_example_1.png)
+
+```
+输入：intersectVal = 8, listA = [4,1,8,4,5], listB = [5,0,1,8,4,5], skipA = 2, skipB = 3
+输出：Intersected at '8'
+解释：相交节点的值为 8 （注意，如果两个链表相交则不能为 0）。
+从各自的表头开始算起，链表 A 为 [4,1,8,4,5]，链表 B 为 [5,0,1,8,4,5]。
+在 A 中，相交节点前有 2 个节点；在 B 中，相交节点前有 3 个节点。
+```
+
+**示例 2：**
+
+[![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/160_example_2.png)](https://assets.leetcode.com/uploads/2018/12/13/160_example_2.png)
+
+```
+输入：intersectVal = 2, listA = [0,9,1,2,4], listB = [3,2,4], skipA = 3, skipB = 1
+输出：Intersected at '2'
+解释：相交节点的值为 2 （注意，如果两个链表相交则不能为 0）。
+从各自的表头开始算起，链表 A 为 [0,9,1,2,4]，链表 B 为 [3,2,4]。
+在 A 中，相交节点前有 3 个节点；在 B 中，相交节点前有 1 个节点。
+```
+
+**示例 3：**
+
+[![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/160_example_3.png)](https://assets.leetcode.com/uploads/2018/12/13/160_example_3.png)
+
+```
+输入：intersectVal = 0, listA = [2,6,4], listB = [1,5], skipA = 3, skipB = 2
+输出：null
+解释：从各自的表头开始算起，链表 A 为 [2,6,4]，链表 B 为 [1,5]。
+由于这两个链表不相交，所以 intersectVal 必须为 0，而 skipA 和 skipB 可以是任意值。
+这两个链表不相交，因此返回 null 。
+```
+
+**提示：**
+
+- `listA` 中节点数目为 `m`
+- `listB` 中节点数目为 `n`
+- `0 <= m, n <= 3 * 104`
+- `1 <= Node.val <= 105`
+- `0 <= skipA <= m`
+- `0 <= skipB <= n`
+- 如果 `listA` 和 `listB` 没有交点，`intersectVal` 为 `0`
+- 如果 `listA` 和 `listB` 有交点，`intersectVal == listA[skipA + 1] == listB[skipB + 1]`
+
+```go
+func getIntersectionNode(headA, headB *ListNode) *ListNode {
+	curA, curB := headA, headB
+	LenA, LenB, cut := 0, 0, 0
+	for curA != nil {
+		curA = curA.Next
+		LenA++
+	}
+
+	for curB != nil {
+		curB = curB.Next
+		LenB++
+	}
+	var fast, slow *ListNode
+	if LenA > LenB {
+		fast = headA
+		slow = headB
+		cut = LenA - LenB
+	} else {
+		fast = headB
+		slow = headA
+		cut = LenB - LenA
+	}
+
+	for i := 0; i < cut; i++ {
+		fast = fast.Next
+	}
+
+	for fast != slow {
+		fast = fast.Next
+		slow = slow.Next
+	}
+	return fast
+
+}
+```
+
+#### [142. 环形链表 II](https://leetcode-cn.com/problems/linked-list-cycle-ii/)
+
+给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 `null`。
+
+如果链表中有某个节点，可以通过连续跟踪 `next` 指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数 `pos` 来表示链表尾连接到链表中的位置（索引从 0 开始）。如果 `pos` 是 `-1`，则在该链表中没有环。**注意：`pos` 不作为参数进行传递**，仅仅是为了标识链表的实际情况。
+
+**不允许修改** 链表。
+
+**示例 1：**
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist.png)
+
+```
+输入：head = [3,2,0,-4], pos = 1
+输出：返回索引为 1 的链表节点
+解释：链表中有一个环，其尾部连接到第二个节点。
+```
+
+**示例 2：**
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist_test2.png)
+
+```
+输入：head = [1,2], pos = 0
+输出：返回索引为 0 的链表节点
+解释：链表中有一个环，其尾部连接到第一个节点。
+```
+
+**示例 3：**
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist_test3.png)
+
+```
+输入：head = [1], pos = -1
+输出：返回 null
+解释：链表中没有环。
+```
+
+ 
+
+**提示：**
+
+- 链表中节点的数目范围在范围 `[0, 104]` 内
+- `-105 <= Node.val <= 105`
+- `pos` 的值为 `-1` 或者链表中的一个有效索引
+
+```go
+func detectCycle(head *ListNode) *ListNode {
+	fast, slow := head, head
+	for fast != nil && fast.Next != nil {
+		fast = fast.Next.Next
+		slow = slow.Next
+		if fast == slow {
+			for head != slow {
+				head = head.Next
+				slow = slow.Next
+			}
+			return head
+		}
+	}
+	return nil
+}
+```
 
 ## 哈希表
 
