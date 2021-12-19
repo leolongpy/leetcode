@@ -792,6 +792,437 @@ func detectCycle(head *ListNode) *ListNode {
 
 ## 哈希表
 
+#### [242. 有效的字母异位词](https://leetcode-cn.com/problems/valid-anagram/)
+
+给定两个字符串 `*s*` 和 `*t*` ，编写一个函数来判断 `*t*` 是否是 `*s*` 的字母异位词。
+
+**注意：**若 `*s*` 和 `*t*` 中每个字符出现的次数都相同，则称 `*s*` 和 `*t*` 互为字母异位词。
+
+**示例 1:**
+
+```
+输入: s = "anagram", t = "nagaram"
+输出: true
+```
+
+**示例 2:**
+
+```
+输入: s = "rat", t = "car"
+输出: false
+```
+
+**提示:**
+
+- `1 <= s.length, t.length <= 5 * 104`
+- `s` 和 `t` 仅包含小写字母
+
+```go
+func isAnagram(s string, t string) bool {
+	var ch1, ch2 [26]int
+	for _, ch := range s {
+		ch1[ch-'a']++
+	}
+
+	for _, ch := range t {
+		ch2[ch-'a']++
+	}
+	return ch1 == ch2
+}
+```
+
+#### [349. 两个数组的交集](https://leetcode-cn.com/problems/intersection-of-two-arrays/)
+
+给定两个数组，编写一个函数来计算它们的交集。
+
+**示例 1：**
+
+```
+输入：nums1 = [1,2,2,1], nums2 = [2,2]
+输出：[2]
+```
+
+**示例 2：**
+
+```
+输入：nums1 = [4,9,5], nums2 = [9,4,9,8,4]
+输出：[9,4]
+```
+
+**说明：**
+
+- 输出结果中的每个元素一定是唯一的。
+- 我们可以不考虑输出结果的顺序。
+
+```go
+func intersection(nums1 []int, nums2 []int) []int {
+	m := make(map[int]int)
+	for _, v := range nums1 {
+		m[v] = 1
+	}
+	res := []int{}
+	for _, v := range nums2 {
+		if count, ok := m[v]; ok && count > 0 {
+			res = append(res, v)
+			m[v]--
+		}
+	}
+	return res
+}
+```
+
+#### [202. 快乐数](https://leetcode-cn.com/problems/happy-number/)
+
+编写一个算法来判断一个数 `n` 是不是快乐数。
+
+「快乐数」定义为：
+
+- 对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和。
+- 然后重复这个过程直到这个数变为 1，也可能是 **无限循环** 但始终变不到 1。
+- 如果 **可以变为** 1，那么这个数就是快乐数。
+
+如果 `n` 是快乐数就返回 `true` ；不是，则返回 `false` 。
+
+**示例 1：**
+
+```
+输入：n = 19
+输出：true
+解释：
+12 + 92 = 82
+82 + 22 = 68
+62 + 82 = 100
+12 + 02 + 02 = 1
+```
+
+**示例 2：**
+
+```
+输入：n = 2
+输出：false
+```
+
+**提示：**
+
+- `1 <= n <= 231 - 1`
+
+```go
+func isHappy(n int) bool {
+	m := make(map[int]bool)
+	for n != 1 && !m[n] {
+		n, m[n] = getSum(n), true
+	}
+	return n == 1
+}
+
+func getSum(n int) int {
+	sum := 0
+	for n > 0 {
+		sum += (n % 10) * (n % 10)
+		n = n / 10
+	}
+	return sum
+}
+```
+
+#### [1. 两数之和](https://leetcode-cn.com/problems/two-sum/)
+
+给定一个整数数组 `nums` 和一个整数目标值 `target`，请你在该数组中找出 **和为目标值** *`target`* 的那 **两个** 整数，并返回它们的数组下标。
+
+你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。
+
+你可以按任意顺序返回答案。
+
+**示例 1：**
+
+```
+输入：nums = [2,7,11,15], target = 9
+输出：[0,1]
+解释：因为 nums[0] + nums[1] == 9 ，返回 [0, 1] 。
+```
+
+**示例 2：**
+
+```
+输入：nums = [3,2,4], target = 6
+输出：[1,2]
+```
+
+**示例 3：**
+
+```
+输入：nums = [3,3], target = 6
+输出：[0,1]
+```
+
+**提示：**
+
+- `2 <= nums.length <= 104`
+- `-109 <= nums[i] <= 109`
+- `-109 <= target <= 109`
+- **只会存在一个有效答案**
+
+```go
+func twoSum(nums []int, target int) []int {
+	m := make(map[int]int)
+	for k, v := range nums {
+		if ids, ok := m[target-v]; ok {
+			return []int{ids, k}
+		}
+		m[v] = k
+	}
+	return []int{}
+}
+```
+
+#### [454. 四数相加 II](https://leetcode-cn.com/problems/4sum-ii/)
+
+给你四个整数数组 `nums1`、`nums2`、`nums3` 和 `nums4` ，数组长度都是 `n` ，请你计算有多少个元组 `(i, j, k, l)` 能满足：
+
+- `0 <= i, j, k, l < n`
+- `nums1[i] + nums2[j] + nums3[k] + nums4[l] == 0`
+
+**示例 1：**
+
+```
+输入：nums1 = [1,2], nums2 = [-2,-1], nums3 = [-1,2], nums4 = [0,2]
+输出：2
+解释：
+两个元组如下：
+1. (0, 0, 0, 1) -> nums1[0] + nums2[0] + nums3[0] + nums4[1] = 1 + (-2) + (-1) + 2 = 0
+2. (1, 1, 0, 0) -> nums1[1] + nums2[1] + nums3[0] + nums4[0] = 2 + (-1) + (-1) + 0 = 0
+```
+
+**示例 2：**
+
+```
+输入：nums1 = [0], nums2 = [0], nums3 = [0], nums4 = [0]
+输出：1
+```
+
+ **提示：**
+
+- `n == nums1.length`
+- `n == nums2.length`
+- `n == nums3.length`
+- `n == nums4.length`
+- `1 <= n <= 200`
+- `-228 <= nums1[i], nums2[i], nums3[i], nums4[i] <= 228`
+
+```go
+func fourSumCount(nums1 []int, nums2 []int, nums3 []int, nums4 []int) int {
+	m := make(map[int]int)
+	count := 0
+	for _, v1 := range nums1 {
+		for _, v2 := range nums2 {
+			m[v1+v2]++
+		}
+	}
+	for _, v3 := range nums3 {
+		for _, v4 := range nums4 {
+			count += m[-v3-v4]
+		}
+	}
+	return count
+}
+```
+
+#### [383. 赎金信](https://leetcode-cn.com/problems/ransom-note/)
+
+给你两个字符串：`ransomNote` 和 `magazine` ，判断 `ransomNote` 能不能由 `magazine` 里面的字符构成。
+
+如果可以，返回 `true` ；否则返回 `false` 。
+
+`magazine` 中的每个字符只能在 `ransomNote` 中使用一次。
+
+**示例 1：**
+
+```
+输入：ransomNote = "a", magazine = "b"
+输出：false
+```
+
+**示例 2：**
+
+```
+输入：ransomNote = "aa", magazine = "ab"
+输出：false
+```
+
+**示例 3：**
+
+```
+输入：ransomNote = "aa", magazine = "aab"
+输出：true
+```
+
+**提示：**
+
+- `1 <= ransomNote.length, magazine.length <= 105`
+- `ransomNote` 和 `magazine` 由小写英文字母组成
+
+```go
+func canConstruct(ransomNote string, magazine string) bool {
+	m := [26]int{}
+	for _, v := range magazine {
+		m[v-'a']++
+	}
+	for _, v := range ransomNote {
+		m[v-'a']--
+		if m[v-'a'] < 0 {
+			return false
+		}
+	}
+	return true
+}
+```
+
+#### [15. 三数之和](https://leetcode-cn.com/problems/3sum/)
+
+给你一个包含 `n` 个整数的数组 `nums`，判断 `nums` 中是否存在三个元素 *a，b，c ，*使得 *a + b + c =* 0 ？请你找出所有和为 `0` 且不重复的三元组。
+
+**注意：**答案中不可以包含重复的三元组。
+
+**示例 1：**
+
+```
+输入：nums = [-1,0,1,2,-1,-4]
+输出：[[-1,-1,2],[-1,0,1]]
+```
+
+**示例 2：**
+
+```
+输入：nums = []
+输出：[]
+```
+
+**示例 3：**
+
+```
+输入：nums = [0]
+输出：[]
+```
+
+**提示：**
+
+- `0 <= nums.length <= 3000`
+- `-105 <= nums[i] <= 105`
+
+```go
+func threeSum(nums []int) [][]int {
+	n := len(nums)
+	sort.Ints(nums)
+	res := make([][]int, 0)
+	for i := 0; i < n-2; i++ {
+		num1 := nums[i]
+		if num1 > 0 {
+			break
+		}
+		if i > 0 && num1 == nums[i-1] {
+			continue
+		}
+
+		l := i + 1
+		r := n - 1
+		for l < r {
+			num2 := nums[l]
+			num3 := nums[r]
+			if num1+num2+num3 == 0 {
+				res = append(res, []int{num1, num2, num3})
+				for l < r && num2 == nums[l] {
+					l++
+				}
+				for l < r && num3 == nums[r] {
+					r--
+				}
+			} else if num1+num2+num3 > 0 {
+				r--
+			} else {
+				l++
+			}
+
+		}
+
+	}
+	return res
+}
+```
+
+#### [18. 四数之和](https://leetcode-cn.com/problems/4sum/)
+
+给你一个由 `n` 个整数组成的数组 `nums` ，和一个目标值 `target` 。请你找出并返回满足下述全部条件且**不重复**的四元组 `[nums[a], nums[b], nums[c], nums[d]]` （若两个四元组元素一一对应，则认为两个四元组重复）：
+
+- `0 <= a, b, c, d < n`
+- `a`、`b`、`c` 和 `d` **互不相同**
+- `nums[a] + nums[b] + nums[c] + nums[d] == target`
+
+你可以按 **任意顺序** 返回答案 。
+
+**示例 1：**
+
+```
+输入：nums = [1,0,-1,0,-2,2], target = 0
+输出：[[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]
+```
+
+**示例 2：**
+
+```
+输入：nums = [2,2,2,2,2], target = 8
+输出：[[2,2,2,2]]
+```
+
+**提示：**
+
+- `1 <= nums.length <= 200`
+- `-109 <= nums[i] <= 109`
+- `-109 <= target <= 109`
+
+```go
+func fourSum(nums []int, target int) [][]int {
+	n := len(nums)
+	sort.Ints(nums)
+	res := make([][]int, 0)
+	for i := 0; i < n-3; i++ {
+		num1 := nums[i]
+		if i > 0 && num1 == nums[i-1] {
+			continue
+		}
+		for j := i + 1; j < n-2; j++ {
+			num2 := nums[j]
+			if j > i+1 && num2 == nums[j-1] {
+				continue
+			}
+			l := j + 1
+			r := n - 1
+			for l < r {
+				num3 := nums[l]
+				num4 := nums[r]
+				if num1+num2+num3+num4 == target {
+					res = append(res, []int{num1, num2, num3, num4})
+					for l < r && num3 == nums[l] {
+						l++
+					}
+					for l < r && num4 == nums[r] {
+						r--
+					}
+				} else if num1+num2+num3+num4 > target {
+					r--
+				} else {
+					l++
+				}
+
+			}
+
+		}
+	}
+	return res
+}
+```
+
+
+
 ## 字符串
 
 ## 双指针
