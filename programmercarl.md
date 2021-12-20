@@ -1225,6 +1225,396 @@ func fourSum(nums []int, target int) [][]int {
 
 ## 字符串
 
+#### [344. 反转字符串](https://leetcode-cn.com/problems/reverse-string/)
+
+编写一个函数，其作用是将输入的字符串反转过来。输入字符串以字符数组 `s` 的形式给出。
+
+不要给另外的数组分配额外的空间，你必须**[原地](https://baike.baidu.com/item/原地算法)修改输入数组**、使用 O(1) 的额外空间解决这一问题。
+
+**示例 1：**
+
+```
+输入：s = ["h","e","l","l","o"]
+输出：["o","l","l","e","h"]
+```
+
+**示例 2：**
+
+```
+输入：s = ["H","a","n","n","a","h"]
+输出：["h","a","n","n","a","H"]
+```
+
+**提示：**
+
+- `1 <= s.length <= 105`
+- `s[i]` 都是 [ASCII](https://baike.baidu.com/item/ASCII) 码表中的可打印字符
+
+```go
+func reverseString(s []byte) {
+	l := 0
+	r := len(s) - 1
+	for l < r {
+		s[l], s[r] = s[r], s[l]
+		l++
+		r--
+	}
+}
+```
+
+#### [541. 反转字符串 II](https://leetcode-cn.com/problems/reverse-string-ii/)
+
+给定一个字符串 `s` 和一个整数 `k`，从字符串开头算起，每计数至 `2k` 个字符，就反转这 `2k` 字符中的前 `k` 个字符。
+
+- 如果剩余字符少于 `k` 个，则将剩余字符全部反转。
+- 如果剩余字符小于 `2k` 但大于或等于 `k` 个，则反转前 `k` 个字符，其余字符保持原样。
+
+**示例 1：**
+
+```
+输入：s = "abcdefg", k = 2
+输出："bacdfeg"
+```
+
+**示例 2：**
+
+```
+输入：s = "abcd", k = 2
+输出："bacd"
+```
+
+**提示：**
+
+- `1 <= s.length <= 104`
+- `s` 仅由小写英文组成
+- `1 <= k <= 104`
+
+```go
+func reverseStr(s string, k int) string {
+	ss := []byte(s)
+	n := len(ss)
+	for i := 0; i < n; i += 2 * k {
+		if i+k < n {
+			reverse(ss[i : i+k])
+		} else {
+			reverse(ss[i:n])
+		}
+	}
+	return string(ss)
+}
+
+func reverse(s []byte) {
+	l := 0
+	r := len(s) - 1
+	for l < r {
+		s[l], s[r] = s[r], s[l]
+		l++
+		r--
+	}
+}
+```
+
+#### [剑指 Offer 05. 替换空格](https://leetcode-cn.com/problems/ti-huan-kong-ge-lcof/)
+
+请实现一个函数，把字符串 `s` 中的每个空格替换成"%20"。
+
+**示例 1：**
+
+```
+输入：s = "We are happy."
+输出："We%20are%20happy."
+```
+
+**限制：**
+
+```
+0 <= s 的长度 <= 10000
+```
+
+```go
+func replaceSpace(s string) string {
+	ss := []byte(s)
+	ans := []byte{}
+	for _, v := range ss {
+		if v == ' ' {
+			ans = append(ans, []byte("%20")...)
+		} else {
+			ans = append(ans, v)
+		}
+	}
+	return string(ans)
+}
+```
+
+#### [151. 翻转字符串里的单词](https://leetcode-cn.com/problems/reverse-words-in-a-string/)
+
+给你一个字符串 `s` ，逐个翻转字符串中的所有 **单词** 。
+
+**单词** 是由非空格字符组成的字符串。`s` 中使用至少一个空格将字符串中的 **单词** 分隔开。
+
+请你返回一个翻转 `s` 中单词顺序并用单个空格相连的字符串。
+
+**说明：**
+
+- 输入字符串 `s` 可以在前面、后面或者单词间包含多余的空格。
+- 翻转后单词间应当仅用一个空格分隔。
+- 翻转后的字符串中不应包含额外的空格。
+
+**示例 1：**
+
+```
+输入：s = "the sky is blue"
+输出："blue is sky the"
+```
+
+**示例 2：**
+
+```
+输入：s = "  hello world  "
+输出："world hello"
+解释：输入字符串可以在前面或者后面包含多余的空格，但是翻转后的字符不能包括。
+```
+
+**示例 3：**
+
+```
+输入：s = "a good   example"
+输出："example good a"
+解释：如果两个单词间有多余的空格，将翻转后单词间的空格减少到只含一个。
+```
+
+**示例 4：**
+
+```
+输入：s = "  Bob    Loves  Alice   "
+输出："Alice Loves Bob"
+```
+
+**示例 5：**
+
+```
+输入：s = "Alice does not even like bob"
+输出："bob like even not does Alice"
+```
+
+**提示：**
+
+- `1 <= s.length <= 104`
+- `s` 包含英文大小写字母、数字和空格 `' '`
+- `s` 中 **至少存在一个** 单词
+
+```go
+func reverseWords(s string) string {
+	resS := strings.Fields(s)
+	l := 0
+	r := len(resS) - 1
+	for l < r {
+		resS[l], resS[r] = resS[r], resS[l]
+		l++
+		r--
+	}
+	return strings.Join(resS, " ")
+}
+```
+
+#### [剑指 Offer 58 - II. 左旋转字符串](https://leetcode-cn.com/problems/zuo-xuan-zhuan-zi-fu-chuan-lcof/)
+
+字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串"abcdefg"和数字2，该函数将返回左旋转两位得到的结果"cdefgab"。
+
+**示例 1：**
+
+```
+输入: s = "abcdefg", k = 2
+输出: "cdefgab"
+```
+
+**示例 2：**
+
+```
+输入: s = "lrloseumgh", k = 6
+输出: "umghlrlose"
+```
+
+**限制：**
+
+- `1 <= k < s.length <= 10000`
+
+```go
+func reverseLeftWords(s string, n int) string {
+	ss := []byte(s)
+	reverse(ss[:n])
+	reverse(ss[n:])
+	reverse(ss)
+	return string(ss)
+}
+
+func reverse(s []byte) {
+	l := 0
+	r := len(s) - 1
+	for l < r {
+		s[l], s[r] = s[r], s[l]
+		l++
+		r--
+	}
+}
+```
+
+#### [28. 实现 strStr()](https://leetcode-cn.com/problems/implement-strstr/)
+
+实现 [strStr()](https://baike.baidu.com/item/strstr/811469) 函数。
+
+给你两个字符串 `haystack` 和 `needle` ，请你在 `haystack` 字符串中找出 `needle` 字符串出现的第一个位置（下标从 0 开始）。如果不存在，则返回 `-1` 。
+
+**说明：**
+
+当 `needle` 是空字符串时，我们应当返回什么值呢？这是一个在面试中很好的问题。
+
+对于本题而言，当 `needle` 是空字符串时我们应当返回 0 。这与 C 语言的 [strstr()](https://baike.baidu.com/item/strstr/811469) 以及 Java 的 [indexOf()](https://docs.oracle.com/javase/7/docs/api/java/lang/String.html#indexOf(java.lang.String)) 定义相符。
+
+**示例 1：**
+
+```
+输入：haystack = "hello", needle = "ll"
+输出：2
+```
+
+**示例 2：**
+
+```
+输入：haystack = "aaaaa", needle = "bba"
+输出：-1
+```
+
+**示例 3：**
+
+```
+输入：haystack = "", needle = ""
+输出：0
+```
+
+**提示：**
+
+- `0 <= haystack.length, needle.length <= 5 * 104`
+- `haystack` 和 `needle` 仅由小写英文字符组成
+
+```go
+//暴力
+func strStr(haystack string, needle string) int {
+	n, m := len(haystack), len(needle)
+	for i := 0; i <= n-m; i++ {
+		falg := true
+		for j := range needle {
+			if needle[j] != haystack[i+j] {
+				falg = false
+				break
+			}
+		}
+		if falg {
+			return i
+		}
+	}
+	return -1
+}
+//KMP
+func strStr(haystack string, needle string) int {
+	n := len(needle)
+	if n == 0 {
+		return 0
+	}
+	next := make([]int, n)
+	getNext(next, needle)
+	j := 0
+	for i := 0; i < len(haystack); i++ {
+		for j > 0 && haystack[i] != needle[j] {
+			j = next[j-1]
+		}
+		if haystack[i] == needle[j] {
+			j++
+		}
+
+		if n == j {
+			return i - n + 1
+		}
+	}
+	return -1
+}
+
+func getNext(next []int, s string) {
+	j := 0
+	next[0] = j
+	for i := 1; i < len(s); i++ {
+		for j > 0 && s[i] != s[j] {
+			j = next[j-1]
+		}
+
+		if s[i] == s[j] {
+			j++
+		}
+
+		next[i] = j
+	}
+}
+```
+
+#### [459. 重复的子字符串](https://leetcode-cn.com/problems/repeated-substring-pattern/)
+
+给定一个非空的字符串，判断它是否可以由它的一个子串重复多次构成。给定的字符串只含有小写英文字母，并且长度不超过10000。
+
+**示例 1:**
+
+```
+输入: "abab"
+
+输出: True
+
+解释: 可由子字符串 "ab" 重复两次构成。
+```
+
+**示例 2:**
+
+```
+输入: "aba"
+
+输出: False
+```
+
+**示例 3:**
+
+```
+输入: "abcabcabcabc"
+
+输出: True
+
+解释: 可由子字符串 "abc" 重复四次构成。 (或者子字符串 "abcabc" 重复两次构成。)
+```
+
+```go
+func repeatedSubstringPattern(s string) bool {
+	n := len(s)
+	next := make([]int, n)
+	getNext(next, s)
+	return next[n-1] != 0 && n%(n-(next[n-1])) == 0
+}
+
+func getNext(next []int, s string) {
+	j := 0
+	next[0] = j
+	for i := 1; i < len(s); i++ {
+		for j > 0 && s[i] != s[j] {
+			j = next[j-1]
+		}
+
+		if s[i] == s[j] {
+			j++
+		}
+
+		next[i] = j
+	}
+}
+```
+
+
+
 ## 双指针
 
 ## 栈与队列
@@ -1624,8 +2014,6 @@ func isValid(board [][]string, row, col int) bool {
 ```
 
 #### [37. 解数独](https://leetcode-cn.com/problems/sudoku-solver/)
-
-难度困难1040收藏分享切换为英文接收动态反馈
 
 编写一个程序，通过填充空格来解决数独问题。
 
