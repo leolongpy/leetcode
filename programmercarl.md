@@ -1617,6 +1617,609 @@ func getNext(next []int, s string) {
 
 ## 双指针
 
+#### [27. 移除元素](https://leetcode-cn.com/problems/remove-element/)
+
+给你一个数组 `nums` 和一个值 `val`，你需要 **[原地](https://baike.baidu.com/item/原地算法)** 移除所有数值等于 `val` 的元素，并返回移除后数组的新长度。
+
+不要使用额外的数组空间，你必须仅使用 `O(1)` 额外空间并 **[原地 ](https://baike.baidu.com/item/原地算法)修改输入数组**。
+
+元素的顺序可以改变。你不需要考虑数组中超出新长度后面的元素。
+
+**说明:**
+
+为什么返回数值是整数，但输出的答案是数组呢?
+
+请注意，输入数组是以**「引用」**方式传递的，这意味着在函数里修改输入数组对于调用者是可见的。
+
+你可以想象内部操作如下:
+
+```
+// nums 是以“引用”方式传递的。也就是说，不对实参作任何拷贝
+int len = removeElement(nums, val);
+
+// 在函数里修改输入数组对于调用者是可见的。
+// 根据你的函数返回的长度, 它会打印出数组中 该长度范围内 的所有元素。
+for (int i = 0; i < len; i++) {
+    print(nums[i]);
+}
+```
+
+**示例 1：**
+
+```
+输入：nums = [3,2,2,3], val = 3
+输出：2, nums = [2,2]
+解释：函数应该返回新的长度 2, 并且 nums 中的前两个元素均为 2。你不需要考虑数组中超出新长度后面的元素。例如，函数返回的新长度为 2 ，而 nums = [2,2,3,3] 或 nums = [2,2,0,0]，也会被视作正确答案。
+```
+
+**示例 2：**
+
+```
+输入：nums = [0,1,2,2,3,0,4,2], val = 2
+输出：5, nums = [0,1,4,0,3]
+解释：函数应该返回新的长度 5, 并且 nums 中的前五个元素为 0, 1, 3, 0, 4。注意这五个元素可为任意顺序。你不需要考虑数组中超出新长度后面的元素。
+```
+
+**提示：**
+
+- `0 <= nums.length <= 100`
+- `0 <= nums[i] <= 50`
+- `0 <= val <= 100`
+
+```go
+func removeElement(nums []int, val int) int {
+	res := 0
+	for i := 0; i < len(nums); i++ {
+		if nums[i] != val {
+			nums[res] = nums[i]
+			res++
+		}
+	}
+	return res
+}
+```
+
+#### [344. 反转字符串](https://leetcode-cn.com/problems/reverse-string/)
+
+编写一个函数，其作用是将输入的字符串反转过来。输入字符串以字符数组 `s` 的形式给出。
+
+不要给另外的数组分配额外的空间，你必须**[原地](https://baike.baidu.com/item/原地算法)修改输入数组**、使用 O(1) 的额外空间解决这一问题。
+
+**示例 1：**
+
+```
+输入：s = ["h","e","l","l","o"]
+输出：["o","l","l","e","h"]
+```
+
+**示例 2：**
+
+```
+输入：s = ["H","a","n","n","a","h"]
+输出：["h","a","n","n","a","H"]
+```
+
+**提示：**
+
+- `1 <= s.length <= 105`
+- `s[i]` 都是 [ASCII](https://baike.baidu.com/item/ASCII) 码表中的可打印字符
+
+```go
+func reverseString(s []byte) {
+	l := 0
+	r := len(s) - 1
+	for l < r {
+		s[l], s[r] = s[r], s[l]
+		l++
+		r--
+	}
+}
+```
+
+#### [剑指 Offer 05. 替换空格](https://leetcode-cn.com/problems/ti-huan-kong-ge-lcof/)
+
+请实现一个函数，把字符串 `s` 中的每个空格替换成"%20"。
+
+**示例 1：**
+
+```
+输入：s = "We are happy."
+输出："We%20are%20happy."
+```
+
+**限制：**
+
+```
+0 <= s 的长度 <= 10000
+```
+
+```go
+func replaceSpace(s string) string {
+	ss := []byte(s)
+	ans := []byte{}
+	for _, v := range ss {
+		if v == ' ' {
+			ans = append(ans, []byte("%20")...)
+		} else {
+			ans = append(ans, v)
+		}
+	}
+	return string(ans)
+}
+```
+
+#### [151. 翻转字符串里的单词](https://leetcode-cn.com/problems/reverse-words-in-a-string/)
+
+给你一个字符串 `s` ，逐个翻转字符串中的所有 **单词** 。
+
+**单词** 是由非空格字符组成的字符串。`s` 中使用至少一个空格将字符串中的 **单词** 分隔开。
+
+请你返回一个翻转 `s` 中单词顺序并用单个空格相连的字符串。
+
+**说明：**
+
+- 输入字符串 `s` 可以在前面、后面或者单词间包含多余的空格。
+- 翻转后单词间应当仅用一个空格分隔。
+- 翻转后的字符串中不应包含额外的空格。
+
+**示例 1：**
+
+```
+输入：s = "the sky is blue"
+输出："blue is sky the"
+```
+
+**示例 2：**
+
+```
+输入：s = "  hello world  "
+输出："world hello"
+解释：输入字符串可以在前面或者后面包含多余的空格，但是翻转后的字符不能包括。
+```
+
+**示例 3：**
+
+```
+输入：s = "a good   example"
+输出："example good a"
+解释：如果两个单词间有多余的空格，将翻转后单词间的空格减少到只含一个。
+```
+
+**示例 4：**
+
+```
+输入：s = "  Bob    Loves  Alice   "
+输出："Alice Loves Bob"
+```
+
+**示例 5：**
+
+```
+输入：s = "Alice does not even like bob"
+输出："bob like even not does Alice"
+```
+
+**提示：**
+
+- `1 <= s.length <= 104`
+- `s` 包含英文大小写字母、数字和空格 `' '`
+- `s` 中 **至少存在一个** 单词
+
+```go
+func reverseWords(s string) string {
+	resS := strings.Fields(s)
+	l := 0
+	r := len(resS) - 1
+	for l < r {
+		resS[l], resS[r] = resS[r], resS[l]
+		l++
+		r--
+	}
+	return strings.Join(resS, " ")
+}
+```
+
+#### [206. 反转链表](https://leetcode-cn.com/problems/reverse-linked-list/)
+
+给你单链表的头节点 `head` ，请你反转链表，并返回反转后的链表。
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2021/02/19/rev1ex1.jpg)
+
+```
+输入：head = [1,2,3,4,5]
+输出：[5,4,3,2,1]
+```
+
+**示例 2：**
+
+![img](https://assets.leetcode.com/uploads/2021/02/19/rev1ex2.jpg)
+
+```
+输入：head = [1,2]
+输出：[2,1]
+```
+
+**示例 3：**
+
+```
+输入：head = []
+输出：[]
+```
+
+**提示：**
+
+- 链表中节点的数目范围是 `[0, 5000]`
+- `-5000 <= Node.val <= 5000`
+
+```go
+func reverseList(head *ListNode) *ListNode {
+	var pre *ListNode
+	cur := head
+	for cur != nil {
+		next := cur.Next
+		cur.Next = pre
+		pre = cur
+		cur = next
+	}
+	return pre
+}
+```
+
+#### [19. 删除链表的倒数第 N 个结点](https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/)
+
+给你一个链表，删除链表的倒数第 `n` 个结点，并且返回链表的头结点。
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2020/10/03/remove_ex1.jpg)
+
+```
+输入：head = [1,2,3,4,5], n = 2
+输出：[1,2,3,5]
+```
+
+**示例 2：**
+
+```
+输入：head = [1], n = 1
+输出：[]
+```
+
+**示例 3：**
+
+```
+输入：head = [1,2], n = 1
+输出：[1]
+```
+
+**提示：**
+
+- 链表中结点的数目为 `sz`
+- `1 <= sz <= 30`
+- `0 <= Node.val <= 100`
+- `1 <= n <= sz`
+
+```go
+func removeNthFromEnd(head *ListNode, n int) *ListNode {
+	dummp := &ListNode{0, head}
+	fast, slow := dummp, dummp
+	for i := 0; i < n+1; i++ {
+		fast = fast.Next
+	}
+	for ; fast != nil; fast = fast.Next {
+		slow = slow.Next
+	}
+	slow.Next = slow.Next.Next
+	return dummp.Next
+}
+```
+
+#### [面试题 02.07. 链表相交](https://leetcode-cn.com/problems/intersection-of-two-linked-lists-lcci/)
+
+给你两个单链表的头节点 `headA` 和 `headB` ，请你找出并返回两个单链表相交的起始节点。如果两个链表没有交点，返回 `null` 。
+
+图示两个链表在节点 `c1` 开始相交**：**
+
+[![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/160_statement.png)](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/160_statement.png)
+
+题目数据 **保证** 整个链式结构中不存在环。
+
+**注意**，函数返回结果后，链表必须 **保持其原始结构** 。
+
+ 
+
+**示例 1：**
+
+[![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/160_example_1.png)](https://assets.leetcode.com/uploads/2018/12/13/160_example_1.png)
+
+```
+输入：intersectVal = 8, listA = [4,1,8,4,5], listB = [5,0,1,8,4,5], skipA = 2, skipB = 3
+输出：Intersected at '8'
+解释：相交节点的值为 8 （注意，如果两个链表相交则不能为 0）。
+从各自的表头开始算起，链表 A 为 [4,1,8,4,5]，链表 B 为 [5,0,1,8,4,5]。
+在 A 中，相交节点前有 2 个节点；在 B 中，相交节点前有 3 个节点。
+```
+
+**示例 2：**
+
+[![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/160_example_2.png)](https://assets.leetcode.com/uploads/2018/12/13/160_example_2.png)
+
+```
+输入：intersectVal = 2, listA = [0,9,1,2,4], listB = [3,2,4], skipA = 3, skipB = 1
+输出：Intersected at '2'
+解释：相交节点的值为 2 （注意，如果两个链表相交则不能为 0）。
+从各自的表头开始算起，链表 A 为 [0,9,1,2,4]，链表 B 为 [3,2,4]。
+在 A 中，相交节点前有 3 个节点；在 B 中，相交节点前有 1 个节点。
+```
+
+**示例 3：**
+
+[![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/160_example_3.png)](https://assets.leetcode.com/uploads/2018/12/13/160_example_3.png)
+
+```
+输入：intersectVal = 0, listA = [2,6,4], listB = [1,5], skipA = 3, skipB = 2
+输出：null
+解释：从各自的表头开始算起，链表 A 为 [2,6,4]，链表 B 为 [1,5]。
+由于这两个链表不相交，所以 intersectVal 必须为 0，而 skipA 和 skipB 可以是任意值。
+这两个链表不相交，因此返回 null 。
+```
+
+**提示：**
+
+- `listA` 中节点数目为 `m`
+- `listB` 中节点数目为 `n`
+- `0 <= m, n <= 3 * 104`
+- `1 <= Node.val <= 105`
+- `0 <= skipA <= m`
+- `0 <= skipB <= n`
+- 如果 `listA` 和 `listB` 没有交点，`intersectVal` 为 `0`
+- 如果 `listA` 和 `listB` 有交点，`intersectVal == listA[skipA + 1] == listB[skipB + 1]`
+
+```go
+func getIntersectionNode(headA, headB *ListNode) *ListNode {
+	curA, curB := headA, headB
+	LenA, LenB, cut := 0, 0, 0
+	for curA != nil {
+		curA = curA.Next
+		LenA++
+	}
+
+	for curB != nil {
+		curB = curB.Next
+		LenB++
+	}
+	var fast, slow *ListNode
+	if LenA > LenB {
+		fast = headA
+		slow = headB
+		cut = LenA - LenB
+	} else {
+		fast = headB
+		slow = headA
+		cut = LenB - LenA
+	}
+
+	for i := 0; i < cut; i++ {
+		fast = fast.Next
+	}
+
+	for fast != slow {
+		fast = fast.Next
+		slow = slow.Next
+	}
+	return fast
+
+}
+```
+
+#### [142. 环形链表 II](https://leetcode-cn.com/problems/linked-list-cycle-ii/)
+
+给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 `null`。
+
+如果链表中有某个节点，可以通过连续跟踪 `next` 指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数 `pos` 来表示链表尾连接到链表中的位置（索引从 0 开始）。如果 `pos` 是 `-1`，则在该链表中没有环。**注意：`pos` 不作为参数进行传递**，仅仅是为了标识链表的实际情况。
+
+**不允许修改** 链表。
+
+**示例 1：**
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist.png)
+
+```
+输入：head = [3,2,0,-4], pos = 1
+输出：返回索引为 1 的链表节点
+解释：链表中有一个环，其尾部连接到第二个节点。
+```
+
+**示例 2：**
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist_test2.png)
+
+```
+输入：head = [1,2], pos = 0
+输出：返回索引为 0 的链表节点
+解释：链表中有一个环，其尾部连接到第一个节点。
+```
+
+**示例 3：**
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist_test3.png)
+
+```
+输入：head = [1], pos = -1
+输出：返回 null
+解释：链表中没有环。
+```
+
+**提示：**
+
+- 链表中节点的数目范围在范围 `[0, 104]` 内
+- `-105 <= Node.val <= 105`
+- `pos` 的值为 `-1` 或者链表中的一个有效索引
+
+```go
+func detectCycle(head *ListNode) *ListNode {
+	fast, slow := head, head
+	for fast != nil && fast.Next != nil {
+		fast = fast.Next.Next
+		slow = slow.Next
+		if fast == slow {
+			for head != slow {
+				head = head.Next
+				slow = slow.Next
+			}
+			return head
+		}
+	}
+	return nil
+}
+```
+
+#### [15. 三数之和](https://leetcode-cn.com/problems/3sum/)
+
+给你一个包含 `n` 个整数的数组 `nums`，判断 `nums` 中是否存在三个元素 *a，b，c ，*使得 *a + b + c =* 0 ？请你找出所有和为 `0` 且不重复的三元组。
+
+**注意：**答案中不可以包含重复的三元组。
+
+**示例 1：**
+
+```
+输入：nums = [-1,0,1,2,-1,-4]
+输出：[[-1,-1,2],[-1,0,1]]
+```
+
+**示例 2：**
+
+```
+输入：nums = []
+输出：[]
+```
+
+**示例 3：**
+
+```
+输入：nums = [0]
+输出：[]
+```
+
+**提示：**
+
+- `0 <= nums.length <= 3000`
+- `-105 <= nums[i] <= 105`
+
+```go
+func threeSum(nums []int) [][]int {
+	n := len(nums)
+	sort.Ints(nums)
+	res := [][]int{}
+	for i := 0; i < n-2; i++ {
+		num1 := nums[i]
+		if num1 > 0 {
+			break
+		}
+		if i > 0 && nums[i-1] == num1 {
+			continue
+		}
+		l := i + 1
+		r := n - 1
+		for l < r {
+			num2 := nums[l]
+			num3 := nums[r]
+			if num1+num2+num3 == 0 {
+				res = append(res, []int{num1, num2, num3})
+				for l < r && num2 == nums[l] {
+					l++
+				}
+
+				for l < r && num3 == nums[r] {
+					r--
+				}
+			} else if num1+num2+num3 > 0 {
+				r--
+			} else {
+				l++
+			}
+		}
+	}
+	return res
+}
+```
+
+#### [18. 四数之和](https://leetcode-cn.com/problems/4sum/)
+
+给你一个由 `n` 个整数组成的数组 `nums` ，和一个目标值 `target` 。请你找出并返回满足下述全部条件且**不重复**的四元组 `[nums[a], nums[b], nums[c], nums[d]]` （若两个四元组元素一一对应，则认为两个四元组重复）：
+
+- `0 <= a, b, c, d < n`
+- `a`、`b`、`c` 和 `d` **互不相同**
+- `nums[a] + nums[b] + nums[c] + nums[d] == target`
+
+你可以按 **任意顺序** 返回答案 。
+
+**示例 1：**
+
+```
+输入：nums = [1,0,-1,0,-2,2], target = 0
+输出：[[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]
+```
+
+**示例 2：**
+
+```
+输入：nums = [2,2,2,2,2], target = 8
+输出：[[2,2,2,2]]
+```
+
+**提示：**
+
+- `1 <= nums.length <= 200`
+- `-109 <= nums[i] <= 109`
+- `-109 <= target <= 109`
+
+```go
+func fourSum(nums []int, target int) [][]int {
+	n := len(nums)
+	sort.Ints(nums)
+	res := make([][]int, 0)
+	for i := 0; i < n-3; i++ {
+		num1 := nums[i]
+
+		if i > 0 && num1 == nums[i-1] {
+			continue
+		}
+		for j := i + 1; j < n-2; j++ {
+			num2 := nums[j]
+
+			if j > i+1 && num2 == nums[j-1] {
+				continue
+			}
+			l := j + 1
+			r := n - 1
+			for l < r {
+				num3 := nums[l]
+				num4 := nums[r]
+				if num1+num2+num3+num4 == target {
+					res = append(res, []int{num1, num2, num3, num4})
+					for l < r && num3 == nums[l] {
+						l++
+					}
+					for l < r && num4 == nums[r] {
+						r--
+					}
+				} else if num1+num2+num3+num4 > target {
+					r--
+				} else {
+					l++
+				}
+
+			}
+
+		}
+	}
+	return res
+}
+```
+
 ## 栈与队列
 
 ## 二叉树
