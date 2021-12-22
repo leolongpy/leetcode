@@ -2222,6 +2222,318 @@ func fourSum(nums []int, target int) [][]int {
 
 ## 栈与队列
 
+#### [20. 有效的括号](https://leetcode-cn.com/problems/valid-parentheses/)
+
+给定一个只包括 `'('`，`')'`，`'{'`，`'}'`，`'['`，`']'` 的字符串 `s` ，判断字符串是否有效。
+
+有效字符串需满足：
+
+1. 左括号必须用相同类型的右括号闭合。
+2. 左括号必须以正确的顺序闭合。
+
+**示例 1：**
+
+```
+输入：s = "()"
+输出：true
+```
+
+**示例 2：**
+
+```
+输入：s = "()[]{}"
+输出：true
+```
+
+**示例 3：**
+
+```
+输入：s = "(]"
+输出：false
+```
+
+**示例 4：**
+
+```
+输入：s = "([)]"
+输出：false
+```
+
+**示例 5：**
+
+```
+输入：s = "{[]}"
+输出：true
+```
+
+**提示：**
+
+- `1 <= s.length <= 104`
+- `s` 仅由括号 `'()[]{}'` 组成
+
+```go
+func isValid(s string) bool {
+	n := len(s)
+	if n%2 == 1 {
+		return false
+	}
+	stack := []byte{}
+
+	p := map[byte]byte{
+		')': '(',
+		'}': '{',
+		']': '[',
+	}
+	for i := 0; i < n; i++ {
+		if p[s[i]] > 0 {
+			if len(stack) == 0 || p[s[i]] != stack[len(stack)-1] {
+				return false
+			}
+			stack = stack[:len(stack)-1]
+		} else {
+			stack = append(stack, s[i])
+		}
+	}
+
+	return len(stack) == 0
+
+}
+```
+
+#### [1047. 删除字符串中的所有相邻重复项](https://leetcode-cn.com/problems/remove-all-adjacent-duplicates-in-string/)
+
+给出由小写字母组成的字符串 `S`，**重复项删除操作**会选择两个相邻且相同的字母，并删除它们。
+
+在 S 上反复执行重复项删除操作，直到无法继续删除。
+
+在完成所有重复项删除操作后返回最终的字符串。答案保证唯一。
+
+**示例：**
+
+```
+输入："abbaca"
+输出："ca"
+解释：
+例如，在 "abbaca" 中，我们可以删除 "bb" 由于两字母相邻且相同，这是此时唯一可以执行删除操作的重复项。之后我们得到字符串 "aaca"，其中又只有 "aa" 可以执行重复项删除操作，所以最后的字符串为 "ca"。
+```
+
+**提示：**
+
+1. `1 <= S.length <= 20000`
+2. `S` 仅由小写英文字母组成。
+
+```go
+func removeDuplicates(s string) string {
+	stack := []byte{}
+	for _, i := range []byte(s) {
+		if len(stack) != 0 && i == stack[len(stack)-1] {
+			stack = stack[:len(stack)-1]
+		} else {
+			stack = append(stack, i)
+		}
+	}
+	return string(stack)
+}
+```
+
+#### [150. 逆波兰表达式求值](https://leetcode-cn.com/problems/evaluate-reverse-polish-notation/)
+
+根据[ 逆波兰表示法](https://baike.baidu.com/item/逆波兰式/128437)，求表达式的值。
+
+有效的算符包括 `+`、`-`、`*`、`/` 。每个运算对象可以是整数，也可以是另一个逆波兰表达式。
+
+**说明：**
+
+- 整数除法只保留整数部分。
+- 给定逆波兰表达式总是有效的。换句话说，表达式总会得出有效数值且不存在除数为 0 的情况。
+
+**示例 1：**
+
+```
+输入：tokens = ["2","1","+","3","*"]
+输出：9
+解释：该算式转化为常见的中缀算术表达式为：((2 + 1) * 3) = 9
+```
+
+**示例 2：**
+
+```
+输入：tokens = ["4","13","5","/","+"]
+输出：6
+解释：该算式转化为常见的中缀算术表达式为：(4 + (13 / 5)) = 6
+```
+
+**示例 3：**
+
+```
+输入：tokens = ["10","6","9","3","+","-11","*","/","*","17","+","5","+"]
+输出：22
+解释：
+该算式转化为常见的中缀算术表达式为：
+  ((10 * (6 / ((9 + 3) * -11))) + 17) + 5
+= ((10 * (6 / (12 * -11))) + 17) + 5
+= ((10 * (6 / -132)) + 17) + 5
+= ((10 * 0) + 17) + 5
+= (0 + 17) + 5
+= 17 + 5
+= 22
+```
+
+**提示：**
+
+- `1 <= tokens.length <= 104`
+- `tokens[i]` 要么是一个算符（`"+"`、`"-"`、`"*"` 或 `"/"`），要么是一个在范围 `[-200, 200]` 内的整数
+
+```go
+func evalRPN(tokens []string) int {
+	stack := []int{}
+	for _, token := range tokens {
+		val, err := strconv.Atoi(token)
+		if err == nil {
+			stack = append(stack, val)
+		} else {
+			num1 := stack[len(stack)-2]
+			num2 := stack[len(stack)-1]
+			stack = stack[:len(stack)-2]
+			switch token {
+			case "+":
+				stack = append(stack, num1+num2)
+			case "-":
+				stack = append(stack, num1-num2)
+			case "*":
+				stack = append(stack, num1*num2)
+			case "/":
+				stack = append(stack, num1/num2)
+			}
+		}
+
+	}
+	return stack[0]
+}
+```
+
+#### [239. 滑动窗口最大值](https://leetcode-cn.com/problems/sliding-window-maximum/)
+
+给你一个整数数组 `nums`，有一个大小为 `k` 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 `k` 个数字。滑动窗口每次只向右移动一位。
+
+返回滑动窗口中的最大值。
+
+**示例 1：**
+
+```
+输入：nums = [1,3,-1,-3,5,3,6,7], k = 3
+输出：[3,3,5,5,6,7]
+解释：
+滑动窗口的位置                最大值
+---------------               -----
+[1  3  -1] -3  5  3  6  7       3
+ 1 [3  -1  -3] 5  3  6  7       3
+ 1  3 [-1  -3  5] 3  6  7       5
+ 1  3  -1 [-3  5  3] 6  7       5
+ 1  3  -1  -3 [5  3  6] 7       6
+ 1  3  -1  -3  5 [3  6  7]      7
+```
+
+**示例 2：**
+
+```
+输入：nums = [1], k = 1
+输出：[1]
+```
+
+**示例 3：**
+
+```
+输入：nums = [1,-1], k = 1
+输出：[1,-1]
+```
+
+**示例 4：**
+
+```
+输入：nums = [9,11], k = 2
+输出：[11]
+```
+
+**示例 5：**
+
+```
+输入：nums = [4,-2], k = 2
+输出：[4]
+```
+
+**提示：**
+
+- `1 <= nums.length <= 105`
+- `-104 <= nums[i] <= 104`
+- `1 <= k <= nums.length`
+
+```go
+func maxSlidingWindow(nums []int, k int) []int {
+	q := []int{}
+	ans := []int{}
+	for i := 0; i < len(nums); i++ {
+		for len(q) > 0 && nums[i] > nums[q[len(q)-1]] {
+			q = q[:len(q)-1]
+		}
+		q = append(q, i)
+		for q[0] <= i-k {
+			q = q[1:]
+		}
+
+		if i+1 >= k {
+			ans = append(ans, nums[q[0]])
+		}
+	}
+	return ans
+}
+
+```
+
+#### [347. 前 K 个高频元素](https://leetcode-cn.com/problems/top-k-frequent-elements/)
+
+给你一个整数数组 `nums` 和一个整数 `k` ，请你返回其中出现频率前 `k` 高的元素。你可以按 **任意顺序** 返回答案。
+
+**示例 1:**
+
+```
+输入: nums = [1,1,1,2,2,3], k = 2
+输出: [1,2]
+```
+
+**示例 2:**
+
+```
+输入: nums = [1], k = 1
+输出: [1]
+```
+
+**提示：**
+
+- `1 <= nums.length <= 105`
+- `k` 的取值范围是 `[1, 数组中不相同的元素的个数]`
+- 题目数据保证答案唯一，换句话说，数组中前 `k` 个高频元素的集合是唯一的
+
+```go
+func topKFrequent(nums []int, k int) []int {
+	ans := []int{}
+	map_num := map[int]int{}
+	for _, v := range nums {
+		map_num[v]++
+	}
+
+	for k, _ := range map_num {
+		ans = append(ans, k)
+	}
+	sort.Slice(ans, func(a, b int) bool {
+		return map_num[ans[a]] > map_num[ans[b]]
+	})
+	return ans[:k]
+}
+```
+
+
+
 ## 二叉树
 
 ## 回溯算法
