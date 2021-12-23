@@ -2532,9 +2532,807 @@ func topKFrequent(nums []int, k int) []int {
 }
 ```
 
-
-
 ## 二叉树
+
+#### [144. 二叉树的前序遍历](https://leetcode-cn.com/problems/binary-tree-preorder-traversal/)
+
+给你二叉树的根节点 `root` ，返回它节点值的 **前序** 遍历。
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2020/09/15/inorder_1.jpg)
+
+```
+输入：root = [1,null,2,3]
+输出：[1,2,3]
+```
+
+**示例 2：**
+
+```
+输入：root = []
+输出：[]
+```
+
+**示例 3：**
+
+```
+输入：root = [1]
+输出：[1]
+```
+
+**示例 4：**
+
+![img](https://assets.leetcode.com/uploads/2020/09/15/inorder_5.jpg)
+
+```
+输入：root = [1,2]
+输出：[1,2]
+```
+
+**示例 5：**
+
+![img](https://assets.leetcode.com/uploads/2020/09/15/inorder_4.jpg)
+
+```
+输入：root = [1,null,2]
+输出：[1,2]
+```
+
+ 
+
+**提示：**
+
+- 树中节点数目在范围 `[0, 100]` 内
+- `-100 <= Node.val <= 100`
+
+```go
+func preorderTraversal(root *TreeNode) []int {
+	ans := []int{}
+	var run func(node *TreeNode)
+	run = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+		ans = append(ans, node.Val)
+		run(node.Left)
+		run(node.Right)
+	}
+	run(root)
+	return ans
+
+```
+
+#### [94. 二叉树的中序遍历](https://leetcode-cn.com/problems/binary-tree-inorder-traversal/)
+
+给定一个二叉树的根节点 `root` ，返回它的 **中序** 遍历。
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2020/09/15/inorder_1.jpg)
+
+```
+输入：root = [1,null,2,3]
+输出：[1,3,2]
+```
+
+**示例 2：**
+
+```
+输入：root = []
+输出：[]
+```
+
+**示例 3：**
+
+```
+输入：root = [1]
+输出：[1]
+```
+
+**示例 4：**
+
+![img](https://assets.leetcode.com/uploads/2020/09/15/inorder_5.jpg)
+
+```
+输入：root = [1,2]
+输出：[2,1]
+```
+
+**示例 5：**
+
+![img](https://assets.leetcode.com/uploads/2020/09/15/inorder_4.jpg)
+
+```
+输入：root = [1,null,2]
+输出：[1,2]
+```
+
+**提示：**
+
+- 树中节点数目在范围 `[0, 100]` 内
+- `-100 <= Node.val <= 100`
+
+```go
+func inorderTraversal(root *TreeNode) []int {
+	ans := []int{}
+	var run func(node *TreeNode)
+	run = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+		run(node.Left)
+		ans = append(ans, node.Val)
+		run(node.Right)
+	}
+	run(root)
+	return ans
+}
+```
+
+#### [145. 二叉树的后序遍历](https://leetcode-cn.com/problems/binary-tree-postorder-traversal/)
+
+给定一个二叉树，返回它的 *后序* 遍历。
+
+**示例:**
+
+```
+输入: [1,null,2,3]  
+   1
+    \
+     2
+    /
+   3 
+
+输出: [3,2,1]
+```
+
+```go
+func postorderTraversal(root *TreeNode) []int {
+	ans := []int{}
+	var run func(node *TreeNode)
+	run = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+		run(node.Left)
+		run(node.Right)
+		ans = append(ans, node.Val)
+	}
+	run(root)
+	return ans
+}
+```
+
+#### [102. 二叉树的层序遍历](https://leetcode-cn.com/problems/binary-tree-level-order-traversal/)
+
+给你一个二叉树，请你返回其按 **层序遍历** 得到的节点值。 （即逐层地，从左到右访问所有节点）。
+
+**示例：**
+二叉树：`[3,9,20,null,null,15,7]`,
+
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+
+返回其层序遍历结果：
+
+```
+[
+  [3],
+  [9,20],
+  [15,7]
+]
+```
+
+```go
+func levelOrder(root *TreeNode) [][]int {
+	res := [][]int{}
+	if root == nil {
+		return res
+	}
+	queue := list.New()
+	queue.PushBack(root)
+	for queue.Len() > 0 {
+		var temArr []int
+		length := queue.Len()
+		for i := 0; i < length; i++ {
+			node := queue.Remove(queue.Front()).(*TreeNode)
+			if node.Left != nil {
+				queue.PushBack(node.Left)
+			}
+			if node.Right != nil {
+				queue.PushBack(node.Right)
+			}
+			temArr = append(temArr, node.Val)
+		}
+		res = append(res, temArr)
+	}
+	return res
+}
+```
+
+#### [107. 二叉树的层序遍历 II](https://leetcode-cn.com/problems/binary-tree-level-order-traversal-ii/)
+
+给定一个二叉树，返回其节点值自底向上的层序遍历。 （即按从叶子节点所在层到根节点所在的层，逐层从左向右遍历）
+
+例如：
+给定二叉树 `[3,9,20,null,null,15,7]`,
+
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+
+返回其自底向上的层序遍历为：
+
+```
+[
+  [15,7],
+  [9,20],
+  [3]
+]
+```
+
+```go
+func levelOrderBottom(root *TreeNode) [][]int {
+	res := [][]int{}
+	if root == nil {
+		return res
+	}
+	queue := list.New()
+	queue.PushBack(root)
+	for queue.Len() > 0 {
+		var tmparr []int
+		length := queue.Len()
+		for i := 0; i < length; i++ {
+			node := queue.Remove(queue.Front()).(*TreeNode)
+			if node.Left != nil {
+				queue.PushBack(node.Left)
+			}
+			if node.Right != nil {
+				queue.PushBack(node.Right)
+			}
+			tmparr = append(tmparr, node.Val)
+		}
+		res = append(res, tmparr)
+	}
+	l := 0
+	r := len(res) - 1
+	for l < r {
+		res[l], res[r] = res[r], res[l]
+		l++
+		r--
+	}
+	return res
+}
+```
+
+#### [199. 二叉树的右视图](https://leetcode-cn.com/problems/binary-tree-right-side-view/)
+
+给定一个二叉树的 **根节点** `root`，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
+
+**示例 1:**
+
+![img](https://assets.leetcode.com/uploads/2021/02/14/tree.jpg)
+
+```
+输入: [1,2,3,null,5,null,4]
+输出: [1,3,4]
+```
+
+**示例 2:**
+
+```
+输入: [1,null,3]
+输出: [1,3]
+```
+
+**示例 3:**
+
+```
+输入: []
+输出: []
+```
+
+**提示:**
+
+- 二叉树的节点个数的范围是 `[0,100]`
+- `-100 <= Node.val <= 100` 
+
+```go
+func rightSideView(root *TreeNode) []int {
+	res := []int{}
+	if root == nil {
+		return res
+	}
+	queue := list.New()
+	queue.PushBack(root)
+	for queue.Len() > 0 {
+		tmpArr := []int{}
+		length := queue.Len()
+		for i := 0; i < length; i++ {
+			node := queue.Remove(queue.Front()).(*TreeNode)
+			if node.Left != nil {
+				queue.PushBack(node.Left)
+			}
+			if node.Right != nil {
+				queue.PushBack(node.Right)
+			}
+			tmpArr = append(tmpArr, node.Val)
+		}
+		res = append(res, tmpArr[len(tmpArr)-1])
+	}
+	return res
+}
+```
+
+#### [637. 二叉树的层平均值](https://leetcode-cn.com/problems/average-of-levels-in-binary-tree/)
+
+给定一个非空二叉树, 返回一个由每层节点平均值组成的数组。
+
+**示例 1：**
+
+```
+输入：
+    3
+   / \
+  9  20
+    /  \
+   15   7
+输出：[3, 14.5, 11]
+解释：
+第 0 层的平均值是 3 ,  第1层是 14.5 , 第2层是 11 。因此返回 [3, 14.5, 11] 。
+```
+
+**提示：**
+
+- 节点值的范围在32位有符号整数范围内。
+
+```go
+func averageOfLevels(root *TreeNode) []float64 {
+	res := []float64{}
+	if root == nil {
+		return res
+	}
+	queue := list.New()
+	queue.PushBack(root)
+	for queue.Len() > 0 {
+		tmpArr := []int{}
+		length := queue.Len()
+		for i := 0; i < length; i++ {
+			node := queue.Remove(queue.Front()).(*TreeNode)
+			if node.Left != nil {
+				queue.PushBack(node.Left)
+			}
+			if node.Right != nil {
+				queue.PushBack(node.Right)
+			}
+			tmpArr = append(tmpArr, node.Val)
+		}
+		res = append(res, getAvg(tmpArr))
+	}
+	return res
+}
+
+func getAvg(tmp []int) float64 {
+	sum := 0
+	n := len(tmp)
+	for _, v := range tmp {
+		sum += v
+	}
+	return float64(sum) / float64(n)
+}
+```
+
+#### [429. N 叉树的层序遍历](https://leetcode-cn.com/problems/n-ary-tree-level-order-traversal/)
+
+给定一个 N 叉树，返回其节点值的*层序遍历*。（即从左到右，逐层遍历）。
+
+树的序列化输入是用层序遍历，每组子节点都由 null 值分隔（参见示例）。
+
+ 
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2018/10/12/narytreeexample.png)
+
+```
+输入：root = [1,null,3,2,4,null,5,6]
+输出：[[1],[3,2,4],[5,6]]
+```
+
+**示例 2：**
+
+![img](https://assets.leetcode.com/uploads/2019/11/08/sample_4_964.png)
+
+```
+输入：root = [1,null,2,3,4,5,null,null,6,7,null,8,null,9,10,null,null,11,null,12,null,13,null,null,14]
+输出：[[1],[2,3,4,5],[6,7,8,9,10],[11,12,13],[14]]
+```
+
+**提示：**
+
+- 树的高度不会超过 `1000`
+- 树的节点总数在 `[0, 10^4]` 之间
+
+```go
+func levelOrder(root *Node) [][]int {
+	res := [][]int{}
+	if root == nil {
+		return res
+	}
+	queue := list.New()
+	queue.PushBack(root)
+	for queue.Len() > 0 {
+		length := queue.Len()
+		tmpArr := []int{}
+		for i := 0; i < length; i++ {
+			node := queue.Remove(queue.Front()).(*Node)
+			tmpArr = append(tmpArr, node.Val)
+			for j := 0; j < len(node.Children); j++ {
+				queue.PushBack(node.Children[j])
+			}
+
+		}
+		res = append(res, tmpArr)
+	}
+	return res
+}
+```
+
+#### [515. 在每个树行中找最大值](https://leetcode-cn.com/problems/find-largest-value-in-each-tree-row/)
+
+给定一棵二叉树的根节点 `root` ，请找出该二叉树中每一层的最大值。
+
+**示例1：**
+
+```
+输入: root = [1,3,2,5,3,null,9]
+输出: [1,3,9]
+解释:
+          1
+         / \
+        3   2
+       / \   \  
+      5   3   9 
+```
+
+**示例2：**
+
+```
+输入: root = [1,2,3]
+输出: [1,3]
+解释:
+          1
+         / \
+        2   3
+```
+
+**示例3：**
+
+```
+输入: root = [1]
+输出: [1]
+```
+
+**示例4：**
+
+```
+输入: root = [1,null,2]
+输出: [1,2]
+解释:      
+           1 
+            \
+             2     
+```
+
+**示例5：**
+
+```
+输入: root = []
+输出: [] 
+```
+
+**提示：**
+
+- 二叉树的节点个数的范围是 `[0,104]`
+- `-231 <= Node.val <= 231 - 1`
+
+```go
+func largestValues(root *TreeNode) []int {
+	res := []int{}
+	if root == nil {
+		return res
+	}
+	queue := list.New()
+	queue.PushBack(root)
+	for queue.Len() > 0 {
+		tmpArr := []int{}
+		length := queue.Len()
+		for i := 0; i < length; i++ {
+			node := queue.Remove(queue.Front()).(*TreeNode)
+			if node.Left != nil {
+				queue.PushBack(node.Left)
+			}
+			if node.Right != nil {
+				queue.PushBack(node.Right)
+			}
+			tmpArr = append(tmpArr, node.Val)
+		}
+		res = append(res, getMax(tmpArr))
+	}
+	return res
+}
+
+func getMax(tmpArr []int) int {
+	max := tmpArr[0]
+	for _, v := range tmpArr {
+		if v > max {
+			max = v
+		}
+	}
+	return max
+}
+```
+
+#### [116. 填充每个节点的下一个右侧节点指针](https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node/)
+
+给定一个 **完美二叉树** ，其所有叶子节点都在同一层，每个父节点都有两个子节点。二叉树定义如下：
+
+```
+struct Node {
+  int val;
+  Node *left;
+  Node *right;
+  Node *next;
+}
+```
+
+填充它的每个 next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将 next 指针设置为 `NULL`。
+
+初始状态下，所有 next 指针都被设置为 `NULL`。
+
+**进阶：**
+
+- 你只能使用常量级额外空间。
+- 使用递归解题也符合要求，本题中递归程序占用的栈空间不算做额外的空间复杂度。
+
+ 
+
+**示例：**
+
+![img](https://assets.leetcode.com/uploads/2019/02/14/116_sample.png)
+
+```
+输入：root = [1,2,3,4,5,6,7]
+输出：[1,#,2,3,#,4,5,6,7,#]
+解释：给定二叉树如图 A 所示，你的函数应该填充它的每个 next 指针，以指向其下一个右侧节点，如图 B 所示。序列化的输出按层序遍历排列，同一层节点由 next 指针连接，'#' 标志着每一层的结束。
+```
+
+**提示：**
+
+- 树中节点的数量少于 `4096`
+- `-1000 <= node.val <= 1000`
+
+```go
+func connect(root *Node) *Node {
+	res := [][]*Node{}
+	if root == nil {
+		return root
+	}
+	queue := list.New()
+	queue.PushBack(root)
+	for queue.Len() > 0 {
+		tmp := []*Node{}
+		length := queue.Len()
+		for i := 0; i < length; i++ {
+			node := queue.Remove(queue.Front()).(*Node)
+			tmp = append(tmp, node)
+			if node.Left != nil {
+				queue.PushBack(node.Left)
+			}
+			if node.Right != nil {
+				queue.PushBack(node.Right)
+			}
+		}
+		res = append(res, tmp)
+	}
+
+	for i := 0; i < len(res); i++ {
+		for j := 0; j < len(res[i])-1; j++ {
+			res[i][j].Next = res[i][j+1]
+		}
+	}
+	return root
+}
+```
+
+#### [117. 填充每个节点的下一个右侧节点指针 II](https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node-ii/)
+
+给定一个二叉树
+
+```
+struct Node {
+  int val;
+  Node *left;
+  Node *right;
+  Node *next;
+}
+```
+
+填充它的每个 next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将 next 指针设置为 `NULL`。
+
+初始状态下，所有 next 指针都被设置为 `NULL`。
+
+**进阶：**
+
+- 你只能使用常量级额外空间。
+- 使用递归解题也符合要求，本题中递归程序占用的栈空间不算做额外的空间复杂度。
+
+ 
+
+**示例：**
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2019/02/15/117_sample.png)
+
+```
+输入：root = [1,2,3,4,5,null,7]
+输出：[1,#,2,3,#,4,5,7,#]
+解释：给定二叉树如图 A 所示，你的函数应该填充它的每个 next 指针，以指向其下一个右侧节点，如图 B 所示。序列化输出按层序遍历顺序（由 next 指针连接），'#' 表示每层的末尾。
+```
+
+**提示：**
+
+- 树中的节点数小于 `6000`
+- `-100 <= node.val <= 100`
+
+```go
+func connect(root *Node) *Node {
+	res := [][]*Node{}
+	if root == nil {
+		return root
+	}
+	queue := list.New()
+	queue.PushBack(root)
+	for queue.Len() > 0 {
+		tmp := []*Node{}
+		length := queue.Len()
+		for i := 0; i < length; i++ {
+			node := queue.Remove(queue.Front()).(*Node)
+			tmp = append(tmp, node)
+			if node.Left != nil {
+				queue.PushBack(node.Left)
+			}
+			if node.Right != nil {
+				queue.PushBack(node.Right)
+			}
+		}
+		res = append(res, tmp)
+	}
+
+	for i := 0; i < len(res); i++ {
+		for j := 0; j < len(res[i])-1; j++ {
+			res[i][j].Next = res[i][j+1]
+		}
+	}
+	return root
+}
+```
+
+#### [104. 二叉树的最大深度](https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/)
+
+给定一个二叉树，找出其最大深度。
+
+二叉树的深度为根节点到最远叶子节点的最长路径上的节点数。
+
+**说明:** 叶子节点是指没有子节点的节点。
+
+**示例：**
+给定二叉树 `[3,9,20,null,null,15,7]`，
+
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+
+返回它的最大深度 3 。
+
+```go
+//层序遍历
+func maxDepth(root *TreeNode) int {
+	res := 0
+	if root == nil {
+		return res
+	}
+	queue := list.New()
+	queue.PushBack(root)
+	for queue.Len() > 0 {
+		length := queue.Len()
+		for i := 0; i < length; i++ {
+			node := queue.Remove(queue.Front()).(*TreeNode)
+			if node.Left != nil {
+				queue.PushBack(node.Left)
+			}
+			if node.Right != nil {
+				queue.PushBack(node.Right)
+			}
+		}
+		res++
+	}
+	return res
+}
+```
+
+#### [111. 二叉树的最小深度](https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/)
+
+给定一个二叉树，找出其最小深度。
+
+最小深度是从根节点到最近叶子节点的最短路径上的节点数量。
+
+**说明：**叶子节点是指没有子节点的节点。
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2020/10/12/ex_depth.jpg)
+
+```
+输入：root = [3,9,20,null,null,15,7]
+输出：2
+```
+
+**示例 2：**
+
+```
+输入：root = [2,null,3,null,4,null,5,null,6]
+输出：5
+```
+
+**提示：**
+
+- 树中节点数的范围在 `[0, 105]` 内
+- `-1000 <= Node.val <= 1000`
+
+```go
+//层序遍历
+func minDepth(root *TreeNode) int {
+	res := 0
+	if root == nil {
+		return res
+	}
+	queue := list.New()
+	queue.PushBack(root)
+	for queue.Len() > 0 {
+		length := queue.Len()
+		for i := 0; i < length; i++ {
+			node := queue.Remove(queue.Front()).(*TreeNode)
+			if node.Left == nil && node.Right == nil {
+				return res + 1
+			}
+			if node.Left != nil {
+				queue.PushBack(node.Left)
+			}
+			if node.Right != nil {
+				queue.PushBack(node.Right)
+			}
+		}
+		res++
+	}
+	return res
+}
+```
+
+
 
 ## 回溯算法
 
