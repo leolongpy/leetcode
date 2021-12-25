@@ -3272,6 +3272,20 @@ func maxDepth(root *TreeNode) int {
 	}
 	return res
 }
+// 递归
+func maxDepth(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	return max(maxDepth(root.Left), maxDepth(root.Right)) + 1
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
 ```
 
 #### [111. 二叉树的最小深度](https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/)
@@ -3329,6 +3343,539 @@ func minDepth(root *TreeNode) int {
 		res++
 	}
 	return res
+}
+
+//递归
+func minDepth(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	left := minDepth(root.Left)
+	right := minDepth(root.Right)
+	if root.Left == nil && root.Right != nil {
+		return right + 1
+	}
+	if root.Right == nil && root.Left != nil {
+		return left + 1
+	}
+	return min(left, right) + 1
+}
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+
+}
+```
+
+#### [559. N 叉树的最大深度](https://leetcode-cn.com/problems/maximum-depth-of-n-ary-tree/)
+
+给定一个 N 叉树，找到其最大深度。
+
+最大深度是指从根节点到最远叶子节点的最长路径上的节点总数。
+
+N 叉树输入按层序遍历序列化表示，每组子节点由空值分隔（请参见示例）。
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2018/10/12/narytreeexample.png)
+
+```
+输入：root = [1,null,3,2,4,null,5,6]
+输出：3
+```
+
+**示例 2：**
+
+![img](https://assets.leetcode.com/uploads/2019/11/08/sample_4_964.png)
+
+```
+输入：root = [1,null,2,3,4,5,null,null,6,7,null,8,null,9,10,null,null,11,null,12,null,13,null,null,14]
+输出：5
+```
+
+**提示：**
+
+- 树的深度不会超过 `1000` 。
+- 树的节点数目位于 `[0, 104]` 之间
+
+```go
+func maxDepth(root *Node) int {
+	if root == nil {
+		return 0
+	}
+	dep := 0
+	for i := 0; i < len(root.Children); i++ {
+		dep = max(dep, maxDepth(root.Children[i]))
+	}
+	return dep + 1
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+```
+
+
+
+#### [226. 翻转二叉树](https://leetcode-cn.com/problems/invert-binary-tree/)
+
+翻转一棵二叉树。
+
+**示例：**
+
+输入：
+
+```
+     4
+   /   \
+  2     7
+ / \   / \
+1   3 6   9
+```
+
+输出：
+
+```
+     4
+   /   \
+  7     2
+ / \   / \
+9   6 3   1
+```
+
+```go
+func invertTree(root *TreeNode) *TreeNode {
+	if root == nil {
+		return root
+	}
+
+	root.Left, root.Right = root.Right, root.Left
+	invertTree(root.Left)
+	invertTree(root.Right)
+	return root
+}
+
+```
+
+#### [101. 对称二叉树](https://leetcode-cn.com/problems/symmetric-tree/)
+
+给定一个二叉树，检查它是否是镜像对称的。
+
+例如，二叉树 `[1,2,2,3,4,4,3]` 是对称的。
+
+```
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+```
+
+但是下面这个 `[1,2,2,null,3,null,3]` 则不是镜像对称的:
+
+```
+    1
+   / \
+  2   2
+   \   \
+   3    3
+```
+
+ ```go
+ func isSymmetric(root *TreeNode) bool {
+ 	return dfs(root.Left, root.Right)
+ }
+ 
+ func dfs(left, right *TreeNode) bool {
+ 	if left == nil && right == nil {
+ 		return true
+ 	}
+ 
+ 	if left == nil || right == nil {
+ 		return false
+ 	}
+ 
+ 	if left.Val != right.Val {
+ 		return false
+ 	}
+ 
+ 	out := dfs(left.Left, right.Right)
+ 	in := dfs(left.Right, right.Left)
+ 	return in && out
+ 
+ }
+ ```
+
+#### [222. 完全二叉树的节点个数](https://leetcode-cn.com/problems/count-complete-tree-nodes/)
+
+给你一棵 **完全二叉树** 的根节点 `root` ，求出该树的节点个数。
+
+[完全二叉树](https://baike.baidu.com/item/完全二叉树/7773232?fr=aladdin) 的定义如下：在完全二叉树中，除了最底层节点可能没填满外，其余每层节点数都达到最大值，并且最下面一层的节点都集中在该层最左边的若干位置。若最底层为第 `h` 层，则该层包含 `1~ 2h` 个节点。
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2021/01/14/complete.jpg)
+
+```
+输入：root = [1,2,3,4,5,6]
+输出：6
+```
+
+**示例 2：**
+
+```
+输入：root = []
+输出：0
+```
+
+**示例 3：**
+
+```
+输入：root = [1]
+输出：1
+```
+
+**提示：**
+
+- 树中节点的数目范围是`[0, 5 * 104]`
+- `0 <= Node.val <= 5 * 104`
+- 题目数据保证输入的树是 **完全二叉树**
+
+```go
+func countNodes(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	return countNodes(root.Left) + countNodes(root.Right) + 1
+}
+```
+
+```go
+func isBalanced(root *TreeNode) bool {
+	if getHeigh(root) == -1 {
+		return false
+	}
+	return true
+}
+
+func getHeigh(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+
+	leftHeigh := getHeigh(root.Left)
+	rightHeigh := getHeigh(root.Right)
+	if leftHeigh == -1 || rightHeigh == -1 {
+		return -1
+	}
+	if abs(leftHeigh, rightHeigh) > 1 {
+		return -1
+	} else {
+		return max(leftHeigh, rightHeigh) + 1
+	}
+
+}
+
+func abs(a, b int) int {
+	res := a - b
+	if res < 0 {
+		return res * -1
+	}
+	return res
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+```
+
+#### [257. 二叉树的所有路径](https://leetcode-cn.com/problems/binary-tree-paths/)
+
+给你一个二叉树的根节点 `root` ，按 **任意顺序** ，返回所有从根节点到叶子节点的路径。
+
+**叶子节点** 是指没有子节点的节点。
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2021/03/12/paths-tree.jpg)
+
+```
+输入：root = [1,2,3,null,5]
+输出：["1->2->5","1->3"]
+```
+
+**示例 2：**
+
+```
+输入：root = [1]
+输出：["1"]
+```
+
+**提示：**
+
+- 树中节点的数目在范围 `[1, 100]` 内
+- `-100 <= Node.val <= 100`
+
+```go
+func binaryTreePaths(root *TreeNode) []string {
+	res := []string{}
+	var run func(root *TreeNode, s string)
+	run = func(root *TreeNode, s string) {
+		if root.Left == nil && root.Right == nil {
+			s += strconv.Itoa(root.Val)
+			res = append(res, s)
+		}
+
+		s += strconv.Itoa(root.Val) + "->"
+		if root.Left != nil {
+			run(root.Left, s)
+		}
+		if root.Right != nil {
+			run(root.Right, s)
+		}
+	}
+	run(root, "")
+	return res
+}
+```
+
+#### [404. 左叶子之和](https://leetcode-cn.com/problems/sum-of-left-leaves/)
+
+计算给定二叉树的所有左叶子之和。
+
+**示例：**
+
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+
+在这个二叉树中，有两个左叶子，分别是 9 和 15，所以返回 24
+```
+
+ ```go
+ func sumOfLeftLeaves(root *TreeNode) int {
+ 	var res int
+ 	if root.Left != nil && root.Left.Right == nil && root.Left.Left == nil {
+ 		res += root.Left.Val
+ 	}
+ 
+ 	if root.Left != nil {
+ 		res += sumOfLeftLeaves(root.Left)
+ 	}
+ 
+ 	if root.Right != nil {
+ 		res += sumOfLeftLeaves(root.Right)
+ 	}
+ 	return res
+ }
+ 
+ ```
+
+#### [513. 找树左下角的值](https://leetcode-cn.com/problems/find-bottom-left-tree-value/)
+
+给定一个二叉树的 **根节点** `root`，请找出该二叉树的 **最底层 最左边** 节点的值。
+
+假设二叉树中至少有一个节点。
+
+**示例 1:**
+
+![img](https://assets.leetcode.com/uploads/2020/12/14/tree1.jpg)
+
+```
+输入: root = [2,1,3]
+输出: 1
+```
+
+**示例 2:**
+
+![img](https://assets.leetcode.com/uploads/2020/12/14/tree2.jpg)
+
+```
+输入: [1,2,3,4,null,5,6,null,null,7]
+输出: 7
+```
+
+**提示:**
+
+- 二叉树的节点个数的范围是 `[1,104]`
+- `-231 <= Node.val <= 231 - 1` 
+
+```go
+func findBottomLeftValue(root *TreeNode) int {
+	var res int
+	queue := list.New()
+	queue.PushBack(root)
+	for queue.Len() > 0 {
+		length := queue.Len()
+		for i := 0; i < length; i++ {
+			node := queue.Remove(queue.Front()).(*TreeNode)
+			if i == 0 {
+				res = node.Val
+			}
+			if node.Left != nil {
+				queue.PushBack(node.Left)
+			}
+			if node.Right != nil {
+				queue.PushBack(node.Right)
+			}
+		}
+	}
+	return res
+}
+```
+
+#### [112. 路径总和](https://leetcode-cn.com/problems/path-sum/)
+
+给你二叉树的根节点 `root` 和一个表示目标和的整数 `targetSum` 。判断该树中是否存在 **根节点到叶子节点** 的路径，这条路径上所有节点值相加等于目标和 `targetSum` 。如果存在，返回 `true` ；否则，返回 `false` 。
+
+**叶子节点** 是指没有子节点的节点。
+
+ 
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2021/01/18/pathsum1.jpg)
+
+```
+输入：root = [5,4,8,11,null,13,4,7,2,null,null,null,1], targetSum = 22
+输出：true
+解释：等于目标和的根节点到叶节点路径如上图所示。
+```
+
+**示例 2：**
+
+![img](https://assets.leetcode.com/uploads/2021/01/18/pathsum2.jpg)
+
+```
+输入：root = [1,2,3], targetSum = 5
+输出：false
+解释：树中存在两条根节点到叶子节点的路径：
+(1 --> 2): 和为 3
+(1 --> 3): 和为 4
+不存在 sum = 5 的根节点到叶子节点的路径。
+```
+
+**示例 3：**
+
+```
+输入：root = [], targetSum = 0
+输出：false
+解释：由于树是空的，所以不存在根节点到叶子节点的路径。
+```
+
+ ```go
+ func hasPathSum(root *TreeNode, targetSum int) bool {
+ 	if root == nil {
+ 		return false
+ 	}
+ 	if root.Left == nil && root.Right == nil && targetSum == root.Val {
+ 		return true
+ 	}
+ 	return hasPathSum(root.Left, targetSum-root.Val) || hasPathSum(root.Right, targetSum-root.Val)
+ }
+ ```
+
+#### [105. 从前序与中序遍历序列构造二叉树](https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
+
+给定一棵树的前序遍历 `preorder` 与中序遍历 `inorder`。请构造二叉树并返回其根节点。
+
+**示例 1:**
+
+![img](https://assets.leetcode.com/uploads/2021/02/19/tree.jpg)
+
+```
+Input: preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]
+Output: [3,9,20,null,null,15,7]
+```
+
+**示例 2:**
+
+```
+Input: preorder = [-1], inorder = [-1]
+Output: [-1]
+```
+
+**提示:**
+
+- `1 <= preorder.length <= 3000`
+- `inorder.length == preorder.length`
+- `-3000 <= preorder[i], inorder[i] <= 3000`
+- `preorder` 和 `inorder` 均无重复元素
+- `inorder` 均出现在 `preorder`
+- `preorder` 保证为二叉树的前序遍历序列
+- `inorder` 保证为二叉树的中序遍历序列
+
+```go
+func buildTree(preorder []int, inorder []int) *TreeNode {
+	if len(preorder) == 0 {
+		return nil
+	}
+	root := &TreeNode{preorder[0], nil, nil}
+	i := 0
+	for ; i < len(inorder); i++ {
+		if preorder[0] == inorder[i] {
+			break
+		}
+	}
+
+	root.Left = buildTree(preorder[1:i+1], inorder[:i])
+	root.Right = buildTree(preorder[i+1:], inorder[i+1:])
+	return root
+}
+```
+
+#### [106. 从中序与后序遍历序列构造二叉树](https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)
+
+根据一棵树的中序遍历与后序遍历构造二叉树。
+
+**注意:**
+你可以假设树中没有重复的元素。
+
+例如，给出
+
+```
+中序遍历 inorder = [9,3,15,20,7]
+后序遍历 postorder = [9,15,7,20,3]
+```
+
+返回如下的二叉树：
+
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+
+```go
+func buildTree(inorder []int, postorder []int) *TreeNode {
+	if len(postorder) == 0 {
+		return nil
+	}
+
+	root := &TreeNode{postorder[len(postorder)-1], nil, nil}
+	i := 0
+	for ; i < len(inorder); i++ {
+		if inorder[i] == postorder[len(postorder)-1] {
+			break
+		}
+	}
+	root.Left = buildTree(inorder[:i], postorder[:i])
+	root.Right = buildTree(inorder[i+1:], postorder[i:len(postorder)-1])
+	return root
 }
 ```
 
