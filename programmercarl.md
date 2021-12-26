@@ -3879,6 +3879,458 @@ func buildTree(inorder []int, postorder []int) *TreeNode {
 }
 ```
 
+#### [654. 最大二叉树](https://leetcode-cn.com/problems/maximum-binary-tree/)
+
+给定一个不含重复元素的整数数组 `nums` 。一个以此数组直接递归构建的 **最大二叉树** 定义如下：
+
+1. 二叉树的根是数组 `nums` 中的最大元素。
+2. 左子树是通过数组中 **最大值左边部分** 递归构造出的最大二叉树。
+3. 右子树是通过数组中 **最大值右边部分** 递归构造出的最大二叉树。
+
+返回有给定数组 `nums` 构建的 **最大二叉树** 。
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2020/12/24/tree1.jpg)
+
+```
+输入：nums = [3,2,1,6,0,5]
+输出：[6,3,5,null,2,0,null,null,1]
+解释：递归调用如下所示：
+- [3,2,1,6,0,5] 中的最大值是 6 ，左边部分是 [3,2,1] ，右边部分是 [0,5] 。
+    - [3,2,1] 中的最大值是 3 ，左边部分是 [] ，右边部分是 [2,1] 。
+        - 空数组，无子节点。
+        - [2,1] 中的最大值是 2 ，左边部分是 [] ，右边部分是 [1] 。
+            - 空数组，无子节点。
+            - 只有一个元素，所以子节点是一个值为 1 的节点。
+    - [0,5] 中的最大值是 5 ，左边部分是 [0] ，右边部分是 [] 。
+        - 只有一个元素，所以子节点是一个值为 0 的节点。
+        - 空数组，无子节点。
+```
+
+**示例 2：**
+
+![img](https://assets.leetcode.com/uploads/2020/12/24/tree2.jpg)
+
+```
+输入：nums = [3,2,1]
+输出：[3,null,2,null,1]
+```
+
+**提示：**
+
+- `1 <= nums.length <= 1000`
+- `0 <= nums[i] <= 1000`
+- `nums` 中的所有整数 **互不相同**
+
+```go
+func constructMaximumBinaryTree(nums []int) *TreeNode {
+	if len(nums) < 1 {
+		return nil
+	}
+	index := findMax(nums)
+	root := &TreeNode{
+		Val:   nums[index],
+		Left:  constructMaximumBinaryTree(nums[:index]),
+		Right: constructMaximumBinaryTree(nums[index+1:]),
+	}
+	return root
+
+}
+
+func findMax(nums []int) int {
+	index := 0
+	for i := 0; i < len(nums); i++ {
+		if nums[i] > nums[index] {
+			index = i
+		}
+	}
+	return index
+}
+```
+
+#### [617. 合并二叉树](https://leetcode-cn.com/problems/merge-two-binary-trees/)
+
+给定两个二叉树，想象当你将它们中的一个覆盖到另一个上时，两个二叉树的一些节点便会重叠。
+
+你需要将他们合并为一个新的二叉树。合并的规则是如果两个节点重叠，那么将他们的值相加作为节点合并后的新值，否则**不为** NULL 的节点将直接作为新二叉树的节点。
+
+**示例 1:**
+
+```
+输入: 
+	Tree 1                     Tree 2                  
+          1                         2                             
+         / \                       / \                            
+        3   2                     1   3                        
+       /                           \   \                      
+      5                             4   7                  
+输出: 
+合并后的树:
+	     3
+	    / \
+	   4   5
+	  / \   \ 
+	 5   4   7
+```
+
+**注意:** 合并必须从两个树的根节点开始。
+
+```go
+func mergeTrees(root1 *TreeNode, root2 *TreeNode) *TreeNode {
+	if root1 == nil {
+		return root2
+	}
+	if root2 == nil {
+		return root1
+	}
+	root1.Val += root2.Val
+	root1.Left = mergeTrees(root1.Left, root2.Left)
+	root1.Right = mergeTrees(root1.Right, root2.Right)
+	return root1
+}
+```
+
+#### [700. 二叉搜索树中的搜索](https://leetcode-cn.com/problems/search-in-a-binary-search-tree/)
+
+给定二叉搜索树（BST）的根节点和一个值。 你需要在BST中找到节点值等于给定值的节点。 返回以该节点为根的子树。 如果节点不存在，则返回 NULL。
+
+例如，
+
+```
+给定二叉搜索树:
+
+        4
+       / \
+      2   7
+     / \
+    1   3
+
+和值: 2
+```
+
+你应该返回如下子树:
+
+```
+      2     
+     / \   
+    1   3
+```
+
+在上述示例中，如果要找的值是 `5`，但因为没有节点值为 `5`，我们应该返回 `NULL`。
+
+```go
+func searchBST(root *TreeNode, val int) *TreeNode {
+	if root == nil || root.Val == val {
+		return root
+	}
+
+	if val < root.Val {
+		return searchBST(root.Left, val)
+	}
+
+	return searchBST(root.Right, val)
+}
+```
+
+#### [98. 验证二叉搜索树](https://leetcode-cn.com/problems/validate-binary-search-tree/)
+
+给你一个二叉树的根节点 `root` ，判断其是否是一个有效的二叉搜索树。
+
+**有效** 二叉搜索树定义如下：
+
+- 节点的左子树只包含 **小于** 当前节点的数。
+- 节点的右子树只包含 **大于** 当前节点的数。
+- 所有左子树和右子树自身必须也是二叉搜索树。
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2020/12/01/tree1.jpg)
+
+```
+输入：root = [2,1,3]
+输出：true
+```
+
+**示例 2：**
+
+![img](https://assets.leetcode.com/uploads/2020/12/01/tree2.jpg)
+
+```
+输入：root = [5,1,4,null,null,3,6]
+输出：false
+解释：根节点的值是 5 ，但是右子节点的值是 4 。
+```
+
+**提示：**
+
+- 树中节点数目范围在`[1, 104]` 内
+- `-231 <= Node.val <= 231 - 1`
+
+```go
+//中序遍历
+func isValidBST(root *TreeNode) bool {
+	var res []int
+	var run func(root *TreeNode)
+	run = func(root *TreeNode) {
+		if root == nil {
+			return
+		}
+		run(root.Left)
+		res = append(res, root.Val)
+		run(root.Right)
+	}
+	run(root)
+	for i := 0; i < len(res)-1; i++ {
+		if res[i] >= res[i+1] {
+			return false
+		}
+	}
+	return true
+}
+//递归
+func isValidBST(root *TreeNode) bool {
+	return isBST(root, math.MinInt64, math.MaxInt64)
+}
+
+func isBST(root *TreeNode, min, max int) bool {
+	if root == nil {
+		return true
+	}
+	if root.Val <= min || root.Val >= max {
+		return false
+	}
+
+	return isBST(root.Left, min, root.Val) && isBST(root.Right, root.Val, max)
+}
+```
+
+#### [530. 二叉搜索树的最小绝对差](https://leetcode-cn.com/problems/minimum-absolute-difference-in-bst/)
+
+给你一个二叉搜索树的根节点 `root` ，返回 **树中任意两不同节点值之间的最小差值** 。
+
+差值是一个正数，其数值等于两值之差的绝对值。
+
+ 
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2021/02/05/bst1.jpg)
+
+```
+输入：root = [4,2,6,1,3]
+输出：1
+```
+
+**示例 2：**
+
+![img](https://assets.leetcode.com/uploads/2021/02/05/bst2.jpg)
+
+```
+输入：root = [1,0,48,null,null,12,49]
+输出：1
+```
+
+**提示：**
+
+- 树中节点的数目范围是 `[2, 104]`
+- `0 <= Node.val <= 105`
+
+```go
+func getMinimumDifference(root *TreeNode) int {
+	var res []int
+	var run func(root *TreeNode)
+	run = func(root *TreeNode) {
+		if root == nil {
+			return
+		}
+		run(root.Left)
+		res = append(res, root.Val)
+		run(root.Right)
+	}
+	run(root)
+	ans := math.MaxInt64
+	for i := 0; i < len(res)-1; i++ {
+		ans = min(ans, res[i+1]-res[i])
+	}
+	return ans
+}
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
+```
+
+#### [501. 二叉搜索树中的众数](https://leetcode-cn.com/problems/find-mode-in-binary-search-tree/)
+
+给定一个有相同值的二叉搜索树（BST），找出 BST 中的所有众数（出现频率最高的元素）。
+
+假定 BST 有如下定义：
+
+- 结点左子树中所含结点的值小于等于当前结点的值
+- 结点右子树中所含结点的值大于等于当前结点的值
+- 左子树和右子树都是二叉搜索树
+
+例如：
+给定 BST `[1,null,2,2]`,
+
+```
+   1
+    \
+     2
+    /
+   2
+```
+
+`返回[2]`.
+
+**提示**：如果众数超过1个，不需考虑输出顺序
+
+```go
+func findMode(root *TreeNode) []int {
+	res := []int{}
+	count := 1
+	max := 1
+	var pre *TreeNode
+	var run func(root *TreeNode)
+	run = func(root *TreeNode) {
+		if root == nil {
+			return
+		}
+		run(root.Left)
+
+		if pre != nil && pre.Val == root.Val {
+			count++
+		} else {
+			count = 1
+		}
+		if count >= max {
+			if count > max && len(res) > 0 {
+				res = []int{root.Val}
+			} else {
+				res = append(res, root.Val)
+			}
+			max = count
+		}
+		pre = root
+		run(root.Right)
+	}
+	run(root)
+	return res
+}
+```
+
+#### [236. 二叉树的最近公共祖先](https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/)
+
+给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+
+[百度百科](https://baike.baidu.com/item/最近公共祖先/8918834?fr=aladdin)中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（**一个节点也可以是它自己的祖先**）。”
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2018/12/14/binarytree.png)
+
+```
+输入：root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+输出：3
+解释：节点 5 和节点 1 的最近公共祖先是节点 3 。
+```
+
+**示例 2：**
+
+![img](https://assets.leetcode.com/uploads/2018/12/14/binarytree.png)
+
+```
+输入：root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4
+输出：5
+解释：节点 5 和节点 4 的最近公共祖先是节点 5 。因为根据定义最近公共祖先节点可以为节点本身。
+```
+
+**示例 3：**
+
+```
+输入：root = [1,2], p = 1, q = 2
+输出：1
+```
+
+**提示：**
+
+- 树中节点数目在范围 `[2, 105]` 内。
+- `-109 <= Node.val <= 109`
+- 所有 `Node.val` `互不相同` 。
+- `p != q`
+- `p` 和 `q` 均存在于给定的二叉树中。
+
+```go
+func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+	if root == nil || root == q || root == p {
+		return root
+	}
+	left := lowestCommonAncestor(root.Left, p, q)
+	right := lowestCommonAncestor(root.Right, p, q)
+	if left != nil && right != nil {
+		return root
+	}
+	if left == nil {
+		return right
+	}
+	return left
+}
+```
+
+#### [235. 二叉搜索树的最近公共祖先](https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-search-tree/)
+
+给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先。
+
+[百度百科](https://baike.baidu.com/item/最近公共祖先/8918834?fr=aladdin)中最近公共祖先的定义为：“对于有根树 T 的两个结点 p、q，最近公共祖先表示为一个结点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（**一个节点也可以是它自己的祖先**）。”
+
+例如，给定如下二叉搜索树: root = [6,2,8,0,4,7,9,null,null,3,5]
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/binarysearchtree_improved.png)
+
+ 
+
+**示例 1:**
+
+```
+输入: root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 8
+输出: 6 
+解释: 节点 2 和节点 8 的最近公共祖先是 6。
+```
+
+**示例 2:**
+
+```
+输入: root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 4
+输出: 2
+解释: 节点 2 和节点 4 的最近公共祖先是 2, 因为根据定义最近公共祖先节点可以为节点本身。
+```
+
+**说明:**
+
+- 所有节点的值都是唯一的。
+- p、q 为不同节点且均存在于给定的二叉搜索树中。
+
+```go
+func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+	if root == nil || root == q || root == p {
+		return root
+	}
+	left := lowestCommonAncestor(root.Left, p, q)
+	right := lowestCommonAncestor(root.Right, p, q)
+	if left != nil && right != nil {
+		return root
+	}
+	if left == nil {
+		return right
+	}
+	return left
+}
+```
+
 
 
 ## 回溯算法
