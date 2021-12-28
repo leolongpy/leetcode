@@ -4648,6 +4648,277 @@ func convertBST(root *TreeNode) *TreeNode {
 
 ## 回溯算法
 
+#### [77. 组合](https://leetcode-cn.com/problems/combinations/)
+
+给定两个整数 `n` 和 `k`，返回范围 `[1, n]` 中所有可能的 `k` 个数的组合。
+
+你可以按 **任何顺序** 返回答案。
+
+**示例 1：**
+
+```
+输入：n = 4, k = 2
+输出：
+[
+  [2,4],
+  [3,4],
+  [2,3],
+  [1,2],
+  [1,3],
+  [1,4],
+]
+```
+
+**示例 2：**
+
+```
+输入：n = 1, k = 1
+输出：[[1]]
+```
+
+**提示：**
+
+- `1 <= n <= 20`
+- `1 <= k <= n`
+
+```go
+func combine(n int, k int) [][]int {
+	var res [][]int
+	if n < 1 || k < 1 || k > n {
+		return res
+	}
+	backtracking(n, k, 1, []int{}, &res)
+	return res
+}
+
+func backtracking(n, k, index int, tarck []int, res *[][]int) {
+	if len(tarck) == k {
+		tmp := make([]int, k)
+		copy(tmp, tarck)
+		*res = append(*res, tmp)
+	}
+
+	for i := index; i <= n; i++ {
+		tarck = append(tarck, i)
+		backtracking(n, k, i+1, tarck, res)
+		tarck = tarck[:len(tarck)-1]
+	}
+}
+```
+
+#### [216. 组合总和 III](https://leetcode-cn.com/problems/combination-sum-iii/)
+
+找出所有相加之和为 ***n*** 的 k个数的组合。组合中只允许含有 1 - 9 的正整数，并且每种组合中不存在重复的数字。
+
+**说明：**
+
+- 所有数字都是正整数。
+- 解集不能包含重复的组合。 
+
+**示例 1:**
+
+```
+输入: k = 3, n = 7
+输出: [[1,2,4]]
+```
+
+**示例 2:**
+
+```
+输入: k = 3, n = 9
+输出: [[1,2,6], [1,3,5], [2,3,4]]
+```
+
+```go
+func combinationSum3(k int, n int) [][]int {
+	res := [][]int{}
+	if k == 0 || n == 0 || n < k {
+		return res
+	}
+	backtracking(k, n, 1, []int{}, &res)
+	return res
+}
+
+func backtracking(k, n, index int, track []int, res *[][]int) {
+	if len(track) == k {
+		var sum int
+		tmp := make([]int, k)
+		for i, v := range track {
+			sum += v
+			tmp[i] = v
+		}
+		if sum == n {
+			*res = append(*res, tmp)
+		}
+		return
+	}
+
+	for i := index; i <= 9; i++ {
+		track = append(track, i)
+		backtracking(k, n, i+1, track, res)
+		track = track[:len(track)-1]
+	}
+}
+```
+
+#### [17. 电话号码的字母组合](https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/)
+
+给定一个仅包含数字 `2-9` 的字符串，返回所有它能表示的字母组合。答案可以按 **任意顺序** 返回。
+
+给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2021/11/09/200px-telephone-keypad2svg.png)
+
+ 
+
+**示例 1：**
+
+```
+输入：digits = "23"
+输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]
+```
+
+**示例 2：**
+
+```
+输入：digits = ""
+输出：[]
+```
+
+**示例 3：**
+
+```
+输入：digits = "2"
+输出：["a","b","c"]
+```
+
+**提示：**
+
+- `0 <= digits.length <= 4`
+- `digits[i]` 是范围 `['2', '9']` 的一个数字。
+
+```go
+func letterCombinations(digits string) []string {
+	digitsMap := map[byte]string{
+		'0': "",
+		'1': "",
+		'2': "abc",
+		'3': "def",
+		'4': "ghi",
+		'5': "jkl",
+		'6': "mno",
+		'7': "pqrs",
+		'8': "tuv",
+		'9': "wxyz",
+	}
+	res := []string{}
+	if len(digits) == 0 {
+		return res
+	}
+	backtracking(0, "", digits, digitsMap, &res)
+	return res
+
+}
+
+func backtracking(index int, track, digits string, digitsMap map[byte]string, res *[]string) {
+	if len(track) == len(digits) {
+		*res = append(*res, track)
+		return
+	}
+
+	tmp := digits[index]
+	lettr := digitsMap[tmp]
+	for i := 0; i < len(lettr); i++ {
+		track = track + string(lettr[i])
+		backtracking(index+1, track, digits, digitsMap, res)
+		track = track[:len(track)-1]
+	}
+}
+```
+
+#### [39. 组合总和](https://leetcode-cn.com/problems/combination-sum/)
+
+给你一个 **无重复元素** 的整数数组 `candidates` 和一个目标整数 `target` ，找出 `candidates` 中可以使数字和为目标数 `target` 的 **所有不同组合** ，并以列表形式返回。你可以按 **任意顺序** 返回这些组合。
+
+`candidates` 中的 **同一个** 数字可以 **无限制重复被选取** 。如果至少一个数字的被选数量不同，则两种组合是不同的。 
+
+对于给定的输入，保证和为 `target` 的不同组合数少于 `150` 个。
+
+**示例 1：**
+
+```
+输入：candidates = [2,3,6,7], target = 7
+输出：[[2,2,3],[7]]
+解释：
+2 和 3 可以形成一组候选，2 + 2 + 3 = 7 。注意 2 可以使用多次。
+7 也是一个候选， 7 = 7 。
+仅有这两种组合。
+```
+
+**示例 2：**
+
+```
+输入: candidates = [2,3,5], target = 8
+输出: [[2,2,2,2],[2,3,3],[3,5]]
+```
+
+**示例 3：**
+
+```
+输入: candidates = [2], target = 1
+输出: []
+```
+
+**示例 4：**
+
+```
+输入: candidates = [1], target = 1
+输出: [[1]]
+```
+
+**示例 5：**
+
+```
+输入: candidates = [1], target = 2
+输出: [[1,1]]
+```
+
+**提示：**
+
+- `1 <= candidates.length <= 30`
+- `1 <= candidates[i] <= 200`
+- `candidate` 中的每个元素都 **互不相同**
+- `1 <= target <= 500`
+
+```go
+func combinationSum(candidates []int, target int) [][]int {
+	res := [][]int{}
+	backtracking(candidates, []int{}, target, 0, 0, &res)
+	return res
+}
+
+func backtracking(candidates, track []int, target, index, sum int, res *[][]int) {
+	if sum == target {
+		tmp := make([]int, len(track))
+		copy(tmp, track)
+		*res = append(*res, tmp)
+	}
+	if sum > target {
+		return
+	}
+
+	for i := index; i < len(candidates); i++ {
+		track = append(track, candidates[i])
+		sum += candidates[i]
+		backtracking(candidates, track, target, i, sum, res)
+		sum -= candidates[i]
+		track = track[:len(track)-1]
+	}
+}
+```
+
+
+
 #### [90. 子集 II](https://leetcode-cn.com/problems/subsets-ii/)
 
 给你一个整数数组 `nums` ，其中可能包含重复元素，请你返回该数组所有可能的子集（幂集）。
