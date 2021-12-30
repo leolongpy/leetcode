@@ -4917,7 +4917,198 @@ func backtracking(candidates, track []int, target, index, sum int, res *[][]int)
 }
 ```
 
+#### [40. 组合总和 II](https://leetcode-cn.com/problems/combination-sum-ii/)
 
+给定一个数组 `candidates` 和一个目标数 `target` ，找出 `candidates` 中所有可以使数字和为 `target` 的组合。
+
+`candidates` 中的每个数字在每个组合中只能使用一次。
+
+**注意：**解集不能包含重复的组合。 
+
+**示例 1:**
+
+```
+输入: candidates = [10,1,2,7,6,1,5], target = 8,
+输出:
+[
+[1,1,6],
+[1,2,5],
+[1,7],
+[2,6]
+]
+```
+
+**示例 2:**
+
+```
+输入: candidates = [2,5,2,1,2], target = 5,
+输出:
+[
+[1,2,2],
+[5]
+]
+```
+
+**提示:**
+
+- `1 <= candidates.length <= 100`
+- `1 <= candidates[i] <= 50`
+- `1 <= target <= 30`
+
+```go
+func combinationSum2(candidates []int, target int) [][]int {
+	res := [][]int{}
+	sort.Ints(candidates)
+	use := make(map[int]bool)
+	backtracking(0, target, 0, []int{}, candidates, use, &res)
+	return res
+}
+
+func backtracking(index, target, sum int, track, candidates []int, use map[int]bool, res *[][]int) {
+	if sum == target {
+		tmp := make([]int, len(track))
+		copy(tmp, track)
+		*res = append(*res, tmp)
+		return
+	}
+	if sum > target {
+		return
+	}
+	for i := index; i < len(candidates); i++ {
+		if i > 0 && candidates[i] == candidates[i-1] && use[i-1] == false {
+			continue
+		}
+		track = append(track, candidates[i])
+		sum += candidates[i]
+		use[i] = true
+		backtracking(i+1, target, sum, track, candidates, use, res)
+		use[i] = false
+		sum -= candidates[i]
+		track = track[:len(track)-1]
+	}
+}
+```
+
+#### [93. 复原 IP 地址](https://leetcode-cn.com/problems/restore-ip-addresses/)
+
+**有效 IP 地址** 正好由四个整数（每个整数位于 `0` 到 `255` 之间组成，且不能含有前导 `0`），整数之间用 `'.'` 分隔。
+
+- 例如："0.1.2.201" 和 "192.168.1.1" 是 **有效** IP 地址，但是 "0.011.255.245"、"192.168.1.312" 和 "192.168@1.1" 是 **无效** IP 地址。
+
+给定一个只包含数字的字符串 `s` ，用以表示一个 IP 地址，返回所有可能的**有效 IP 地址**，这些地址可以通过在 `s` 中插入 `'.'` 来形成。你不能重新排序或删除 `s` 中的任何数字。你可以按 **任何** 顺序返回答案。
+
+**示例 1：**
+
+```
+输入：s = "25525511135"
+输出：["255.255.11.135","255.255.111.35"]
+```
+
+**示例 2：**
+
+```
+输入：s = "0000"
+输出：["0.0.0.0"]
+```
+
+**示例 3：**
+
+```
+输入：s = "1111"
+输出：["1.1.1.1"]
+```
+
+**示例 4：**
+
+```
+输入：s = "010010"
+输出：["0.10.0.10","0.100.1.0"]
+```
+
+**示例 5：**
+
+```
+输入：s = "101023"
+输出：["1.0.10.23","1.0.102.3","10.1.0.23","10.10.2.3","101.0.2.3"]
+```
+
+**提示：**
+
+- `0 <= s.length <= 20`
+- `s` 仅由数字组成
+
+```go
+func backtracking(s string, path []string, index int, res *[]string) {
+	if index == len(s) && len(path) == 4 {
+		tmp := path[0] + "." + path[1] + "." + path[2] + "." + path[3]
+		*res = append(*res, tmp)
+	}
+
+	for i := index; i < len(s); i++ {
+		path = append(path, s[index:i+1])
+		if i-index+1 <= 3 && isIP(s, index, i) && len(path) <= 4 {
+			backtracking(s, path, i+1, res)
+		}
+		path = path[:len(path)-1]
+	}
+}
+
+func isIP(s string, index, end int) bool {
+	checkInt, _ := strconv.Atoi(s[index : end+1])
+	if end-index > 0 && s[index] == '0' {
+		return false
+	}
+	if checkInt > 255 {
+		return false
+	}
+	return true
+}
+```
+
+#### [78. 子集](https://leetcode-cn.com/problems/subsets/)
+
+给你一个整数数组 `nums` ，数组中的元素 **互不相同** 。返回该数组所有可能的子集（幂集）。
+
+解集 **不能** 包含重复的子集。你可以按 **任意顺序** 返回解集。
+
+**示例 1：**
+
+```
+输入：nums = [1,2,3]
+输出：[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+```
+
+**示例 2：**
+
+```
+输入：nums = [0]
+输出：[[],[0]]
+```
+
+**提示：**
+
+- `1 <= nums.length <= 10`
+- `-10 <= nums[i] <= 10`
+- `nums` 中的所有元素 **互不相同**
+
+```go
+func subsets(nums []int) [][]int {
+	res := [][]int{}
+	backtracking(nums, []int{}, 0, &res)
+	return res
+}
+
+func backtracking(nums, track []int, index int, res *[][]int) {
+	tmp := make([]int, len(track))
+	copy(tmp, track)
+	*res = append(*res, tmp)
+	for i := index; i < len(nums); i++ {
+		track = append(track, nums[i])
+		backtracking(nums, track, i+1, res)
+		track = track[:len(track)-1]
+	}
+}
+```
 
 #### [90. 子集 II](https://leetcode-cn.com/problems/subsets-ii/)
 
