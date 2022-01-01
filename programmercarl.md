@@ -5137,22 +5137,23 @@ func backtracking(nums, track []int, index int, res *[][]int) {
 
  ```go
  func subsetsWithDup(nums []int) [][]int {
- 	var res [][]int
+ 	res := [][]int{}
  	sort.Ints(nums)
- 	backtracking([]int{}, nums, 0, &res)
+ 	backtracking(nums, []int{}, 0, &res)
  	return res
  }
  
- func backtracking(track, nums []int, index int, res *[][]int) {
+ func backtracking(nums, track []int, index int, res *[][]int) {
  	tmp := make([]int, len(track))
  	copy(tmp, track)
  	*res = append(*res, tmp)
+ 
  	for i := index; i < len(nums); i++ {
  		if i > index && nums[i] == nums[i-1] {
  			continue
  		}
  		track = append(track, nums[i])
- 		backtracking(track, nums, i+1, res)
+ 		backtracking(nums, track, i+1, res)
  		track = track[:len(track)-1]
  	}
  }
@@ -5821,6 +5822,28 @@ func maxProfit(prices []int) int {
 - `0 <= nums[i] <= 105`
 
 ```go
+//贪心
+func canJump(nums []int) bool {
+	if len(nums) < 1 {
+		return true
+	}
+	cover := 0
+	for i := 0; i <= cover; i++ {
+		cover = max(nums[i]+i, cover)
+		if cover >= len(nums)-1 {
+			return true
+		}
+	}
+	return false
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+//动态规划
 func canJump(nums []int) bool {
 	if len(nums) <= 1 {
 		return true
@@ -5871,6 +5894,29 @@ func canJump(nums []int) bool {
 - `0 <= nums[i] <= 1000`
 
 ```go
+//贪心
+func jump(nums []int) int {
+	cur := 0
+	next := 0
+	ans := 0
+	for i := 0; i < len(nums)-1; i++ {
+		next = max(nums[i]+i, next)
+		if i == cur {
+			cur = next
+			ans++
+		}
+	}
+	return ans
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+
+//动态规划
 func jump(nums []int) int {
 	dp := make([]int, len(nums))
 	dp[0] = 0
