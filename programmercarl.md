@@ -325,10 +325,10 @@ func removeElements(head *ListNode, val int) *ListNode {
 
 在链表类中实现这些功能：
 
-- get(index)：获取链表中第 `index` 个节点的值。如果索引无效，则返回`-1`。
+- get(index)：获取链表中第 `index` 个节点的值。如果索引无效，则返回 `-1`。
 - addAtHead(val)：在链表的第一个元素之前添加一个值为 `val` 的节点。插入后，新节点将成为链表的第一个节点。
 - addAtTail(val)：将值为 `val` 的节点追加到链表的最后一个元素。
-- addAtIndex(index,val)：在链表中的第 `index` 个节点之前添加值为 `val` 的节点。如果 `index` 等于链表的长度，则该节点将附加到链表的末尾。如果 `index` 大于链表长度，则不会插入节点。如果`index`小于0，则在头部插入节点。
+- addAtIndex(index,val)：在链表中的第 `index` 个节点之前添加值为 `val` 的节点。如果 `index` 等于链表的长度，则该节点将附加到链表的末尾。如果 `index` 大于链表长度，则不会插入节点。如果 `index`小于0，则在头部插入节点。
 - deleteAtIndex(index)：如果索引 `index` 有效，则删除链表中的第 `index` 个节点。
 
 **示例：**
@@ -343,11 +343,9 @@ linkedList.deleteAtIndex(1);  //现在链表是1-> 3
 linkedList.get(1);            //返回3
 ```
 
- 
-
 **提示：**
 
-- 所有`val`值都在 `[1, 1000]` 之内。
+- 所有 `val`值都在 `[1, 1000]` 之内。
 - 操作次数将在 `[1, 1000]` 之内。
 - 请不要使用内置的 LinkedList 库。
 
@@ -398,7 +396,7 @@ func (this *MyLinkedList) Get(index int) int {
 /** Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list. */
 func (this *MyLinkedList) AddAtHead(val int) {
 	node := &Node{Val: val}
-	
+
 	if this.head != nil {
 		node.Next = this.head
 		this.head.Prev = node
@@ -413,7 +411,7 @@ func (this *MyLinkedList) AddAtHead(val int) {
 /** Append a node of value val to the last element of the linked list. */
 func (this *MyLinkedList) AddAtTail(val int) {
 	node := &Node{Val: val}
-	
+
 	if this.tail != nil {
 		node.Prev = this.tail
 		this.tail.Next = node
@@ -423,7 +421,7 @@ func (this *MyLinkedList) AddAtTail(val int) {
 		this.head = this.tail
 	}
     this.size++
-	
+
 }
 
 /** Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted. */
@@ -482,8 +480,6 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
 #### [206. 反转链表](https://leetcode-cn.com/problems/reverse-linked-list/)
 
 给你单链表的头节点 `head` ，请你反转链表，并返回反转后的链表。
-
- 
 
 **示例 1：**
 
@@ -581,8 +577,6 @@ func swapPairs(head *ListNode) *ListNode {
 
 给你一个链表，删除链表的倒数第 `n` 个结点，并且返回链表的头结点。
 
- 
-
 **示例 1：**
 
 ![img](https://assets.leetcode.com/uploads/2020/10/03/remove_ex1.jpg)
@@ -639,8 +633,6 @@ func removeNthFromEnd(head *ListNode, n int) *ListNode {
 题目数据 **保证** 整个链式结构中不存在环。
 
 **注意**，函数返回结果后，链表必须 **保持其原始结构** 。
-
- 
 
 **示例 1：**
 
@@ -763,8 +755,6 @@ func getIntersectionNode(headA, headB *ListNode) *ListNode {
 输出：返回 null
 解释：链表中没有环。
 ```
-
- 
 
 **提示：**
 
@@ -1000,7 +990,7 @@ func twoSum(nums []int, target int) []int {
 输出：1
 ```
 
- **提示：**
+**提示：**
 
 - `n == nums1.length`
 - `n == nums2.length`
@@ -1220,8 +1210,6 @@ func fourSum(nums []int, target int) [][]int {
 	return res
 }
 ```
-
-
 
 ## 字符串
 
@@ -1613,8 +1601,6 @@ func getNext(next []int, s string) {
 }
 ```
 
-
-
 ## 双指针
 
 #### [27. 移除元素](https://leetcode-cn.com/problems/remove-element/)
@@ -1927,8 +1913,6 @@ func removeNthFromEnd(head *ListNode, n int) *ListNode {
 题目数据 **保证** 整个链式结构中不存在环。
 
 **注意**，函数返回结果后，链表必须 **保持其原始结构** 。
-
- 
 
 **示例 1：**
 
@@ -2579,8 +2563,6 @@ func topKFrequent(nums []int, k int) []int {
 输出：[1,2]
 ```
 
- 
-
 **提示：**
 
 - 树中节点数目在范围 `[0, 100]` 内
@@ -2845,7 +2827,7 @@ func levelOrderBottom(root *TreeNode) [][]int {
 **提示:**
 
 - 二叉树的节点个数的范围是 `[0,100]`
-- `-100 <= Node.val <= 100` 
+- `-100 <= Node.val <= 100`
 
 ```go
 func rightSideView(root *TreeNode) []int {
@@ -2938,8 +2920,6 @@ func getAvg(tmp []int) float64 {
 
 树的序列化输入是用层序遍历，每组子节点都由 null 值分隔（参见示例）。
 
- 
-
 **示例 1：**
 
 ![img](https://assets.leetcode.com/uploads/2018/10/12/narytreeexample.png)
@@ -3028,10 +3008,10 @@ func levelOrder(root *Node) [][]int {
 ```
 输入: root = [1,null,2]
 输出: [1,2]
-解释:      
+解释:  
            1 
             \
-             2     
+             2   
 ```
 
 **示例5：**
@@ -3105,8 +3085,6 @@ struct Node {
 - 你只能使用常量级额外空间。
 - 使用递归解题也符合要求，本题中递归程序占用的栈空间不算做额外的空间复杂度。
 
- 
-
 **示例：**
 
 ![img](https://assets.leetcode.com/uploads/2019/02/14/116_sample.png)
@@ -3176,8 +3154,6 @@ struct Node {
 
 - 你只能使用常量级额外空间。
 - 使用递归解题也符合要求，本题中递归程序占用的栈空间不算做额外的空间复杂度。
-
- 
 
 **示例：**
 
@@ -3421,8 +3397,6 @@ func max(x, y int) int {
 }
 ```
 
-
-
 #### [226. 翻转二叉树](https://leetcode-cn.com/problems/invert-binary-tree/)
 
 翻转一棵二叉树。
@@ -3487,30 +3461,30 @@ func invertTree(root *TreeNode) *TreeNode {
    3    3
 ```
 
- ```go
- func isSymmetric(root *TreeNode) bool {
- 	return dfs(root.Left, root.Right)
- }
- 
- func dfs(left, right *TreeNode) bool {
- 	if left == nil && right == nil {
- 		return true
- 	}
- 
- 	if left == nil || right == nil {
- 		return false
- 	}
- 
- 	if left.Val != right.Val {
- 		return false
- 	}
- 
- 	out := dfs(left.Left, right.Right)
- 	in := dfs(left.Right, right.Left)
- 	return in && out
- 
- }
- ```
+```go
+func isSymmetric(root *TreeNode) bool {
+	return dfs(root.Left, root.Right)
+}
+
+func dfs(left, right *TreeNode) bool {
+	if left == nil && right == nil {
+		return true
+	}
+
+	if left == nil || right == nil {
+		return false
+	}
+
+	if left.Val != right.Val {
+		return false
+	}
+
+	out := dfs(left.Left, right.Right)
+	in := dfs(left.Right, right.Left)
+	return in && out
+
+}
+```
 
 #### [222. 完全二叉树的节点个数](https://leetcode-cn.com/problems/count-complete-tree-nodes/)
 
@@ -3543,7 +3517,7 @@ func invertTree(root *TreeNode) *TreeNode {
 
 **提示：**
 
-- 树中节点的数目范围是`[0, 5 * 104]`
+- 树中节点的数目范围是 `[0, 5 * 104]`
 - `0 <= Node.val <= 5 * 104`
 - 题目数据保证输入的树是 **完全二叉树**
 
@@ -3664,24 +3638,24 @@ func binaryTreePaths(root *TreeNode) []string {
 在这个二叉树中，有两个左叶子，分别是 9 和 15，所以返回 24
 ```
 
- ```go
- func sumOfLeftLeaves(root *TreeNode) int {
- 	var res int
- 	if root.Left != nil && root.Left.Right == nil && root.Left.Left == nil {
- 		res += root.Left.Val
- 	}
- 
- 	if root.Left != nil {
- 		res += sumOfLeftLeaves(root.Left)
- 	}
- 
- 	if root.Right != nil {
- 		res += sumOfLeftLeaves(root.Right)
- 	}
- 	return res
- }
- 
- ```
+```go
+func sumOfLeftLeaves(root *TreeNode) int {
+	var res int
+	if root.Left != nil && root.Left.Right == nil && root.Left.Left == nil {
+		res += root.Left.Val
+	}
+
+	if root.Left != nil {
+		res += sumOfLeftLeaves(root.Left)
+	}
+
+	if root.Right != nil {
+		res += sumOfLeftLeaves(root.Right)
+	}
+	return res
+}
+
+```
 
 #### [513. 找树左下角的值](https://leetcode-cn.com/problems/find-bottom-left-tree-value/)
 
@@ -3710,7 +3684,7 @@ func binaryTreePaths(root *TreeNode) []string {
 **提示:**
 
 - 二叉树的节点个数的范围是 `[1,104]`
-- `-231 <= Node.val <= 231 - 1` 
+- `-231 <= Node.val <= 231 - 1`
 
 ```go
 func findBottomLeftValue(root *TreeNode) int {
@@ -3741,8 +3715,6 @@ func findBottomLeftValue(root *TreeNode) int {
 给你二叉树的根节点 `root` 和一个表示目标和的整数 `targetSum` 。判断该树中是否存在 **根节点到叶子节点** 的路径，这条路径上所有节点值相加等于目标和 `targetSum` 。如果存在，返回 `true` ；否则，返回 `false` 。
 
 **叶子节点** 是指没有子节点的节点。
-
- 
 
 **示例 1：**
 
@@ -3775,17 +3747,17 @@ func findBottomLeftValue(root *TreeNode) int {
 解释：由于树是空的，所以不存在根节点到叶子节点的路径。
 ```
 
- ```go
- func hasPathSum(root *TreeNode, targetSum int) bool {
- 	if root == nil {
- 		return false
- 	}
- 	if root.Left == nil && root.Right == nil && targetSum == root.Val {
- 		return true
- 	}
- 	return hasPathSum(root.Left, targetSum-root.Val) || hasPathSum(root.Right, targetSum-root.Val)
- }
- ```
+```go
+func hasPathSum(root *TreeNode, targetSum int) bool {
+	if root == nil {
+		return false
+	}
+	if root.Left == nil && root.Right == nil && targetSum == root.Val {
+		return true
+	}
+	return hasPathSum(root.Left, targetSum-root.Val) || hasPathSum(root.Right, targetSum-root.Val)
+}
+```
 
 #### [105. 从前序与中序遍历序列构造二叉树](https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
 
@@ -3959,12 +3931,12 @@ func findMax(nums []int) int {
 
 ```
 输入: 
-	Tree 1                     Tree 2                  
-          1                         2                             
-         / \                       / \                            
-        3   2                     1   3                        
-       /                           \   \                      
-      5                             4   7                  
+	Tree 1                     Tree 2              
+          1                         2                         
+         / \                       / \                        
+        3   2                     1   3                    
+       /                           \   \                  
+      5                             4   7              
 输出: 
 合并后的树:
 	     3
@@ -4012,7 +3984,7 @@ func mergeTrees(root1 *TreeNode, root2 *TreeNode) *TreeNode {
 你应该返回如下子树:
 
 ```
-      2     
+      2   
      / \   
     1   3
 ```
@@ -4064,7 +4036,7 @@ func searchBST(root *TreeNode, val int) *TreeNode {
 
 **提示：**
 
-- 树中节点数目范围在`[1, 104]` 内
+- 树中节点数目范围在 `[1, 104]` 内
 - `-231 <= Node.val <= 231 - 1`
 
 ```go
@@ -4110,8 +4082,6 @@ func isBST(root *TreeNode, min, max int) bool {
 给你一个二叉搜索树的根节点 `root` ，返回 **树中任意两不同节点值之间的最小差值** 。
 
 差值是一个正数，其数值等于两值之差的绝对值。
-
- 
 
 **示例 1：**
 
@@ -4291,8 +4261,6 @@ func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
 
 ![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/binarysearchtree_improved.png)
 
- 
-
 **示例 1:**
 
 ```
@@ -4336,8 +4304,6 @@ func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
 给定二叉搜索树（BST）的根节点和要插入树中的值，将值插入二叉搜索树。 返回插入后二叉搜索树的根节点。 输入数据 **保证** ，新值和原始二叉搜索树中的任意节点值都不同。
 
 **注意**，可能存在多种有效的插入方式，只要树在插入后仍保持为二叉搜索树即可。 你可以返回 **任意有效的结果** 。
-
- 
 
 **示例 1：**
 
@@ -4464,7 +4430,7 @@ func deleteNode(root *TreeNode, key int) *TreeNode {
 
 #### [669. 修剪二叉搜索树](https://leetcode-cn.com/problems/trim-a-binary-search-tree/)
 
-给你二叉搜索树的根节点 `root` ，同时给定最小边界`low` 和最大边界 `high`。通过修剪二叉搜索树，使得所有节点的值在`[low, high]`中。修剪树不应该改变保留在树中的元素的相对结构（即，如果没有被移除，原有的父代子代关系都应当保留）。 可以证明，存在唯一的答案。
+给你二叉搜索树的根节点 `root` ，同时给定最小边界 `low` 和最大边界 `high`。通过修剪二叉搜索树，使得所有节点的值在 `[low, high]`中。修剪树不应该改变保留在树中的元素的相对结构（即，如果没有被移除，原有的父代子代关系都应当保留）。 可以证明，存在唯一的答案。
 
 所以结果应当返回修剪好的二叉搜索树的新的根节点。注意，根节点可能会根据给定的边界发生改变。
 
@@ -4538,8 +4504,6 @@ func trimBST(root *TreeNode, low int, high int) *TreeNode {
 
 **高度平衡** 二叉树是一棵满足「每个节点的左右两个子树的高度差的绝对值不超过 1 」的二叉树。
 
- 
-
 **示例 1：**
 
 ![img](https://assets.leetcode.com/uploads/2021/02/18/btree1.jpg)
@@ -4586,11 +4550,9 @@ func sortedArrayToBST(nums []int) *TreeNode {
 
 - 节点的左子树仅包含键 **小于** 节点键的节点。
 - 节点的右子树仅包含键 **大于** 节点键的节点。
-- 左右子树也必须是二叉搜索树。 
+- 左右子树也必须是二叉搜索树。
 
 **示例 1：**
-
-**![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2019/05/03/tree.png)**
 
 ```
 输入：[4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]
@@ -4643,8 +4605,6 @@ func convertBST(root *TreeNode) *TreeNode {
 	return root
 }
 ```
-
-
 
 ## 回溯算法
 
@@ -4713,7 +4673,7 @@ func backtracking(n, k, index int, tarck []int, res *[][]int) {
 **说明：**
 
 - 所有数字都是正整数。
-- 解集不能包含重复的组合。 
+- 解集不能包含重复的组合。
 
 **示例 1:**
 
@@ -4768,8 +4728,6 @@ func backtracking(k, n, index int, track []int, res *[][]int) {
 给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。
 
 ![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2021/11/09/200px-telephone-keypad2svg.png)
-
- 
 
 **示例 1：**
 
@@ -4840,7 +4798,7 @@ func backtracking(index int, track, digits string, digitsMap map[byte]string, re
 
 给你一个 **无重复元素** 的整数数组 `candidates` 和一个目标整数 `target` ，找出 `candidates` 中可以使数字和为目标数 `target` 的 **所有不同组合** ，并以列表形式返回。你可以按 **任意顺序** 返回这些组合。
 
-`candidates` 中的 **同一个** 数字可以 **无限制重复被选取** 。如果至少一个数字的被选数量不同，则两种组合是不同的。 
+`candidates` 中的 **同一个** 数字可以 **无限制重复被选取** 。如果至少一个数字的被选数量不同，则两种组合是不同的。
 
 对于给定的输入，保证和为 `target` 的不同组合数少于 `150` 个。
 
@@ -4923,7 +4881,7 @@ func backtracking(candidates, track []int, target, index, sum int, res *[][]int)
 
 `candidates` 中的每个数字在每个组合中只能使用一次。
 
-**注意：**解集不能包含重复的组合。 
+**注意：**解集不能包含重复的组合。
 
 **示例 1:**
 
@@ -5135,37 +5093,35 @@ func backtracking(nums, track []int, index int, res *[][]int) {
 - `1 <= nums.length <= 10`
 - `-10 <= nums[i] <= 10`
 
- ```go
- func subsetsWithDup(nums []int) [][]int {
- 	res := [][]int{}
- 	sort.Ints(nums)
- 	backtracking(nums, []int{}, 0, &res)
- 	return res
- }
- 
- func backtracking(nums, track []int, index int, res *[][]int) {
- 	tmp := make([]int, len(track))
- 	copy(tmp, track)
- 	*res = append(*res, tmp)
- 
- 	for i := index; i < len(nums); i++ {
- 		if i > index && nums[i] == nums[i-1] {
- 			continue
- 		}
- 		track = append(track, nums[i])
- 		backtracking(nums, track, i+1, res)
- 		track = track[:len(track)-1]
- 	}
- }
- ```
+```go
+func subsetsWithDup(nums []int) [][]int {
+	res := [][]int{}
+	sort.Ints(nums)
+	backtracking(nums, []int{}, 0, &res)
+	return res
+}
 
-####  [491. 递增子序列](https://leetcode-cn.com/problems/increasing-subsequences/)
+func backtracking(nums, track []int, index int, res *[][]int) {
+	tmp := make([]int, len(track))
+	copy(tmp, track)
+	*res = append(*res, tmp)
 
+	for i := index; i < len(nums); i++ {
+		if i > index && nums[i] == nums[i-1] {
+			continue
+		}
+		track = append(track, nums[i])
+		backtracking(nums, track, i+1, res)
+		track = track[:len(track)-1]
+	}
+}
+```
+
+#### [491. 递增子序列](https://leetcode-cn.com/problems/increasing-subsequences/)
 
 给你一个整数数组 `nums` ，找出并返回所有该数组中不同的递增子序列，递增子序列中 **至少有两个元素** 。你可以按 **任意顺序** 返回答案。
 
 数组中可能含有重复元素，如出现两个整数相等，也可以视作递增序列的一种特殊情况。
-
 
 **示例 1：**
 
@@ -5180,6 +5136,7 @@ func backtracking(nums, track []int, index int, res *[][]int) {
 输入：nums = [4,4,3,2,1]
 输出：[[4,4]]
 ```
+
 **提示：**
 
 - `1 <= nums.length <= 15`
@@ -5271,7 +5228,7 @@ func backtracking(track, nums []int, used map[int]bool, res *[][]int) {
 }
 ```
 
-####  [47. 全排列 II](https://leetcode-cn.com/problems/permutations-ii/)
+#### [47. 全排列 II](https://leetcode-cn.com/problems/permutations-ii/)
 
 给定一个可包含重复数字的序列 `nums` ，**按任意顺序** 返回所有不重复的全排列。
 
@@ -5581,8 +5538,6 @@ func isValid(row, col int, k byte, board [][]byte) bool {
 	return true
 }
 ```
-
-
 
 ## 贪心
 
@@ -6011,7 +5966,7 @@ func largestSumAfterKNegations(nums []int, k int) int {
 
 如果你可以绕环路行驶一周，则返回出发时加油站的编号，否则返回 -1。
 
-**说明:** 
+**说明:**
 
 - 如果题目有解，该答案即为唯一答案。
 - 输入数组均为非空数组，且长度相同。
@@ -6185,7 +6140,7 @@ func max(x, y int) int {
 **提示：**
 
 - `1 <= bills.length <= 105`
-- `bills[i]` 不是 `5` 就是 `10` 或是 `20` 
+- `bills[i]` 不是 `5` 就是 `10` 或是 `20`
 
 ```go
 func lemonadeChange(bills []int) bool {
@@ -6436,7 +6391,7 @@ func min(x, y int) int {
 
 **提示：**
 
-- `S`的长度在`[1, 500]`之间。
+- `S`的长度在 `[1, 500]`之间。
 - `S`只包含小写字母 `'a'` 到 `'z'` 。
 
 ```go
@@ -6649,7 +6604,6 @@ func maxProfit(prices []int, fee int) int {
 解释：需要至少两个摄像头来监视树的所有节点。 上图显示了摄像头放置的有效位置之一。
 ```
 
-
 **提示：**
 
 1. 给定树的节点数的范围是 `[1, 1000]`。
@@ -6687,8 +6641,6 @@ func minCameraCover(root *TreeNode) int {
 	return res
 }
 ```
-
-
 
 ## 动态规划
 
@@ -6806,7 +6758,7 @@ func climbStairs(n int) int {
 解释：最低花费是从 cost[1] 开始，然后走两步即可到阶梯顶，一共花费 15 。
 ```
 
- **示例 2：**
+**示例 2：**
 
 ```
 输入：cost = [1, 100, 1, 1, 1, 100, 1, 1, 100, 1]
@@ -6846,8 +6798,6 @@ func min(x, y int) int {
 机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。
 
 问总共有多少条不同的路径？
-
- 
 
 **示例 1：**
 
@@ -7082,8 +7032,6 @@ func numTrees(n int) int {
 输出：false
 解释：数组不能分割成两个元素和相等的子集。
 ```
-
-
 
 **提示：**
 
@@ -7338,7 +7286,7 @@ func max(x, y int) int {
 
 请你计算并返回可以凑成总金额的硬币组合数。如果任何硬币组合都无法凑出总金额，返回 `0` 。
 
-假设每一种面额的硬币有无限个。 
+假设每一种面额的硬币有无限个。
 
 题目数据保证结果符合 32 位带符号整数。
 
@@ -8446,7 +8394,7 @@ func max(x, y int) int {
 
 现在，可以绘制一些连接两个数字 `nums1[i]` 和 `nums2[j]` 的直线，这些直线需要同时满足满足：
 
--  `nums1[i] == nums2[j]`
+- `nums1[i] == nums2[j]`
 - 且绘制的直线不与任何其他连线（非水平线）相交。
 
 请注意，连线即使在端点也不能相交：每个数字只能属于一条连线。
@@ -8587,7 +8535,7 @@ func maxSubArray(nums []int) int {
 
 给定字符串 **s** 和 **t** ，判断 **s** 是否为 **t** 的子序列。
 
-字符串的一个子序列是原始字符串删除一些（也可以不删除）字符而不改变剩余字符相对位置形成的新字符串。（例如，`"ace"`是`"abcde"`的一个子序列，而`"aec"`不是）。 
+字符串的一个子序列是原始字符串删除一些（也可以不删除）字符而不改变剩余字符相对位置形成的新字符串。（例如，`"ace"`是 `"abcde"`的一个子序列，而 `"aec"`不是）。
 
 **示例 1：**
 
@@ -8935,8 +8883,6 @@ func max(x, y int) int {
 }
 ```
 
-
-
 ## 单调栈
 
 #### [739. 每日温度](https://leetcode-cn.com/problems/daily-temperatures/)
@@ -8990,7 +8936,7 @@ func dailyTemperatures(temperatures []int) []int {
 
 `nums1` 中数字 `x` 的 **下一个更大元素** 是指 `x` 在 `nums2` 中对应位置 **右侧** 的 **第一个** 比 `x` 大的元素。
 
-给你两个 **没有重复元素** 的数组 `nums1` 和 `nums2` ，下标从 **0** 开始计数，其中`nums1` 是 `nums2` 的子集。
+给你两个 **没有重复元素** 的数组 `nums1` 和 `nums2` ，下标从 **0** 开始计数，其中 `nums1` 是 `nums2` 的子集。
 
 对于每个 `0 <= i < nums1.length` ，找出满足 `nums1[i] == nums2[j]` 的下标 `j` ，并且在 `nums2` 确定 `nums2[j]` 的 **下一个更大元素** 。如果不存在下一个更大元素，那么本次查询的答案是 `-1` 。
 
@@ -9021,7 +8967,7 @@ func dailyTemperatures(temperatures []int) []int {
 
 - `1 <= nums1.length <= nums2.length <= 1000`
 - `0 <= nums1[i], nums2[i] <= 104`
-- `nums1`和`nums2`中所有整数 **互不相同**
+- `nums1`和 `nums2`中所有整数 **互不相同**
 - `nums1` 中的所有整数同样出现在 `nums2` 中
 
 ```go
@@ -9094,8 +9040,6 @@ func nextGreaterElements(nums []int) []int {
 
 求在该柱状图中，能够勾勒出来的矩形的最大面积。
 
- 
-
 **示例 1:**
 
 ![img](https://assets.leetcode.com/uploads/2021/01/04/histogram.jpg)
@@ -9145,3 +9089,60 @@ func max(x, y int) int {
 }
 ```
 
+
+#### [42. 接雨水](https://leetcode-cn.com/problems/trapping-rain-water/)
+
+给定 `n` 个非负整数表示每个宽度为 `1` 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
+
+**示例 1：**
+
+![](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/10/22/rainwatertrap.png)
+
+<pre><strong>输入：</strong>height = [0,1,0,2,1,0,1,3,2,1,2,1]
+<strong>输出：</strong>6
+<strong>解释：</strong>上面是由数组 [0,1,0,2,1,0,1,3,2,1,2,1] 表示的高度图，在这种情况下，可以接 6 个单位的雨水（蓝色部分表示雨水）。 
+</pre>
+
+**示例 2：**
+
+<pre><strong>输入：</strong>height = [4,2,0,3,2,5]
+<strong>输出：</strong>9
+</pre>
+
+**提示：**
+
+* `n == height.length`
+* `1 <= n <= 2 * 10<sup>4</sup>`
+* `0 <= height[i] <= 10<sup>5</sup>`
+
+```go
+func trap(height []int) int {
+	ans := 0
+	n := len(height)
+	for i := 1; i < n-1; i++ {
+		leftMax, rightMax := 0, 0
+		for j := i; j >= 0; j-- {
+			leftMax = max(leftMax, height[j])
+		}
+		for j := i; j < n; j++ {
+			rightMax = max(rightMax, height[j])
+		}
+		ans += min(leftMax, rightMax) - height[i]
+	}
+	return ans
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
+```
