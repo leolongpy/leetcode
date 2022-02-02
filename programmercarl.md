@@ -55,7 +55,7 @@ func search(nums []int, target int) int {
 
 为什么返回数值是整数，但输出的答案是数组呢?
 
-请注意，输入数组是以**「引用」**方式传递的，这意味着在函数里修改输入数组对于调用者是可见的。
+请注意，输入数组是以 **「引用」** 方式传递的，这意味着在函数里修改输入数组对于调用者是可见的。
 
 你可以想象内部操作如下:
 
@@ -154,7 +154,7 @@ func sortedSquares(nums []int) []int {
 
 给定一个含有 `n` 个正整数的数组和一个正整数 `target` **。**
 
-找出该数组中满足其和 `≥ target` 的长度最小的 **连续子数组** `[numsl, numsl+1, ..., numsr-1, numsr]` ，并返回其长度**。**如果不存在符合条件的子数组，返回 `0` 。
+找出该数组中满足其和 `≥ target` 的长度最小的 **连续子数组** `[numsl, numsl+1, ..., numsr-1, numsr]` ，并返回其长度。如果不存在符合条件的子数组，返回 `0` 。
 
 **示例 1：**
 
@@ -3931,12 +3931,12 @@ func findMax(nums []int) int {
 
 ```
 输入: 
-	Tree 1                     Tree 2              
-          1                         2                         
-         / \                       / \                        
-        3   2                     1   3                    
-       /                           \   \                  
-      5                             4   7              
+	Tree 1                     Tree 2            
+          1                         2                       
+         / \                       / \                      
+        3   2                     1   3                  
+       /                           \   \                
+      5                             4   7            
 输出: 
 合并后的树:
 	     3
@@ -9088,7 +9088,6 @@ func max(x, y int) int {
 	return y
 }
 ```
-
 
 #### [42. 接雨水](https://leetcode-cn.com/problems/trapping-rain-water/)
 
