@@ -144,6 +144,54 @@ func reversePrint(head *ListNode) []int {
 }
 ```
 
+#### [剑指 Offer 07. 重建二叉树](https://leetcode-cn.com/problems/zhong-jian-er-cha-shu-lcof/)
+
+输入某二叉树的前序遍历和中序遍历的结果，请构建该二叉树并返回其根节点。
+
+假设输入的前序遍历和中序遍历的结果中都不含重复的数字。
+
+ 
+
+**示例 1:**
+
+![img](https://assets.leetcode.com/uploads/2021/02/19/tree.jpg)
+
+```
+Input: preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]
+Output: [3,9,20,null,null,15,7]
+```
+
+**示例 2:**
+
+```
+Input: preorder = [-1], inorder = [-1]
+Output: [-1]
+```
+
+**限制：**
+
+```
+0 <= 节点个数 <= 5000
+```
+
+```go
+func buildTree(preorder []int, inorder []int) *TreeNode {
+    if len(preorder) == 0{
+        return nil
+    }
+    root := &TreeNode{preorder[0],nil,nil}
+    i:=0
+    for ;i<len(inorder);i++{
+        if preorder[0] == inorder[i]{
+            break
+        }
+    }
+    root.Left = buildTree(preorder[1:i+1],inorder[:i])
+    root.Right = buildTree(preorder[i+1:],inorder[i+1:])
+    return   root
+}
+```
+
 
 
 #### [剑指 Offer 09. 用两个栈实现队列](https://leetcode-cn.com/problems/yong-liang-ge-zhan-shi-xian-dui-lie-lcof/)
@@ -206,6 +254,140 @@ func (this *CQueue) DeleteHead() int {
 	return -1
 }
 ```
+
+#### [剑指 Offer 10- I. 斐波那契数列](https://leetcode-cn.com/problems/fei-bo-na-qi-shu-lie-lcof/)
+
+写一个函数，输入 `n` ，求斐波那契（Fibonacci）数列的第 `n` 项（即 `F(N)`）。斐波那契数列的定义如下：
+
+```
+F(0) = 0,   F(1) = 1
+F(N) = F(N - 1) + F(N - 2), 其中 N > 1.
+```
+
+斐波那契数列由 0 和 1 开始，之后的斐波那契数就是由之前的两数相加而得出。
+
+答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+
+**示例 1：**
+
+```
+输入：n = 2
+输出：1
+```
+
+**示例 2：**
+
+```
+输入：n = 5
+输出：5
+```
+
+**提示：**
+
+- `0 <= n <= 100`
+
+```go
+func fib(n int) int {
+	if n <= 1 {
+		return n
+	}
+	dp := make([]int, n+1)
+	dp[0] = 0
+	dp[1] = 1
+	for i := 2; i <= n; i++ {
+		dp[i] = (dp[i-2] + dp[i-1]) % 1000000007
+	}
+	return dp[n]
+}
+```
+
+#### [剑指 Offer 10- II. 青蛙跳台阶问题](https://leetcode-cn.com/problems/qing-wa-tiao-tai-jie-wen-ti-lcof/)
+
+难度简单240收藏分享切换为英文接收动态反馈
+
+一只青蛙一次可以跳上1级台阶，也可以跳上2级台阶。求该青蛙跳上一个 `n` 级的台阶总共有多少种跳法。
+
+答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+
+**示例 1：**
+
+```
+输入：n = 2
+输出：2
+```
+
+**示例 2：**
+
+```
+输入：n = 7
+输出：21
+```
+
+**示例 3：**
+
+```
+输入：n = 0
+输出：1
+```
+
+**提示：**
+
+- `0 <= n <= 100`
+
+```go
+func numWays(n int) int {
+	if n <= 1 {
+		return 1
+	}
+	dp := make([]int, n+1)
+	dp[1] = 1
+	dp[2] = 2
+	for i := 3; i <= n; i++ {
+		dp[i] = (dp[i-2] + dp[i-1]) % 1000000007
+	}
+	return dp[n]
+}
+```
+
+#### [剑指 Offer 11. 旋转数组的最小数字](https://leetcode-cn.com/problems/xuan-zhuan-shu-zu-de-zui-xiao-shu-zi-lcof/)
+
+把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。
+
+给你一个可能存在 **重复** 元素值的数组 `numbers` ，它原来是一个升序排列的数组，并按上述情形进行了一次旋转。请返回旋转数组的最小元素。例如，数组 `[3,4,5,1,2]` 为 `[1,2,3,4,5]` 的一次旋转，该数组的最小值为1。 
+
+**示例 1：**
+
+```
+输入：[3,4,5,1,2]
+输出：1
+```
+
+**示例 2：**
+
+```
+输入：[2,2,2,0,1]
+输出：0
+```
+
+```go
+func minArray(numbers []int) int {
+	l := 0
+	r := len(numbers) - 1
+	for l < r {
+		mid := l + (r-l)/2
+		if numbers[mid] == numbers[r] {
+			r--
+		} else if numbers[mid] > numbers[r] {
+			l = mid + 1
+		} else {
+			r = mid
+		}
+	}
+	return numbers[l]
+}
+```
+
+
 
 #### [剑指 Offer 30. 包含min函数的栈](https://leetcode-cn.com/problems/bao-han-minhan-shu-de-zhan-lcof/)
 
