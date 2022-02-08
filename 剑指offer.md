@@ -387,6 +387,282 @@ func minArray(numbers []int) int {
 }
 ```
 
+#### [剑指 Offer 12. 矩阵中的路径](https://leetcode-cn.com/problems/ju-zhen-zhong-de-lu-jing-lcof/)
+
+给定一个 `m x n` 二维字符网格 `board` 和一个字符串单词 `word` 。如果 `word` 存在于网格中，返回 `true` ；否则，返回 `false` 。
+
+单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母不允许被重复使用。
+
+例如，在下面的 3×4 的矩阵中包含单词 "ABCCED"（单词中的字母已标出）。
+
+![img](https://assets.leetcode.com/uploads/2020/11/04/word2.jpg)
+
+ 
+
+**示例 1：**
+
+```
+输入：board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCCED"
+输出：true
+```
+
+**示例 2：**
+
+```
+输入：board = [["a","b"],["c","d"]], word = "abcd"
+输出：false
+```
+
+**提示：**
+
+- `1 <= board.length <= 200`
+- `1 <= board[i].length <= 200`
+- `board` 和 `word` 仅由大小写英文字母组成
+
+```go
+func exist(board [][]byte, word string) bool {
+	n := len(board)
+	m := len(board[0])
+	dir := [4][2]int{{0, 1}, {0, -1}, {1, 0}, {-1, 0}}
+	var dfs func(x, y, cur int) bool
+	dfs = func(x, y, cur int) bool {
+		if board[x][y] != word[cur] {
+			return false
+		}
+
+		if cur == len(word)-1 {
+			return true
+		}
+
+		board[x][y] = '.'
+		for _, d := range dir {
+			nx := x + d[0]
+			ny := y + d[1]
+			if nx >= 0 && ny >= 0 && nx < n && ny < m && board[nx][ny] != '.' {
+				if res := dfs(nx, ny, cur+1); res {
+					return true
+				}
+			}
+		}
+		board[x][y] = word[cur]
+		return false
+	}
+	for i := 0; i < n; i++ {
+		for j := 0; j < m; j++ {
+			if ok := dfs(i, j, 0); ok {
+				return true
+			}
+		}
+	}
+	return false
+}
+```
+
+#### [剑指 Offer 13. 机器人的运动范围](https://leetcode-cn.com/problems/ji-qi-ren-de-yun-dong-fan-wei-lcof/)
+
+地上有一个m行n列的方格，从坐标 `[0,0]` 到坐标 `[m-1,n-1]` 。一个机器人从坐标 `[0, 0] `的格子开始移动，它每次可以向左、右、上、下移动一格（不能移动到方格外），也不能进入行坐标和列坐标的数位之和大于k的格子。例如，当k为18时，机器人能够进入方格 [35, 37] ，因为3+5+3+7=18。但它不能进入方格 [35, 38]，因为3+5+3+8=19。请问该机器人能够到达多少个格子？
+
+**示例 1：**
+
+```
+输入：m = 2, n = 3, k = 1
+输出：3
+```
+
+**示例 2：**
+
+```
+输入：m = 3, n = 1, k = 0
+输出：1
+```
+
+**提示：**
+
+- `1 <= n,m <= 100`
+- `0 <= k <= 20`
+
+```go
+func movingCount(m int, n int, k int) int {
+	var res int
+	visit := make([][]bool, m)
+	for i, _ := range visit {
+		visit[i] = make([]bool, n)
+	}
+	visit[0][0] = true
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if j == 0 && i == 0 || digitSum(i, j) > k {
+				continue
+			}
+
+			if i >= 1 {
+				visit[i][j] = visit[i][j] || visit[i-1][j]
+			}
+			if j >= 1 {
+				visit[i][j] = visit[i][j] || visit[i][j-1]
+			}
+			if visit[i][j] {
+				res++
+			}
+		}
+	}
+	return res + 1
+}
+
+func digitSum(i, j int) int {
+	sum := 0
+	for i > 0 {
+		sum += i % 10
+		i = i / 10
+	}
+	for j > 0 {
+		sum += j % 10
+		j = j / 10
+	}
+
+	return sum
+}
+```
+
+#### [剑指 Offer 14- I. 剪绳子](https://leetcode-cn.com/problems/jian-sheng-zi-lcof/)
+
+给你一根长度为 `n` 的绳子，请把绳子剪成整数长度的 `m` 段（m、n都是整数，n>1并且m>1），每段绳子的长度记为 `k[0],k[1]...k[m-1]` 。请问 `k[0]*k[1]*...*k[m-1]` 可能的最大乘积是多少？例如，当绳子的长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。
+
+**示例 1：**
+
+```
+输入: 2
+输出: 1
+解释: 2 = 1 + 1, 1 × 1 = 1
+```
+
+**示例 2:**
+
+```
+输入: 10
+输出: 36
+解释: 10 = 3 + 3 + 4, 3 × 3 × 4 = 36
+```
+
+**提示：**
+
+- `2 <= n <= 58`
+
+```go
+func cuttingRope(n int) int {
+	dp := make([]int, n+1)
+	dp[1] = 1
+	dp[2] = 1
+	for i := 3; i <= n; i++ {
+		for j := 1; j < i; j++ {
+			dp[i] = max(dp[i], max(j*(i-j), j*dp[i-j]))
+		}
+	}
+	return dp[n]
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+```
+
+#### [剑指 Offer 14- II. 剪绳子 II](https://leetcode-cn.com/problems/jian-sheng-zi-ii-lcof/)
+
+给你一根长度为 `n` 的绳子，请把绳子剪成整数长度的 `m` 段（m、n都是整数，n>1并且m>1），每段绳子的长度记为 `k[0],k[1]...k[m - 1]` 。请问 `k[0]*k[1]*...*k[m - 1]` 可能的最大乘积是多少？例如，当绳子的长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。
+
+答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+
+**示例 1：**
+
+```
+输入: 2
+输出: 1
+解释: 2 = 1 + 1, 1 × 1 = 1
+```
+
+**示例 2:**
+
+```
+输入: 10
+输出: 36
+解释: 10 = 3 + 3 + 4, 3 × 3 × 4 = 36
+```
+
+**提示：**
+
+- `2 <= n <= 1000`
+
+```go
+func cuttingRope(n int) int {
+	if n == 2 {
+		return 1
+	}
+	if n == 3 {
+		return 2
+	}
+	if n == 4 {
+		return 4
+	}
+	res := 1
+	for n > 4 {
+		res = res * 3 % 1000000007
+		n -= 3
+	}
+	return res * n % 1000000007
+
+}
+```
+
+#### [剑指 Offer 15. 二进制中1的个数](https://leetcode-cn.com/problems/er-jin-zhi-zhong-1de-ge-shu-lcof/)
+
+编写一个函数，输入是一个无符号整数（以二进制串的形式），返回其二进制表达式中数字位数为 '1' 的个数（也被称为 [汉明重量](http://en.wikipedia.org/wiki/Hamming_weight)).）。
+
+**提示：**
+
+- 请注意，在某些语言（如 Java）中，没有无符号整数类型。在这种情况下，输入和输出都将被指定为有符号整数类型，并且不应影响您的实现，因为无论整数是有符号的还是无符号的，其内部的二进制表示形式都是相同的。
+- 在 Java 中，编译器使用 [二进制补码](https://baike.baidu.com/item/二进制补码/5295284) 记法来表示有符号整数。因此，在上面的 **示例 3** 中，输入表示有符号整数 `-3`。
+
+**示例 1：**
+
+```
+输入：n = 11 (控制台输入 00000000000000000000000000001011)
+输出：3
+解释：输入的二进制串 00000000000000000000000000001011 中，共有三位为 '1'。
+```
+
+**示例 2：**
+
+```
+输入：n = 128 (控制台输入 00000000000000000000000010000000)
+输出：1
+解释：输入的二进制串 00000000000000000000000010000000 中，共有一位为 '1'。
+```
+
+**示例 3：**
+
+```
+输入：n = 4294967293 (控制台输入 11111111111111111111111111111101，部分语言中 n = -3）
+输出：31
+解释：输入的二进制串 11111111111111111111111111111101 中，共有 31 位为 '1'。
+```
+
+**提示：**
+
+- 输入必须是长度为 `32` 的 **二进制串** 。
+
+```go
+func hammingWeight(num uint32) int {
+	var res int
+	for ; num > 0; num &= num - 1 {
+		res++
+	}
+	return res
+}
+```
+
 
 
 #### [剑指 Offer 30. 包含min函数的栈](https://leetcode-cn.com/problems/bao-han-minhan-shu-de-zhan-lcof/)
