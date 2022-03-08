@@ -663,6 +663,128 @@ func hammingWeight(num uint32) int {
 }
 ```
 
+#### [剑指 Offer 16. 数值的整数次方](https://leetcode-cn.com/problems/shu-zhi-de-zheng-shu-ci-fang-lcof/)
+
+实现 [pow(*x*, *n*)](https://www.cplusplus.com/reference/valarray/pow/) ，即计算 x 的 n 次幂函数（即，xn）。不得使用库函数，同时不需要考虑大数问题。
+
+**示例 1：**
+
+```
+输入：x = 2.00000, n = 10
+输出：1024.00000
+```
+
+**示例 2：**
+
+```
+输入：x = 2.10000, n = 3
+输出：9.26100
+```
+
+**示例 3：**
+
+```
+输入：x = 2.00000, n = -2
+输出：0.25000
+解释：2-2 = 1/22 = 1/4 = 0.25
+```
+
+**提示：**
+
+- `-100.0 < x < 100.0`
+- `-231 <= n <= 231-1`
+- `-104 <= xn <= 104`
+
+```go
+func myPow(x float64, n int) float64 {
+	if n < 0 {
+		return 1.0 / run(x, -n)
+	}
+	return run(x, n)
+}
+
+func run(x float64, n int) float64 {
+	ans := 1.0
+	xx := x
+	for n > 0 {
+		if n%2 == 1 {
+			ans *= xx
+		}
+		xx *= xx
+		n /= 2
+	}
+	return ans
+}
+```
+
+#### [剑指 Offer 17. 打印从1到最大的n位数](https://leetcode-cn.com/problems/da-yin-cong-1dao-zui-da-de-nwei-shu-lcof/)
+
+输入数字 `n`，按顺序打印出从 1 到最大的 n 位十进制数。比如输入 3，则打印出 1、2、3 一直到最大的 3 位数 999。
+
+**示例 1:**
+
+```
+输入: n = 1
+输出: [1,2,3,4,5,6,7,8,9]
+```
+
+说明：
+
+- 用返回一个整数列表来代替打印
+- n 为正整数
+
+```go
+func printNumbers(n int) []int {
+	t := math.Pow(10, float64(n)) - 1
+	var ans []int
+	for i := 1; i <= int(t); i++ {
+		ans = append(ans, i)
+	}
+	return ans
+}
+```
+
+#### [剑指 Offer 18. 删除链表的节点](https://leetcode-cn.com/problems/shan-chu-lian-biao-de-jie-dian-lcof/)
+
+给定单向链表的头指针和一个要删除的节点的值，定义一个函数删除该节点。
+
+返回删除后的链表的头节点。
+
+**注意：**此题对比原题有改动
+
+**示例 1:**
+
+```
+输入: head = [4,5,1,9], val = 5
+输出: [4,1,9]
+解释: 给定你链表中值为 5 的第二个节点，那么在调用了你的函数之后，该链表应变为 4 -> 1 -> 9.
+```
+
+**示例 2:**
+
+```
+输入: head = [4,5,1,9], val = 1
+输出: [4,5,9]
+解释: 给定你链表中值为 1 的第三个节点，那么在调用了你的函数之后，该链表应变为 4 -> 5 -> 9.
+```
+
+```go
+func deleteNode(head *ListNode, val int) *ListNode {
+	if head == nil {
+		return nil
+	}
+	dummy := new(ListNode)
+	dummy.Next = head
+	p, c := dummy, head
+	for c.Val != val {
+		p = p.Next
+		c = c.Next
+	}
+	p.Next = c.Next
+	return dummy.Next
+}
+```
+
 
 
 #### [剑指 Offer 30. 包含min函数的栈](https://leetcode-cn.com/problems/bao-han-minhan-shu-de-zhan-lcof/)
