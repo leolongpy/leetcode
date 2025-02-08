@@ -34,14 +34,35 @@ func search(nums []int, target int) int {
 		if nums[mid] == target {
 			return mid
 		} else if target < nums[mid] {
-			right = right - 1
+			right = mid - 1
 		} else {
-			left = left + 1
+			left = mid + 1
 		}
 	}
 	return -1
 }
 ```
+
+```rust
+pub fn search(nums: Vec<i32>, target: i32) -> i32 {
+    let mut left = 0;
+    let mut right = nums.len() as i32 - 1;
+    while left <= right {
+        let mid = left + (right - left) / 2;
+        let mid_val = nums[mid as usize];
+        if mid_val == target {
+            return mid;
+        } else if target < mid_val {
+            right = mid - 1
+        } else {
+            left = mid + 1
+        }
+    }
+    -1
+}
+```
+
+
 
 #### [27. 移除元素](https://leetcode-cn.com/problems/remove-element/)
 
@@ -105,6 +126,21 @@ func removeElement(nums []int, val int) int {
 }
 ```
 
+```rust
+pub fn remove_element(nums: &mut Vec<i32>, val: i32) -> i32 {
+    let mut res = 0;
+    for i in 0..nums.len() {
+        if nums[i] != val {
+            nums[res] = nums[i];
+            res += 1;
+        }
+    }
+    res as i32
+}
+```
+
+
+
 #### [977. 有序数组的平方](https://leetcode-cn.com/problems/squares-of-a-sorted-array/)
 
 给你一个按 **非递减顺序** 排序的整数数组 `nums`，返回 **每个数字的平方** 组成的新数组，要求也按 **非递减顺序** 排序。
@@ -149,6 +185,31 @@ func sortedSquares(nums []int) []int {
 	return ans
 }
 ```
+
+```rust
+pub fn sorted_squares(nums: Vec<i32>) -> Vec<i32> {
+    let mut ans = vec![0; nums.len()];
+    let (mut left, mut right, mut k) = (0, nums.len() - 1, nums.len() - 1);
+    while left <= right {
+        let l_square = nums[left].pow(2);
+        let r_square = nums[right].pow(2);
+        if l_square > r_square {
+            ans[k] = l_square;
+            left += 1;
+        } else {
+            ans[k] = r_square;
+            right -= 1;
+        }
+        if k == 0 {
+            break;
+        }
+        k -= 1
+    }
+    ans
+}
+```
+
+
 
 #### [209. 长度最小的子数组](https://leetcode-cn.com/problems/minimum-size-subarray-sum/)
 
