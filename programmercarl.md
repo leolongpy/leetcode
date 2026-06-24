@@ -62,6 +62,21 @@ pub fn search(nums: Vec<i32>, target: i32) -> i32 {
 }
 ```
 
+```python
+def search(nums, target):
+    left = 0
+    right = len(nums) - 1
+    while left <= right:
+        mid = left + (right - left) // 2
+        if nums[mid] == target:
+            return mid
+        elif target < nums[mid]:
+            right = mid - 1
+        else:
+            left = mid + 1
+    return -1
+```
+
 
 
 #### [27. 移除元素](https://leetcode-cn.com/problems/remove-element/)
@@ -139,6 +154,16 @@ pub fn remove_element(nums: &mut Vec<i32>, val: i32) -> i32 {
 }
 ```
 
+```python
+def removeElement(nums, val):
+    res = 0
+    for i in range(len(nums)):
+        if nums[i] != val:
+            nums[res] = nums[i]
+            res += 1
+    return res
+```
+
 
 
 #### [977. 有序数组的平方](https://leetcode-cn.com/problems/squares-of-a-sorted-array/)
@@ -209,6 +234,22 @@ pub fn sorted_squares(nums: Vec<i32>) -> Vec<i32> {
 }
 ```
 
+```python
+def sortedSquares(nums):
+    ans = [0] * len(nums)
+    left, right, k = 0, len(nums) - 1, len(nums) - 1
+    while left <= right:
+        l, r = nums[left] * nums[left], nums[right] * nums[right]
+        if l > r:
+            ans[k] = l
+            left += 1
+        else:
+            ans[k] = r
+            right -= 1
+        k -= 1
+    return ans
+```
+
 
 
 #### [209. 长度最小的子数组](https://leetcode-cn.com/problems/minimum-size-subarray-sum/)
@@ -266,6 +307,50 @@ func minSubArrayLen(target int, nums []int) int {
 		return 0
 	}
 	return res
+}
+```
+
+```python
+def minSubArrayLen(target: int, nums: list[int]) -> int:
+    i = 0
+    l = len(nums)
+    res = l + 1
+    sum = 0
+    for j in range(l):
+        sum += nums[j]
+        while sum >= target:
+            currlen = j - i + 1
+            if currlen < res:
+                res = currlen
+            sum -= nums[i]
+            i += 1
+    if res == l + 1:
+        return 0
+    return res
+```
+
+```rust
+pub fn min_sub_array_len(target: i32, nums: Vec<i32>) -> i32 {
+    let mut i = 0usize;
+    let l = nums.len();
+    let mut res = l + 1;
+    let mut sum = 0i32;
+    for j in 0..l {
+        sum += nums[j];
+        while sum >= target {
+            let currlen = j - i + 1;
+            if currlen < res {
+                res = currlen;
+            }
+            sum -= nums[i];
+            i += 1;
+        }
+    }
+    if res == l + 1 {
+        0
+    } else {
+        res as i32
+    }
 }
 ```
 
@@ -328,6 +413,73 @@ func generateMatrix(n int) [][]int {
 }
 ```
 
+```python
+def generateMatrix(n):
+    top, bottom = 0, n - 1
+    left, right = 0, n - 1
+    num = 1
+    ans = [[0] * n for _ in range(n)]
+    while num <= n * n:
+        for i in range(left, right + 1):
+            ans[top][i] = num
+            num += 1
+        top += 1
+        for i in range(top, bottom + 1):
+            ans[i][right] = num
+            num += 1
+        right -= 1
+        for i in range(right, left - 1, -1):
+            ans[bottom][i] = num
+            num += 1
+        bottom -= 1
+        for i in range(bottom, top - 1, -1):
+            ans[i][left] = num
+            num += 1
+        left += 1
+    return ans
+```
+
+```rust
+pub fn generate_matrix(n: i32) -> Vec<Vec<i32>> {
+    let n = n as usize;
+    let mut top = 0usize;
+    let mut bottom = n - 1;
+    let mut left = 0usize;
+    let mut right = n - 1;
+    let mut num = 1i32;
+    let mut ans = vec![vec![0i32; n]; n];
+    while num <= (n * n) as i32 {
+        for i in left..=right {
+            ans[top][i] = num;
+            num += 1;
+        }
+        top += 1;
+        for i in top..=bottom {
+            ans[i][right] = num;
+            num += 1;
+        }
+        if right == 0 {
+            break;
+        }
+        right -= 1;
+        for i in (left..=right).rev() {
+            ans[bottom][i] = num;
+            num += 1;
+        }
+        if bottom == 0 {
+            break;
+        }
+        bottom -= 1;
+        for i in (top..=bottom).rev() {
+            ans[i][left] = num;
+            num += 1;
+        }
+        left += 1;
+    }
+    ans
+}
+```
+
 ## 链表
 
 #### [203. 移除链表元素](https://leetcode-cn.com/problems/remove-linked-list-elements/)
@@ -377,6 +529,58 @@ func removeElements(head *ListNode, val int) *ListNode {
 
 	}
 	return dummyHead.Next
+}
+```
+
+```python
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+
+def removeElements(head: ListNode, val: int) -> ListNode:
+    dummyHead = ListNode()
+    dummyHead.next = head
+    curr = dummyHead
+    while curr is not None and curr.next is not None:
+        if curr.next.val == val:
+            curr.next = curr.next.next
+        else:
+            curr = curr.next
+    return dummyHead.next
+```
+
+```rust
+// Definition for singly-linked list.
+// #[derive(PartialEq, Eq, Clone, Debug)]
+// pub struct ListNode {
+//   pub val: i32,
+//   pub next: Option<Box<ListNode>>
+// }
+//
+// impl ListNode {
+//   #[inline]
+//   fn new(val: i32) -> Self {
+//     ListNode {
+//       next: None,
+//       val
+//     }
+//   }
+// }
+impl Solution {
+    pub fn remove_elements(head: Option<Box<ListNode>>, val: i32) -> Option<Box<ListNode>> {
+        let mut dummy = Box::new(ListNode { val: 0, next: head });
+        let mut curr = &mut dummy;
+        while curr.next.is_some() {
+            if curr.next.as_ref().unwrap().val == val {
+                curr.next = curr.next.as_mut().unwrap().next.take();
+            } else {
+                curr = curr.next.as_mut().unwrap();
+            }
+        }
+        dummy.next
+    }
 }
 ```
 
@@ -538,6 +742,277 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
 }
 ```
 
+```python
+class Node:
+    def __init__(self, val=0):
+        self.next = None
+        self.prev = None
+        self.val = val
+
+
+class MyLinkedList:
+    def __init__(self):
+        self.head = None
+        self.tail = None
+        self.size = 0
+
+    def get(self, index: int) -> int:
+        if self.size == 0 or index < 0 or index >= self.size:
+            return -1
+        if index == 0:
+            return self.head.val
+        if index == self.size - 1:
+            return self.tail.val
+        cur = self.head
+        count = 0
+        while cur is not None:
+            if count == index:
+                break
+            count += 1
+            cur = cur.next
+        return cur.val
+
+    def addAtHead(self, val: int) -> None:
+        node = Node(val)
+        if self.head is not None:
+            node.next = self.head
+            self.head.prev = node
+            self.head = node
+        else:
+            self.head = node
+            self.tail = self.head
+        self.size += 1
+
+    def addAtTail(self, val: int) -> None:
+        node = Node(val)
+        if self.tail is not None:
+            node.prev = self.tail
+            self.tail.next = node
+            self.tail = node
+        else:
+            self.tail = node
+            self.head = self.tail
+        self.size += 1
+
+    def addAtIndex(self, index: int, val: int) -> None:
+        if index > self.size:
+            return
+        if index <= 0:
+            self.addAtHead(val)
+            return
+        if index == self.size:
+            self.addAtTail(val)
+            return
+        cur = self.head
+        count = 0
+        while cur is not None and count < index:
+            count += 1
+            cur = cur.next
+        self.size += 1
+        node = Node(val)
+        node.next = cur
+        node.prev = cur.prev
+        cur.prev.next = node
+        cur.prev = node
+
+    def deleteAtIndex(self, index: int) -> None:
+        if self.size == 0 or index < 0 or index >= self.size:
+            return
+        if index == 0:
+            self.head = self.head.next
+        elif index == self.size - 1:
+            self.tail = self.tail.prev
+        else:
+            cur = self.head
+            count = 0
+            while cur is not None and count < index:
+                count += 1
+                cur = cur.next
+            cur.next.prev = cur.prev
+            cur.prev.next = cur.next
+        self.size -= 1
+
+
+# Your MyLinkedList object will be instantiated and called as such:
+# obj = MyLinkedList()
+# param_1 = obj.get(index)
+# obj.addAtHead(val)
+# obj.addAtTail(val)
+# obj.addAtIndex(index,val)
+# obj.deleteAtIndex(index)
+```
+
+```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
+type Link = Option<Rc<RefCell<Node>>>;
+
+#[derive(Default)]
+struct Node {
+    next: Link,
+    prev: Link,
+    val: i32,
+}
+
+impl Node {
+    fn new(val: i32) -> Rc<RefCell<Node>> {
+        Rc::new(RefCell::new(Node {
+            val,
+            ..Default::default()
+        }))
+    }
+}
+
+struct MyLinkedList {
+    head: Link,
+    tail: Link,
+    size: i32,
+}
+
+impl MyLinkedList {
+    fn new() -> Self {
+        MyLinkedList {
+            head: None,
+            tail: None,
+            size: 0,
+        }
+    }
+
+    pub fn get(&self, index: i32) -> i32 {
+        if self.size == 0 || index < 0 || index >= self.size {
+            return -1;
+        }
+        if index == 0 {
+            return self.head.as_ref().unwrap().borrow().val;
+        }
+        if index == self.size - 1 {
+            return self.tail.as_ref().unwrap().borrow().val;
+        }
+        let mut cur = self.head.clone();
+        let mut count = 0;
+        while let Some(node) = cur {
+            if count == index {
+                return node.borrow().val;
+            }
+            count += 1;
+            cur = node.borrow().next.clone();
+        }
+        -1
+    }
+
+    pub fn add_at_head(&mut self, val: i32) {
+        let node = Node::new(val);
+        if let Some(head) = self.head.take() {
+            node.borrow_mut().next = Some(head.clone());
+            head.borrow_mut().prev = Some(node.clone());
+            self.head = Some(node);
+        } else {
+            self.head = Some(node.clone());
+            self.tail = Some(node);
+        }
+        self.size += 1;
+    }
+
+    pub fn add_at_tail(&mut self, val: i32) {
+        let node = Node::new(val);
+        if let Some(tail) = self.tail.take() {
+            node.borrow_mut().prev = Some(tail.clone());
+            tail.borrow_mut().next = Some(node.clone());
+            self.tail = Some(node);
+        } else {
+            self.tail = Some(node.clone());
+            self.head = Some(node);
+        }
+        self.size += 1;
+    }
+
+    pub fn add_at_index(&mut self, index: i32, val: i32) {
+        if index > self.size {
+            return;
+        }
+        if index <= 0 {
+            self.add_at_head(val);
+            return;
+        }
+        if index == self.size {
+            self.add_at_tail(val);
+            return;
+        }
+        let mut cur = self.head.clone();
+        let mut count = 0;
+        while let Some(node) = cur.clone() {
+            if count == index {
+                break;
+            }
+            count += 1;
+            cur = node.borrow().next.clone();
+        }
+        let cur = cur.unwrap();
+        let node = Node::new(val);
+        {
+            let mut nb = node.borrow_mut();
+            nb.next = Some(cur.clone());
+            nb.prev = cur.borrow().prev.clone();
+        }
+        cur.borrow().prev.as_ref().unwrap().borrow_mut().next = Some(node.clone());
+        cur.borrow_mut().prev = Some(node);
+        self.size += 1;
+    }
+
+    pub fn delete_at_index(&mut self, index: i32) {
+        if self.size == 0 || index < 0 || index >= self.size {
+            return;
+        }
+        if index == 0 {
+            let old_head = self.head.take().unwrap();
+            let new_head = old_head.borrow_mut().next.take();
+            if let Some(nh) = new_head.as_ref() {
+                nh.borrow_mut().prev = None;
+            } else {
+                self.tail = None;
+            }
+            self.head = new_head;
+        } else if index == self.size - 1 {
+            let old_tail = self.tail.take().unwrap();
+            let new_tail = old_tail.borrow_mut().prev.take();
+            if let Some(nt) = new_tail.as_ref() {
+                nt.borrow_mut().next = None;
+            } else {
+                self.head = None;
+            }
+            self.tail = new_tail;
+        } else {
+            let mut cur = self.head.clone();
+            let mut count = 0;
+            while let Some(node) = cur.clone() {
+                if count == index {
+                    break;
+                }
+                count += 1;
+                cur = node.borrow().next.clone();
+            }
+            let cur = cur.unwrap();
+            let next = cur.borrow().next.clone().unwrap();
+            let prev = cur.borrow().prev.clone().unwrap();
+            next.borrow_mut().prev = Some(prev.clone());
+            prev.borrow_mut().next = Some(next);
+        }
+        self.size -= 1;
+    }
+}
+
+/**
+ * Your MyLinkedList object will be instantiated and called as such:
+ * let obj = MyLinkedList::new();
+ * let ret_1: i32 = obj.get(index);
+ * obj.add_at_head(val);
+ * obj.add_at_tail(val);
+ * obj.add_at_index(index, val);
+ * obj.delete_at_index(index);
+ */
+```
+
 #### [206. 反转链表](https://leetcode-cn.com/problems/reverse-linked-list/)
 
 给你单链表的头节点 `head` ，请你反转链表，并返回反转后的链表。
@@ -583,6 +1058,51 @@ func reverseList(head *ListNode) *ListNode {
 		cur = next
 	}
 	return pre
+}
+```
+
+```python
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+
+def reverseList(head):
+    pre = None
+    cur = head
+    while cur is not None:
+        next = cur.next
+        cur.next = pre
+        pre = cur
+        cur = next
+    return pre
+```
+
+```rust
+#[derive(PartialEq, Eq, Clone, Debug)]
+pub struct ListNode {
+    pub val: i32,
+    pub next: Option<Box<ListNode>>,
+}
+
+impl ListNode {
+    #[inline]
+    fn new(val: i32) -> Self {
+        ListNode { next: None, val }
+    }
+}
+
+pub fn reverse_list(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+    let mut pre = None;
+    let mut cur = head;
+    while let Some(mut node) = cur {
+        let next = node.next.take();
+        node.next = pre;
+        pre = Some(node);
+        cur = next;
+    }
+    pre
 }
 ```
 
@@ -634,6 +1154,59 @@ func swapPairs(head *ListNode) *ListNode {
 }
 ```
 
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def swapPairs(self, head):
+        dummyHead = ListNode(0, head)
+        cur = dummyHead
+        while cur.next is not None and cur.next.next is not None:
+            tmp = cur.next
+            tmp1 = cur.next.next.next
+            cur.next = cur.next.next
+            cur.next.next = tmp
+            cur.next.next.next = tmp1
+            cur = cur.next.next
+        return dummyHead.next
+```
+
+```rust
+// Definition for singly-linked list.
+// #[derive(PartialEq, Eq, Clone, Debug)]
+// pub struct ListNode {
+//     pub val: i32,
+//     pub next: Option<Box<ListNode>>
+// }
+//
+// impl ListNode {
+//     #[inline]
+//     fn new(val: i32) -> Self {
+//         ListNode {
+//             next: None,
+//             val
+//         }
+//     }
+// }
+pub fn swap_pairs(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+    let mut dummy_head = Box::new(ListNode { val: 0, next: head });
+    let mut cur = &mut dummy_head;
+    while cur.next.is_some() && cur.next.as_ref().unwrap().next.is_some() {
+        let mut tmp = cur.next.take().unwrap();
+        let tmp1 = tmp.next.as_mut().unwrap().next.take();
+        let mut second = tmp.next.take().unwrap();
+        second.next = Some(tmp);
+        second.next.as_mut().unwrap().next = tmp1;
+        cur.next = Some(second);
+        cur = cur.next.as_mut().unwrap().next.as_mut().unwrap();
+    }
+    dummy_head.next
+}
+```
+
 #### [19. 删除链表的倒数第 N 个结点](https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/)
 
 给你一个链表，删除链表的倒数第 `n` 个结点，并且返回链表的头结点。
@@ -680,6 +1253,59 @@ func removeNthFromEnd(head *ListNode, n int) *ListNode {
 	}
 	slow.Next = slow.Next.Next
 	return dummp.Next
+}
+```
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        dummp = ListNode(0, head)
+        fast = slow = dummp
+        for _ in range(n + 1):
+            fast = fast.next
+        while fast is not None:
+            fast = fast.next
+            slow = slow.next
+        slow.next = slow.next.next
+        return dummp.next
+```
+
+```rust
+// Definition for singly-linked list.
+// #[derive(PartialEq, Eq, Clone, Debug)]
+// pub struct ListNode {
+//   pub val: i32,
+//   pub next: Option<Box<ListNode>>
+// }
+//
+// impl ListNode {
+//   #[inline]
+//   fn new(val: i32) -> Self {
+//     ListNode {
+//       next: None,
+//       val
+//     }
+//   }
+// }
+pub fn remove_nth_from_end(head: Option<Box<ListNode>>, n: i32) -> Option<Box<ListNode>> {
+    let mut dummp = Box::new(ListNode { val: 0, next: head });
+    let mut fast = dummp.as_ref();
+    for _ in 0..n + 1 {
+        fast = fast.unwrap().next.as_ref();
+    }
+    let mut slow = &mut dummp;
+    while fast.is_some() {
+        fast = fast.unwrap().next.as_ref();
+        slow = slow.next.as_mut().unwrap();
+    }
+    let to_remove = slow.next.take().unwrap();
+    slow.next = to_remove.next;
+    dummp.next
 }
 ```
 
@@ -779,6 +1405,97 @@ func getIntersectionNode(headA, headB *ListNode) *ListNode {
 }
 ```
 
+```python
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
+
+def getIntersectionNode(headA: ListNode, headB: ListNode) -> ListNode:
+    curA, curB = headA, headB
+    lenA, lenB, cut = 0, 0, 0
+    while curA is not None:
+        curA = curA.next
+        lenA += 1
+
+    while curB is not None:
+        curB = curB.next
+        lenB += 1
+
+    if lenA > lenB:
+        fast, slow = headA, headB
+        cut = lenA - lenB
+    else:
+        fast, slow = headB, headA
+        cut = lenB - lenA
+
+    for _ in range(cut):
+        fast = fast.next
+
+    while fast is not slow:
+        fast = fast.next
+        slow = slow.next
+
+    return fast
+```
+
+```rust
+pub struct ListNode {
+    pub val: i32,
+    pub next: Option<Box<ListNode>>,
+}
+
+pub fn get_intersection_node(
+    head_a: Option<Box<ListNode>>,
+    head_b: Option<Box<ListNode>>,
+) -> Option<Box<ListNode>> {
+    let mut len_a = 0;
+    let mut len_b = 0;
+    let mut cur = &head_a;
+    while let Some(node) = cur {
+        len_a += 1;
+        cur = &node.next;
+    }
+    let mut cur = &head_b;
+    while let Some(node) = cur {
+        len_b += 1;
+        cur = &node.next;
+    }
+
+    let (mut fast, mut slow, cut) = if len_a > len_b {
+        (&head_a, &head_b, len_a - len_b)
+    } else {
+        (&head_b, &head_a, len_b - len_a)
+    };
+
+    for _ in 0..cut {
+        if let Some(node) = fast {
+            fast = &node.next;
+        }
+    }
+
+    while fast != slow {
+        if let Some(node) = fast {
+            fast = &node.next;
+        }
+        if let Some(node) = slow {
+            slow = &node.next;
+        }
+    }
+
+    // Rebuild the intersection node by value to return owned
+    if let Some(node) = fast {
+        Some(Box::new(ListNode {
+            val: node.val,
+            next: None,
+        }))
+    } else {
+        None
+    }
+}
+```
+
 #### [142. 环形链表 II](https://leetcode-cn.com/problems/linked-list-cycle-ii/)
 
 给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 `null`。
@@ -841,6 +1558,92 @@ func detectCycle(head *ListNode) *ListNode {
 }
 ```
 
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
+def detectCycle(head):
+    fast, slow = head, head
+    while fast is not None and fast.next is not None:
+        fast = fast.next.next
+        slow = slow.next
+        if fast == slow:
+            while head != slow:
+                head = head.next
+                slow = slow.next
+            return head
+    return None
+```
+
+```rust
+// Definition for singly-linked list.
+// #[derive(PartialEq, Eq, Clone, Debug)]
+// pub struct ListNode {
+//     pub val: i32,
+//     pub next: Option<Box<ListNode>>
+// }
+//
+// impl ListNode {
+//     #[inline]
+//     fn new(val: i32) -> Self {
+//         ListNode {
+//             next: None,
+//             val
+//         }
+//     }
+// }
+
+#[derive(PartialEq, Eq, Clone, Debug)]
+pub struct ListNode {
+    pub val: i32,
+    pub next: Option<Box<ListNode>>,
+}
+
+impl ListNode {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        ListNode { next: None, val }
+    }
+}
+
+pub fn detectCycle(head: &ListNode) -> Option<&ListNode> {
+    let mut fast = head;
+    let mut slow = head;
+
+    loop {
+        fast = match fast.next.as_deref() {
+            Some(n1) => match n1.next.as_deref() {
+                Some(n2) => n2,
+                None => return None,
+            },
+            None => return None,
+        };
+        slow = match slow.next.as_deref() {
+            Some(n) => n,
+            None => return None,
+        };
+
+        if std::ptr::eq(fast as *const ListNode, slow as *const ListNode) {
+            let mut a = head;
+            let mut b = slow;
+            while !std::ptr::eq(a as *const ListNode, b as *const ListNode) {
+                a = a.next.as_deref().unwrap();
+                b = b.next.as_deref().unwrap();
+            }
+            return Some(a);
+        }
+    }
+}
+```
+
 ## 哈希表
 
 #### [242. 有效的字母异位词](https://leetcode-cn.com/problems/valid-anagram/)
@@ -882,6 +1685,31 @@ func isAnagram(s string, t string) bool {
 }
 ```
 
+```python
+def isAnagram(s: str, t: str) -> bool:
+    ch1 = [0] * 26
+    ch2 = [0] * 26
+    for c in s:
+        ch1[ord(c) - ord('a')] += 1
+    for c in t:
+        ch2[ord(c) - ord('a')] += 1
+    return ch1 == ch2
+```
+
+```rust
+pub fn is_anagram(s: String, t: String) -> bool {
+    let mut ch1 = [0i32; 26];
+    let mut ch2 = [0i32; 26];
+    for b in s.bytes() {
+        ch1[(b - b'a') as usize] += 1;
+    }
+    for b in t.bytes() {
+        ch2[(b - b'a') as usize] += 1;
+    }
+    ch1 == ch2
+}
+```
+
 #### [349. 两个数组的交集](https://leetcode-cn.com/problems/intersection-of-two-arrays/)
 
 给定两个数组，编写一个函数来计算它们的交集。
@@ -919,6 +1747,44 @@ func intersection(nums1 []int, nums2 []int) []int {
 		}
 	}
 	return res
+}
+```
+
+```python
+from typing import List
+
+
+def intersection(nums1: List[int], nums2: List[int]) -> List[int]:
+    m = {}
+    for v in nums1:
+        m[v] = 1
+    res = []
+    for v in nums2:
+        count = m.get(v)
+        if count is not None and count > 0:
+            res.append(v)
+            m[v] -= 1
+    return res
+```
+
+```rust
+use std::collections::HashMap;
+
+pub fn intersection(nums1: Vec<i32>, nums2: Vec<i32>) -> Vec<i32> {
+    let mut m: HashMap<i32, i32> = HashMap::new();
+    for &v in nums1.iter() {
+        m.insert(v, 1);
+    }
+    let mut res: Vec<i32> = Vec::new();
+    for &v in nums2.iter() {
+        if let Some(&count) = m.get(&v) {
+            if count > 0 {
+                res.push(v);
+                m.insert(v, count - 1);
+            }
+        }
+    }
+    res
 }
 ```
 
@@ -976,6 +1842,46 @@ func getSum(n int) int {
 }
 ```
 
+```python
+def isHappy(n: int) -> bool:
+    seen = set()
+    while n != 1 and n not in seen:
+        seen.add(n)
+        n = getSum(n)
+    return n == 1
+
+
+def getSum(n: int) -> int:
+    s = 0
+    while n > 0:
+        s += (n % 10) * (n % 10)
+        n = n // 10
+    return s
+```
+
+```rust
+use std::collections::HashSet;
+
+pub fn is_happy(n: i32) -> bool {
+    let mut seen = HashSet::new();
+    let mut n = n;
+    while n != 1 && !seen.contains(&n) {
+        seen.insert(n);
+        n = get_sum(n);
+    }
+    n == 1
+}
+
+fn get_sum(mut n: i32) -> i32 {
+    let mut sum = 0;
+    while n > 0 {
+        sum += (n % 10) * (n % 10);
+        n = n / 10;
+    }
+    sum
+}
+```
+
 #### [1. 两数之和](https://leetcode-cn.com/problems/two-sum/)
 
 给定一个整数数组 `nums` 和一个整数目标值 `target`，请你在该数组中找出 **和为目标值** *`target`* 的那 **两个** 整数，并返回它们的数组下标。
@@ -1023,6 +1929,31 @@ func twoSum(nums []int, target int) []int {
 		m[v] = k
 	}
 	return []int{}
+}
+```
+
+```python
+def twoSum(nums, target):
+    m = {}
+    for k, v in enumerate(nums):
+        if target - v in m:
+            return [m[target - v], k]
+        m[v] = k
+    return []
+```
+
+```rust
+use std::collections::HashMap;
+
+pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
+    let mut m = HashMap::new();
+    for (k, v) in nums.iter().enumerate() {
+        if let Some(&ids) = m.get(&(target - v)) {
+            return vec![ids, k as i32];
+        }
+        m.insert(*v, k as i32);
+    }
+    vec![]
 }
 ```
 
@@ -1078,6 +2009,41 @@ func fourSumCount(nums1 []int, nums2 []int, nums3 []int, nums4 []int) int {
 }
 ```
 
+```python
+def fourSumCount(nums1, nums2, nums3, nums4):
+    m = {}
+    count = 0
+    for v1 in nums1:
+        for v2 in nums2:
+            m[v1 + v2] = m.get(v1 + v2, 0) + 1
+    for v3 in nums3:
+        for v4 in nums4:
+            count += m.get(-v3 - v4, 0)
+    return count
+```
+
+```rust
+use std::collections::HashMap;
+
+pub fn four_sum_count(nums1: Vec<i32>, nums2: Vec<i32>, nums3: Vec<i32>, nums4: Vec<i32>) -> i32 {
+    let mut m: HashMap<i32, i32> = HashMap::new();
+    let mut count = 0;
+    for &v1 in &nums1 {
+        for &v2 in &nums2 {
+            *m.entry(v1 + v2).or_insert(0) += 1;
+        }
+    }
+    for &v3 in &nums3 {
+        for &v4 in &nums4 {
+            if let Some(&c) = m.get(&(-v3 - v4)) {
+                count += c;
+            }
+        }
+    }
+    count
+}
+```
+
 #### [383. 赎金信](https://leetcode-cn.com/problems/ransom-note/)
 
 给你两个字符串：`ransomNote` 和 `magazine` ，判断 `ransomNote` 能不能由 `magazine` 里面的字符构成。
@@ -1125,6 +2091,35 @@ func canConstruct(ransomNote string, magazine string) bool {
 		}
 	}
 	return true
+}
+```
+
+```python
+def canConstruct(ransomNote: str, magazine: str) -> bool:
+    m = [0] * 26
+    for v in magazine:
+        m[ord(v) - ord('a')] += 1
+    for v in ransomNote:
+        m[ord(v) - ord('a')] -= 1
+        if m[ord(v) - ord('a')] < 0:
+            return False
+    return True
+```
+
+```rust
+pub fn can_construct(ransom_note: String, magazine: String) -> bool {
+    let mut m = [0; 26];
+    for v in magazine.chars() {
+        m[(v as usize) - ('a' as usize)] += 1;
+    }
+    for v in ransom_note.chars() {
+        let idx = (v as usize) - ('a' as usize);
+        m[idx] -= 1;
+        if m[idx] < 0 {
+            return false;
+        }
+    }
+    true
 }
 ```
 
@@ -1200,6 +2195,76 @@ func threeSum(nums []int) [][]int {
 }
 ```
 
+```python
+def threeSum(nums):
+    n = len(nums)
+    nums.sort()
+    res = []
+    for i in range(n - 2):
+        num1 = nums[i]
+        if num1 > 0:
+            break
+        if i > 0 and num1 == nums[i - 1]:
+            continue
+
+        l = i + 1
+        r = n - 1
+        while l < r:
+            num2 = nums[l]
+            num3 = nums[r]
+            total = num1 + num2 + num3
+            if total == 0:
+                res.append([num1, num2, num3])
+                while l < r and num2 == nums[l]:
+                    l += 1
+                while l < r and num3 == nums[r]:
+                    r -= 1
+            elif total > 0:
+                r -= 1
+            else:
+                l += 1
+    return res
+```
+
+```rust
+pub fn three_sum(mut nums: Vec<i32>) -> Vec<Vec<i32>> {
+    let n = nums.len();
+    nums.sort();
+    let mut res: Vec<Vec<i32>> = Vec::new();
+    for i in 0..n.saturating_sub(2) {
+        let num1 = nums[i];
+        if num1 > 0 {
+            break;
+        }
+        if i > 0 && num1 == nums[i - 1] {
+            continue;
+        }
+
+        let mut l = i + 1;
+        let mut r = n - 1;
+        while l < r {
+            let num2 = nums[l];
+            let num3 = nums[r];
+            let total = num1 + num2 + num3;
+            if total == 0 {
+                res.push(vec![num1, num2, num3]);
+                while l < r && num2 == nums[l] {
+                    l += 1;
+                }
+                while l < r && num3 == nums[r] {
+                    r -= 1;
+                }
+            } else if total > 0 {
+                r -= 1;
+            } else {
+                l += 1;
+            }
+        }
+    }
+    res
+}
+```
+
 #### [18. 四数之和](https://leetcode-cn.com/problems/4sum/)
 
 给你一个由 `n` 个整数组成的数组 `nums` ，和一个目标值 `target` 。请你找出并返回满足下述全部条件且**不重复**的四元组 `[nums[a], nums[b], nums[c], nums[d]]` （若两个四元组元素一一对应，则认为两个四元组重复）：
@@ -1272,6 +2337,88 @@ func fourSum(nums []int, target int) [][]int {
 }
 ```
 
+```python
+def fourSum(nums, target):
+    n = len(nums)
+    nums.sort()
+    res = []
+    for i in range(n - 3):
+        num1 = nums[i]
+        if i > 0 and num1 == nums[i - 1]:
+            continue
+        for j in range(i + 1, n - 2):
+            num2 = nums[j]
+            if j > i + 1 and num2 == nums[j - 1]:
+                continue
+            l = j + 1
+            r = n - 1
+            while l < r:
+                num3 = nums[l]
+                num4 = nums[r]
+                total = num1 + num2 + num3 + num4
+                if total == target:
+                    res.append([num1, num2, num3, num4])
+                    while l < r and num3 == nums[l]:
+                        l += 1
+                    while l < r and num4 == nums[r]:
+                        r -= 1
+                elif total > target:
+                    r -= 1
+                else:
+                    l += 1
+    return res
+```
+
+```rust
+pub fn four_sum(nums: Vec<i32>, target: i32) -> Vec<Vec<i32>> {
+    let n = nums.len();
+    let mut nums = nums;
+    nums.sort();
+    let mut res: Vec<Vec<i32>> = Vec::new();
+    let i_bound = n as i64 - 3;
+    let j_bound = n as i64 - 2;
+    let mut i = 0i64;
+    while i < i_bound {
+        let num1 = nums[i as usize];
+        if i > 0 && num1 == nums[(i - 1) as usize] {
+            i += 1;
+            continue;
+        }
+        let mut j = i + 1;
+        while j < j_bound {
+            let num2 = nums[j as usize];
+            if j > i + 1 && num2 == nums[(j - 1) as usize] {
+                j += 1;
+                continue;
+            }
+            let mut l = j + 1;
+            let mut r = n as i64 - 1;
+            while l < r {
+                let num3 = nums[l as usize];
+                let num4 = nums[r as usize];
+                let total = (num1 as i64) + (num2 as i64) + (num3 as i64) + (num4 as i64);
+                if total == target as i64 {
+                    res.push(vec![num1, num2, num3, num4]);
+                    while l < r && num3 == nums[l as usize] {
+                        l += 1;
+                    }
+                    while l < r && num4 == nums[r as usize] {
+                        r -= 1;
+                    }
+                } else if total > target as i64 {
+                    r -= 1;
+                } else {
+                    l += 1;
+                }
+            }
+            j += 1;
+        }
+        i += 1;
+    }
+    res
+}
+```
+
 ## 字符串
 
 #### [344. 反转字符串](https://leetcode-cn.com/problems/reverse-string/)
@@ -1308,6 +2455,28 @@ func reverseString(s []byte) {
 		l++
 		r--
 	}
+}
+```
+
+```python
+def reverseString(s):
+    l = 0
+    r = len(s) - 1
+    while l < r:
+        s[l], s[r] = s[r], s[l]
+        l += 1
+        r -= 1
+```
+
+```rust
+pub fn reverse_string(s: &mut [char]) {
+    let mut l = 0;
+    let mut r = s.len() as i32 - 1;
+    while l < r {
+        s.swap(l as usize, r as usize);
+        l += 1;
+        r -= 1;
+    }
 }
 ```
 
@@ -1363,6 +2532,57 @@ func reverse(s []byte) {
 }
 ```
 
+```python
+def reverseStr(s: str, k: int) -> str:
+    ss = list(s)
+    n = len(ss)
+    for i in range(0, n, 2 * k):
+        if i + k < n:
+            _reverse(ss, i, i + k)
+        else:
+            _reverse(ss, i, n)
+    return "".join(ss)
+
+
+def _reverse(s: list, l: int, r: int) -> None:
+    r -= 1
+    while l < r:
+        s[l], s[r] = s[r], s[l]
+        l += 1
+        r -= 1
+```
+
+```rust
+pub fn reverse_str(s: String, k: i32) -> String {
+    let k = k as usize;
+    let mut ss: Vec<u8> = s.into_bytes();
+    let n = ss.len();
+    let mut i = 0;
+    while i < n {
+        if i + k < n {
+            reverse(&mut ss[i..i + k]);
+        } else {
+            reverse(&mut ss[i..n]);
+        }
+        i += 2 * k;
+    }
+    String::from_utf8(ss).unwrap()
+}
+
+fn reverse(s: &mut [u8]) {
+    let mut l = 0;
+    let mut r = s.len() - 1;
+    while l < r {
+        s.swap(l, r);
+        l += 1;
+        if r == 0 {
+            break;
+        }
+        r -= 1;
+    }
+}
+```
+
 #### [剑指 Offer 05. 替换空格](https://leetcode-cn.com/problems/ti-huan-kong-ge-lcof/)
 
 请实现一个函数，把字符串 `s` 中的每个空格替换成"%20"。
@@ -1392,6 +2612,31 @@ func replaceSpace(s string) string {
 		}
 	}
 	return string(ans)
+}
+```
+
+```python
+def replaceSpace(s: str) -> str:
+    ans = []
+    for c in s:
+        if c == ' ':
+            ans.append("%20")
+        else:
+            ans.append(c)
+    return "".join(ans)
+```
+
+```rust
+pub fn replace_space(s: String) -> String {
+    let mut ans = String::new();
+    for v in s.chars() {
+        if v == ' ' {
+            ans.push_str("%20");
+        } else {
+            ans.push(v);
+        }
+    }
+    ans
 }
 ```
 
@@ -1466,6 +2711,32 @@ func reverseWords(s string) string {
 }
 ```
 
+```python
+def reverseWords(s: str) -> str:
+    words = s.split()
+    l = 0
+    r = len(words) - 1
+    while l < r:
+        words[l], words[r] = words[r], words[l]
+        l += 1
+        r -= 1
+    return " ".join(words)
+```
+
+```rust
+pub fn reverse_words(s: String) -> String {
+    let mut words: Vec<&str> = s.split_whitespace().collect();
+    let mut l = 0;
+    let mut r = words.len() - 1;
+    while l < r {
+        words.swap(l, r);
+        l += 1;
+        r -= 1;
+    }
+    words.join(" ")
+}
+```
+
 #### [剑指 Offer 58 - II. 左旋转字符串](https://leetcode-cn.com/problems/zuo-xuan-zhuan-zi-fu-chuan-lcof/)
 
 字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串"abcdefg"和数字2，该函数将返回左旋转两位得到的结果"cdefgab"。
@@ -1505,6 +2776,41 @@ func reverse(s []byte) {
 		l++
 		r--
 	}
+}
+```
+
+```python
+def reverseLeftWords(s: str, n: int) -> str:
+    ss = list(s)
+    reverse(ss, 0, n - 1)
+    reverse(ss, n, len(ss) - 1)
+    reverse(ss, 0, len(ss) - 1)
+    return "".join(ss)
+
+
+def reverse(s: list, l: int, r: int) -> None:
+    while l < r:
+        s[l], s[r] = s[r], s[l]
+        l += 1
+        r -= 1
+```
+
+```rust
+pub fn reverse_left_words(s: String, n: i32) -> String {
+    let n = n as usize;
+    let mut ss: Vec<char> = s.chars().collect();
+    reverse(&mut ss, 0, n - 1);
+    reverse(&mut ss, n, ss.len() - 1);
+    reverse(&mut ss, 0, ss.len() - 1);
+    ss.iter().collect()
+}
+
+fn reverse(s: &mut [char], mut l: usize, mut r: usize) {
+    while l < r {
+        s.swap(l, r);
+        l += 1;
+        r -= 1;
+    }
 }
 ```
 
@@ -1605,6 +2911,77 @@ func getNext(next []int, s string) {
 }
 ```
 
+```python
+def strStr(haystack: str, needle: str) -> int:
+    n = len(needle)
+    if n == 0:
+        return 0
+    next_arr = get_next(needle)
+    j = 0
+    for i in range(len(haystack)):
+        while j > 0 and haystack[i] != needle[j]:
+            j = next_arr[j - 1]
+        if haystack[i] == needle[j]:
+            j += 1
+        if n == j:
+            return i - n + 1
+    return -1
+
+
+def get_next(s: str) -> list:
+    next_arr = [0] * len(s)
+    j = 0
+    next_arr[0] = j
+    for i in range(1, len(s)):
+        while j > 0 and s[i] != s[j]:
+            j = next_arr[j - 1]
+        if s[i] == s[j]:
+            j += 1
+        next_arr[i] = j
+    return next_arr
+```
+
+```rust
+pub fn str_str(haystack: String, needle: String) -> i32 {
+    let haystack = haystack.as_bytes();
+    let needle = needle.as_bytes();
+    let n = needle.len();
+    if n == 0 {
+        return 0;
+    }
+    let next = get_next(needle);
+    let mut j = 0;
+    for i in 0..haystack.len() {
+        while j > 0 && haystack[i] != needle[j] {
+            j = next[j - 1];
+        }
+        if haystack[i] == needle[j] {
+            j += 1;
+        }
+        if n == j {
+            return (i - n + 1) as i32;
+        }
+    }
+    -1
+}
+
+fn get_next(s: &[u8]) -> Vec<usize> {
+    let mut next = vec![0usize; s.len()];
+    let mut j = 0;
+    next[0] = j;
+    for i in 1..s.len() {
+        while j > 0 && s[i] != s[j] {
+            j = next[j - 1];
+        }
+        if s[i] == s[j] {
+            j += 1;
+        }
+        next[i] = j;
+    }
+    next
+}
+```
+
 #### [459. 重复的子字符串](https://leetcode-cn.com/problems/repeated-substring-pattern/)
 
 给定一个非空的字符串，判断它是否可以由它的一个子串重复多次构成。给定的字符串只含有小写英文字母，并且长度不超过10000。
@@ -1659,6 +3036,53 @@ func getNext(next []int, s string) {
 
 		next[i] = j
 	}
+}
+```
+
+```python
+def repeatedSubstringPattern(s: str) -> bool:
+    n = len(s)
+    nxt = get_next(s)
+    return nxt[n - 1] != 0 and n % (n - nxt[n - 1]) == 0
+
+
+def get_next(s: str) -> list:
+    n = len(s)
+    nxt = [0] * n
+    j = 0
+    nxt[0] = j
+    for i in range(1, n):
+        while j > 0 and s[i] != s[j]:
+            j = nxt[j - 1]
+        if s[i] == s[j]:
+            j += 1
+        nxt[i] = j
+    return nxt
+```
+
+```rust
+pub fn repeated_substring_pattern(s: String) -> bool {
+    let bytes = s.as_bytes();
+    let n = bytes.len();
+    let next = get_next(bytes);
+    next[n - 1] != 0 && n % (n - next[n - 1]) == 0
+}
+
+fn get_next(s: &[u8]) -> Vec<usize> {
+    let n = s.len();
+    let mut next = vec![0usize; n];
+    let mut j = 0;
+    next[0] = j;
+    for i in 1..n {
+        while j > 0 && s[i] != s[j] {
+            j = next[j - 1];
+        }
+        if s[i] == s[j] {
+            j += 1;
+        }
+        next[i] = j;
+    }
+    next
 }
 ```
 
@@ -1726,6 +3150,29 @@ func removeElement(nums []int, val int) int {
 }
 ```
 
+```python
+def removeElement(nums, val):
+    res = 0
+    for i in range(len(nums)):
+        if nums[i] != val:
+            nums[res] = nums[i]
+            res += 1
+    return res
+```
+
+```rust
+pub fn remove_element(nums: &mut Vec<i32>, val: i32) -> i32 {
+    let mut res = 0;
+    for i in 0..nums.len() {
+        if nums[i] != val {
+            nums[res] = nums[i];
+            res += 1;
+        }
+    }
+    res as i32
+}
+```
+
 #### [344. 反转字符串](https://leetcode-cn.com/problems/reverse-string/)
 
 编写一个函数，其作用是将输入的字符串反转过来。输入字符串以字符数组 `s` 的形式给出。
@@ -1763,6 +3210,28 @@ func reverseString(s []byte) {
 }
 ```
 
+```python
+def reverseString(s):
+    l = 0
+    r = len(s) - 1
+    while l < r:
+        s[l], s[r] = s[r], s[l]
+        l += 1
+        r -= 1
+```
+
+```rust
+pub fn reverse_string(s: &mut [char]) {
+    let mut l = 0;
+    let mut r = s.len() as i32 - 1;
+    while l < r {
+        s.swap(l as usize, r as usize);
+        l += 1;
+        r -= 1;
+    }
+}
+```
+
 #### [剑指 Offer 05. 替换空格](https://leetcode-cn.com/problems/ti-huan-kong-ge-lcof/)
 
 请实现一个函数，把字符串 `s` 中的每个空格替换成"%20"。
@@ -1792,6 +3261,31 @@ func replaceSpace(s string) string {
 		}
 	}
 	return string(ans)
+}
+```
+
+```python
+def replaceSpace(s: str) -> str:
+    ans = []
+    for c in s:
+        if c == ' ':
+            ans.append("%20")
+        else:
+            ans.append(c)
+    return "".join(ans)
+```
+
+```rust
+pub fn replace_space(s: String) -> String {
+    let mut ans = String::new();
+    for v in s.chars() {
+        if v == ' ' {
+            ans.push_str("%20");
+        } else {
+            ans.push(v);
+        }
+    }
+    ans
 }
 ```
 
@@ -1866,6 +3360,32 @@ func reverseWords(s string) string {
 }
 ```
 
+```python
+def reverseWords(s: str) -> str:
+    words = s.split()
+    l = 0
+    r = len(words) - 1
+    while l < r:
+        words[l], words[r] = words[r], words[l]
+        l += 1
+        r -= 1
+    return " ".join(words)
+```
+
+```rust
+pub fn reverse_words(s: String) -> String {
+    let mut words: Vec<&str> = s.split_whitespace().collect();
+    let mut l = 0;
+    let mut r = words.len() - 1;
+    while l < r {
+        words.swap(l, r);
+        l += 1;
+        r -= 1;
+    }
+    words.join(" ")
+}
+```
+
 #### [206. 反转链表](https://leetcode-cn.com/problems/reverse-linked-list/)
 
 给你单链表的头节点 `head` ，请你反转链表，并返回反转后的链表。
@@ -1911,6 +3431,51 @@ func reverseList(head *ListNode) *ListNode {
 		cur = next
 	}
 	return pre
+}
+```
+
+```python
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+
+def reverseList(head):
+    pre = None
+    cur = head
+    while cur is not None:
+        next = cur.next
+        cur.next = pre
+        pre = cur
+        cur = next
+    return pre
+```
+
+```rust
+#[derive(PartialEq, Eq, Clone, Debug)]
+pub struct ListNode {
+    pub val: i32,
+    pub next: Option<Box<ListNode>>,
+}
+
+impl ListNode {
+    #[inline]
+    fn new(val: i32) -> Self {
+        ListNode { next: None, val }
+    }
+}
+
+pub fn reverse_list(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+    let mut pre = None;
+    let mut cur = head;
+    while let Some(mut node) = cur {
+        let next = node.next.take();
+        node.next = pre;
+        pre = Some(node);
+        cur = next;
+    }
+    pre
 }
 ```
 
@@ -1960,6 +3525,59 @@ func removeNthFromEnd(head *ListNode, n int) *ListNode {
 	}
 	slow.Next = slow.Next.Next
 	return dummp.Next
+}
+```
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        dummp = ListNode(0, head)
+        fast = slow = dummp
+        for _ in range(n + 1):
+            fast = fast.next
+        while fast is not None:
+            fast = fast.next
+            slow = slow.next
+        slow.next = slow.next.next
+        return dummp.next
+```
+
+```rust
+// Definition for singly-linked list.
+// #[derive(PartialEq, Eq, Clone, Debug)]
+// pub struct ListNode {
+//   pub val: i32,
+//   pub next: Option<Box<ListNode>>
+// }
+//
+// impl ListNode {
+//   #[inline]
+//   fn new(val: i32) -> Self {
+//     ListNode {
+//       next: None,
+//       val
+//     }
+//   }
+// }
+pub fn remove_nth_from_end(head: Option<Box<ListNode>>, n: i32) -> Option<Box<ListNode>> {
+    let mut dummp = Box::new(ListNode { val: 0, next: head });
+    let mut fast = dummp.as_ref();
+    for _ in 0..n + 1 {
+        fast = fast.unwrap().next.as_ref();
+    }
+    let mut slow = &mut dummp;
+    while fast.is_some() {
+        fast = fast.unwrap().next.as_ref();
+        slow = slow.next.as_mut().unwrap();
+    }
+    let to_remove = slow.next.take().unwrap();
+    slow.next = to_remove.next;
+    dummp.next
 }
 ```
 
@@ -2059,6 +3677,97 @@ func getIntersectionNode(headA, headB *ListNode) *ListNode {
 }
 ```
 
+```python
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
+
+def getIntersectionNode(headA: ListNode, headB: ListNode) -> ListNode:
+    curA, curB = headA, headB
+    lenA, lenB, cut = 0, 0, 0
+    while curA is not None:
+        curA = curA.next
+        lenA += 1
+
+    while curB is not None:
+        curB = curB.next
+        lenB += 1
+
+    if lenA > lenB:
+        fast, slow = headA, headB
+        cut = lenA - lenB
+    else:
+        fast, slow = headB, headA
+        cut = lenB - lenA
+
+    for _ in range(cut):
+        fast = fast.next
+
+    while fast is not slow:
+        fast = fast.next
+        slow = slow.next
+
+    return fast
+```
+
+```rust
+pub struct ListNode {
+    pub val: i32,
+    pub next: Option<Box<ListNode>>,
+}
+
+pub fn get_intersection_node(
+    head_a: Option<Box<ListNode>>,
+    head_b: Option<Box<ListNode>>,
+) -> Option<Box<ListNode>> {
+    let mut len_a = 0;
+    let mut len_b = 0;
+    let mut cur = &head_a;
+    while let Some(node) = cur {
+        len_a += 1;
+        cur = &node.next;
+    }
+    let mut cur = &head_b;
+    while let Some(node) = cur {
+        len_b += 1;
+        cur = &node.next;
+    }
+
+    let (mut fast, mut slow, cut) = if len_a > len_b {
+        (&head_a, &head_b, len_a - len_b)
+    } else {
+        (&head_b, &head_a, len_b - len_a)
+    };
+
+    for _ in 0..cut {
+        if let Some(node) = fast {
+            fast = &node.next;
+        }
+    }
+
+    while fast != slow {
+        if let Some(node) = fast {
+            fast = &node.next;
+        }
+        if let Some(node) = slow {
+            slow = &node.next;
+        }
+    }
+
+    // Rebuild the intersection node by value to return owned
+    if let Some(node) = fast {
+        Some(Box::new(ListNode {
+            val: node.val,
+            next: None,
+        }))
+    } else {
+        None
+    }
+}
+```
+
 #### [142. 环形链表 II](https://leetcode-cn.com/problems/linked-list-cycle-ii/)
 
 给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 `null`。
@@ -2118,6 +3827,92 @@ func detectCycle(head *ListNode) *ListNode {
 		}
 	}
 	return nil
+}
+```
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
+def detectCycle(head):
+    fast, slow = head, head
+    while fast is not None and fast.next is not None:
+        fast = fast.next.next
+        slow = slow.next
+        if fast == slow:
+            while head != slow:
+                head = head.next
+                slow = slow.next
+            return head
+    return None
+```
+
+```rust
+// Definition for singly-linked list.
+// #[derive(PartialEq, Eq, Clone, Debug)]
+// pub struct ListNode {
+//     pub val: i32,
+//     pub next: Option<Box<ListNode>>
+// }
+//
+// impl ListNode {
+//     #[inline]
+//     fn new(val: i32) -> Self {
+//         ListNode {
+//             next: None,
+//             val
+//         }
+//     }
+// }
+
+#[derive(PartialEq, Eq, Clone, Debug)]
+pub struct ListNode {
+    pub val: i32,
+    pub next: Option<Box<ListNode>>,
+}
+
+impl ListNode {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        ListNode { next: None, val }
+    }
+}
+
+pub fn detectCycle(head: &ListNode) -> Option<&ListNode> {
+    let mut fast = head;
+    let mut slow = head;
+
+    loop {
+        fast = match fast.next.as_deref() {
+            Some(n1) => match n1.next.as_deref() {
+                Some(n2) => n2,
+                None => return None,
+            },
+            None => return None,
+        };
+        slow = match slow.next.as_deref() {
+            Some(n) => n,
+            None => return None,
+        };
+
+        if std::ptr::eq(fast as *const ListNode, slow as *const ListNode) {
+            let mut a = head;
+            let mut b = slow;
+            while !std::ptr::eq(a as *const ListNode, b as *const ListNode) {
+                a = a.next.as_deref().unwrap();
+                b = b.next.as_deref().unwrap();
+            }
+            return Some(a);
+        }
+    }
 }
 ```
 
@@ -2188,6 +3983,76 @@ func threeSum(nums []int) [][]int {
 		}
 	}
 	return res
+}
+```
+
+```python
+def threeSum(nums):
+    n = len(nums)
+    nums.sort()
+    res = []
+    for i in range(n - 2):
+        num1 = nums[i]
+        if num1 > 0:
+            break
+        if i > 0 and num1 == nums[i - 1]:
+            continue
+
+        l = i + 1
+        r = n - 1
+        while l < r:
+            num2 = nums[l]
+            num3 = nums[r]
+            total = num1 + num2 + num3
+            if total == 0:
+                res.append([num1, num2, num3])
+                while l < r and num2 == nums[l]:
+                    l += 1
+                while l < r and num3 == nums[r]:
+                    r -= 1
+            elif total > 0:
+                r -= 1
+            else:
+                l += 1
+    return res
+```
+
+```rust
+pub fn three_sum(mut nums: Vec<i32>) -> Vec<Vec<i32>> {
+    let n = nums.len();
+    nums.sort();
+    let mut res: Vec<Vec<i32>> = Vec::new();
+    for i in 0..n.saturating_sub(2) {
+        let num1 = nums[i];
+        if num1 > 0 {
+            break;
+        }
+        if i > 0 && num1 == nums[i - 1] {
+            continue;
+        }
+
+        let mut l = i + 1;
+        let mut r = n - 1;
+        while l < r {
+            let num2 = nums[l];
+            let num3 = nums[r];
+            let total = num1 + num2 + num3;
+            if total == 0 {
+                res.push(vec![num1, num2, num3]);
+                while l < r && num2 == nums[l] {
+                    l += 1;
+                }
+                while l < r && num3 == nums[r] {
+                    r -= 1;
+                }
+            } else if total > 0 {
+                r -= 1;
+            } else {
+                l += 1;
+            }
+        }
+    }
+    res
 }
 ```
 
@@ -2262,6 +4127,88 @@ func fourSum(nums []int, target int) [][]int {
 		}
 	}
 	return res
+}
+```
+
+```python
+def fourSum(nums, target):
+    n = len(nums)
+    nums.sort()
+    res = []
+    for i in range(n - 3):
+        num1 = nums[i]
+        if i > 0 and num1 == nums[i - 1]:
+            continue
+        for j in range(i + 1, n - 2):
+            num2 = nums[j]
+            if j > i + 1 and num2 == nums[j - 1]:
+                continue
+            l = j + 1
+            r = n - 1
+            while l < r:
+                num3 = nums[l]
+                num4 = nums[r]
+                total = num1 + num2 + num3 + num4
+                if total == target:
+                    res.append([num1, num2, num3, num4])
+                    while l < r and num3 == nums[l]:
+                        l += 1
+                    while l < r and num4 == nums[r]:
+                        r -= 1
+                elif total > target:
+                    r -= 1
+                else:
+                    l += 1
+    return res
+```
+
+```rust
+pub fn four_sum(nums: Vec<i32>, target: i32) -> Vec<Vec<i32>> {
+    let n = nums.len();
+    let mut nums = nums;
+    nums.sort();
+    let mut res: Vec<Vec<i32>> = Vec::new();
+    let i_bound = n as i64 - 3;
+    let j_bound = n as i64 - 2;
+    let mut i = 0i64;
+    while i < i_bound {
+        let num1 = nums[i as usize];
+        if i > 0 && num1 == nums[(i - 1) as usize] {
+            i += 1;
+            continue;
+        }
+        let mut j = i + 1;
+        while j < j_bound {
+            let num2 = nums[j as usize];
+            if j > i + 1 && num2 == nums[(j - 1) as usize] {
+                j += 1;
+                continue;
+            }
+            let mut l = j + 1;
+            let mut r = n as i64 - 1;
+            while l < r {
+                let num3 = nums[l as usize];
+                let num4 = nums[r as usize];
+                let total = (num1 as i64) + (num2 as i64) + (num3 as i64) + (num4 as i64);
+                if total == target as i64 {
+                    res.push(vec![num1, num2, num3, num4]);
+                    while l < r && num3 == nums[l as usize] {
+                        l += 1;
+                    }
+                    while l < r && num4 == nums[r as usize] {
+                        r -= 1;
+                    }
+                } else if total > target as i64 {
+                    r -= 1;
+                } else {
+                    l += 1;
+                }
+            }
+            j += 1;
+        }
+        i += 1;
+    }
+    res
 }
 ```
 
@@ -2345,6 +4292,59 @@ func isValid(s string) bool {
 }
 ```
 
+```python
+def isValid(s: str) -> bool:
+    n = len(s)
+    if n % 2 == 1:
+        return False
+    stack = []
+
+    p = {
+        ')': '(',
+        '}': '{',
+        ']': '[',
+    }
+    for ch in s:
+        if ch in p:
+            if len(stack) == 0 or p[ch] != stack[len(stack) - 1]:
+                return False
+            stack.pop()
+        else:
+            stack.append(ch)
+
+    return len(stack) == 0
+```
+
+```rust
+use std::collections::HashMap;
+
+pub fn is_valid(s: String) -> bool {
+    let n = s.len();
+    if n % 2 == 1 {
+        return false;
+    }
+    let mut stack: Vec<char> = Vec::new();
+
+    let mut p: HashMap<char, char> = HashMap::new();
+    p.insert(')', '(');
+    p.insert('}', '{');
+    p.insert(']', '[');
+
+    for ch in s.chars() {
+        if let Some(&open) = p.get(&ch) {
+            if stack.is_empty() || open != *stack.last().unwrap() {
+                return false;
+            }
+            stack.pop();
+        } else {
+            stack.push(ch);
+        }
+    }
+
+    stack.is_empty()
+}
+```
+
 #### [1047. 删除字符串中的所有相邻重复项](https://leetcode-cn.com/problems/remove-all-adjacent-duplicates-in-string/)
 
 给出由小写字母组成的字符串 `S`，**重复项删除操作**会选择两个相邻且相同的字母，并删除它们。
@@ -2378,6 +4378,35 @@ func removeDuplicates(s string) string {
 		}
 	}
 	return string(stack)
+}
+```
+
+```python
+def removeDuplicates(s: str) -> str:
+    stack = []
+    for ch in s:
+        if stack and ch == stack[-1]:
+            stack.pop()
+        else:
+            stack.append(ch)
+    return "".join(stack)
+```
+
+```rust
+pub fn remove_duplicates(s: String) -> String {
+    let mut stack: Vec<char> = Vec::new();
+    for ch in s.chars() {
+        if let Some(&top) = stack.last() {
+            if ch == top {
+                stack.pop();
+            } else {
+                stack.push(ch);
+            }
+        } else {
+            stack.push(ch);
+        }
+    }
+    stack.into_iter().collect()
 }
 ```
 
@@ -2454,6 +4483,53 @@ func evalRPN(tokens []string) int {
 
 	}
 	return stack[0]
+}
+```
+
+```python
+def evalRPN(tokens):
+    stack = []
+    for token in tokens:
+        if token not in "+-*/":
+            stack.append(int(token))
+        else:
+            num2 = stack.pop()
+            num1 = stack.pop()
+            if token == "+":
+                stack.append(num1 + num2)
+            elif token == "-":
+                stack.append(num1 - num2)
+            elif token == "*":
+                stack.append(num1 * num2)
+            else:
+                # Integer division truncating toward zero (Go semantics)
+                q = abs(num1) // abs(num2)
+                if (num1 < 0) != (num2 < 0):
+                    q = -q
+                stack.append(q)
+    return stack[0]
+```
+
+```rust
+pub fn eval_rpn(tokens: Vec<String>) -> i32 {
+    let mut stack: Vec<i32> = Vec::new();
+    for token in tokens {
+        if let Ok(val) = token.parse::<i32>() {
+            stack.push(val);
+        } else {
+            let num2 = stack.pop().unwrap();
+            let num1 = stack.pop().unwrap();
+            let res = match token.as_str() {
+                "+" => num1 + num2,
+                "-" => num1 - num2,
+                "*" => num1 * num2,
+                "/" => num1 / num2,
+                _ => panic!("invalid operator"),
+            };
+            stack.push(res);
+        }
+    }
+    stack[0]
 }
 ```
 
@@ -2535,6 +4611,45 @@ func maxSlidingWindow(nums []int, k int) []int {
 
 ```
 
+```python
+def maxSlidingWindow(nums, k):
+    q = []
+    ans = []
+    for i in range(len(nums)):
+        while q and nums[i] > nums[q[-1]]:
+            q.pop()
+        q.append(i)
+        while q[0] <= i - k:
+            q.pop(0)
+
+        if i + 1 >= k:
+            ans.append(nums[q[0]])
+    return ans
+```
+
+```rust
+use std::collections::VecDeque;
+
+pub fn max_sliding_window(nums: Vec<i32>, k: i32) -> Vec<i32> {
+    let mut q: VecDeque<usize> = VecDeque::new();
+    let mut ans: Vec<i32> = Vec::new();
+    for i in 0..nums.len() {
+        while !q.is_empty() && nums[i] > nums[*q.back().unwrap()] {
+            q.pop_back();
+        }
+        q.push_back(i);
+        while *q.front().unwrap() <= i - k as usize {
+            q.pop_front();
+        }
+
+        if i + 1 >= k as usize {
+            ans.push(nums[*q.front().unwrap()]);
+        }
+    }
+    ans
+}
+```
+
 #### [347. 前 K 个高频元素](https://leetcode-cn.com/problems/top-k-frequent-elements/)
 
 给你一个整数数组 `nums` 和一个整数 `k` ，请你返回其中出现频率前 `k` 高的元素。你可以按 **任意顺序** 返回答案。
@@ -2574,6 +4689,33 @@ func topKFrequent(nums []int, k int) []int {
 		return map_num[ans[a]] > map_num[ans[b]]
 	})
 	return ans[:k]
+}
+```
+
+```python
+def topKFrequent(nums, k):
+    map_num = {}
+    for v in nums:
+        map_num[v] = map_num.get(v, 0) + 1
+
+    ans = list(map_num.keys())
+    ans.sort(key=lambda x: map_num[x], reverse=True)
+    return ans[:k]
+```
+
+```rust
+use std::collections::HashMap;
+
+pub fn top_k_frequent(nums: Vec<i32>, k: i32) -> Vec<i32> {
+    let mut map_num: HashMap<i32, i32> = HashMap::new();
+    for &v in &nums {
+        *map_num.entry(v).or_insert(0) += 1;
+    }
+
+    let mut ans: Vec<i32> = map_num.keys().cloned().collect();
+    ans.sort_by(|a, b| map_num[b].cmp(&map_num[a]));
+    ans.truncate(k as usize);
+    ans
 }
 ```
 
@@ -2646,6 +4788,70 @@ func preorderTraversal(root *TreeNode) []int {
 
 ```
 
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+
+def preorderTraversal(root):
+    ans = []
+
+    def run(node):
+        if node is None:
+            return
+        ans.append(node.val)
+        run(node.left)
+        run(node.right)
+
+    run(root)
+    return ans
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//   pub val: i32,
+//   pub left: Option<Rc<RefCell<TreeNode>>>,
+//   pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//   #[inline]
+//   pub fn new(val: i32) -> Self {
+//     TreeNode {
+//       val,
+//       left: None,
+//       right: None,
+//     }
+//   }
+// }
+use std::cell::RefCell;
+use std::rc::Rc;
+
+pub fn preorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+    let mut ans: Vec<i32> = Vec::new();
+
+    fn run(node: Option<Rc<RefCell<TreeNode>>>, ans: &mut Vec<i32>) {
+        match node {
+            None => return,
+            Some(n) => {
+                ans.push(n.borrow().val);
+                run(n.borrow().left.clone(), ans);
+                run(n.borrow().right.clone(), ans);
+            }
+        }
+    }
+
+    run(root, &mut ans);
+    ans
+}
+```
+
 #### [94. 二叉树的中序遍历](https://leetcode-cn.com/problems/binary-tree-inorder-traversal/)
 
 给定一个二叉树的根节点 `root` ，返回它的 **中序** 遍历。
@@ -2713,6 +4919,66 @@ func inorderTraversal(root *TreeNode) []int {
 }
 ```
 
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+def inorderTraversal(root):
+    ans = []
+
+    def run(node):
+        if node is None:
+            return
+        run(node.left)
+        ans.append(node.val)
+        run(node.right)
+
+    run(root)
+    return ans
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//     pub val: i32,
+//     pub left: Option<Rc<RefCell<TreeNode>>>,
+//     pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//     #[inline]
+//     pub fn new(val: i32) -> Self {
+//         TreeNode {
+//             val,
+//             left: None,
+//             right: None,
+//         }
+//     }
+// }
+use std::cell::RefCell;
+use std::rc::Rc;
+
+pub fn inorderTraversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+    let mut ans: Vec<i32> = Vec::new();
+
+    fn run(node: &Option<Rc<RefCell<TreeNode>>>, ans: &mut Vec<i32>) {
+        if let Some(n) = node {
+            let n = n.borrow();
+            run(&n.left, ans);
+            ans.push(n.val);
+            run(&n.right, ans);
+        }
+    }
+
+    run(&root, &mut ans);
+    ans
+}
+```
+
 #### [145. 二叉树的后序遍历](https://leetcode-cn.com/problems/binary-tree-postorder-traversal/)
 
 给定一个二叉树，返回它的 *后序* 遍历。
@@ -2744,6 +5010,62 @@ func postorderTraversal(root *TreeNode) []int {
 	}
 	run(root)
 	return ans
+}
+```
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+def postorderTraversal(root):
+    ans = []
+    def run(node):
+        if node is None:
+            return
+        run(node.left)
+        run(node.right)
+        ans.append(node.val)
+    run(root)
+    return ans
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//   pub val: i32,
+//   pub left: Option<Rc<RefCell<TreeNode>>>,
+//   pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//   #[inline]
+//   pub fn new(val: i32) -> Self {
+//     TreeNode {
+//       val,
+//       left: None,
+//       right: None,
+//     }
+//   }
+// }
+use std::cell::RefCell;
+use std::rc::Rc;
+
+pub fn postorderTraversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+    let mut ans: Vec<i32> = Vec::new();
+    fn run(node: &Option<Rc<RefCell<TreeNode>>>, ans: &mut Vec<i32>) {
+        if let Some(n) = node {
+            let n = n.borrow();
+            run(&n.left, ans);
+            run(&n.right, ans);
+            ans.push(n.val);
+        }
+    }
+    run(&root, &mut ans);
+    ans
 }
 ```
 
@@ -2796,6 +5118,88 @@ func levelOrder(root *TreeNode) [][]int {
 		res = append(res, temArr)
 	}
 	return res
+}
+```
+
+```python
+from typing import List, Optional
+from collections import deque
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def levelOrder(root: Optional[TreeNode]) -> List[List[int]]:
+    res = []
+    if root is None:
+        return res
+    queue = deque([root])
+    while queue:
+        tem_arr = []
+        length = len(queue)
+        for _ in range(length):
+            node = queue.popleft()
+            if node.left is not None:
+                queue.append(node.left)
+            if node.right is not None:
+                queue.append(node.right)
+            tem_arr.append(node.val)
+        res.append(tem_arr)
+    return res
+```
+
+```rust
+use std::cell::RefCell;
+use std::collections::VecDeque;
+use std::rc::Rc;
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<TreeNode>>>,
+    pub right: Option<Rc<RefCell<TreeNode>>>,
+}
+
+impl TreeNode {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
+    }
+}
+
+pub fn level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
+    let mut res: Vec<Vec<i32>> = Vec::new();
+    let root = match root {
+        Some(node) => node,
+        None => return res,
+    };
+    let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
+    queue.push_back(root);
+    while !queue.is_empty() {
+        let mut tem_arr: Vec<i32> = Vec::new();
+        let length = queue.len();
+        for _ in 0..length {
+            let node = queue.pop_front().unwrap();
+            let node_ref = node.borrow();
+            if let Some(left) = node_ref.left.clone() {
+                queue.push_back(left);
+            }
+            if let Some(right) = node_ref.right.clone() {
+                queue.push_back(right);
+            }
+            tem_arr.push(node_ref.val);
+        }
+        res.push(tem_arr);
+    }
+    res
 }
 ```
 
@@ -2858,6 +5262,101 @@ func levelOrderBottom(root *TreeNode) [][]int {
 }
 ```
 
+```python
+from typing import List, Optional
+from collections import deque
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def levelOrderBottom(root: Optional[TreeNode]) -> List[List[int]]:
+    res = []
+    if root is None:
+        return res
+    queue = deque([root])
+    while queue:
+        tmparr = []
+        length = len(queue)
+        for _ in range(length):
+            node = queue.popleft()
+            if node.left is not None:
+                queue.append(node.left)
+            if node.right is not None:
+                queue.append(node.right)
+            tmparr.append(node.val)
+        res.append(tmparr)
+    l = 0
+    r = len(res) - 1
+    while l < r:
+        res[l], res[r] = res[r], res[l]
+        l += 1
+        r -= 1
+    return res
+```
+
+```rust
+use std::rc::Rc;
+use std::cell::RefCell;
+use std::collections::VecDeque;
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<TreeNode>>>,
+    pub right: Option<Rc<RefCell<TreeNode>>>,
+}
+
+impl TreeNode {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
+    }
+}
+
+pub fn level_order_bottom(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
+    let mut res: Vec<Vec<i32>> = Vec::new();
+    let root = match root {
+        Some(node) => node,
+        None => return res,
+    };
+    let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
+    queue.push_back(root);
+    while !queue.is_empty() {
+        let mut tmparr: Vec<i32> = Vec::new();
+        let length = queue.len();
+        for _ in 0..length {
+            let node = queue.pop_front().unwrap();
+            let node_ref = node.borrow();
+            if let Some(left) = node_ref.left.clone() {
+                queue.push_back(left);
+            }
+            if let Some(right) = node_ref.right.clone() {
+                queue.push_back(right);
+            }
+            tmparr.push(node_ref.val);
+        }
+        res.push(tmparr);
+    }
+    let mut l = 0;
+    let mut r = res.len() - 1;
+    while l < r {
+        res.swap(l, r);
+        l += 1;
+        r -= 1;
+    }
+    res
+}
+```
+
 #### [199. 二叉树的右视图](https://leetcode-cn.com/problems/binary-tree-right-side-view/)
 
 给定一个二叉树的 **根节点** `root`，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
@@ -2914,6 +5413,87 @@ func rightSideView(root *TreeNode) []int {
 		res = append(res, tmpArr[len(tmpArr)-1])
 	}
 	return res
+}
+```
+
+```python
+from typing import List, Optional
+from collections import deque
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def rightSideView(root: Optional[TreeNode]) -> List[int]:
+    res = []
+    if root is None:
+        return res
+    queue = deque([root])
+    while queue:
+        length = len(queue)
+        tmp_arr = []
+        for _ in range(length):
+            node = queue.popleft()
+            if node.left is not None:
+                queue.append(node.left)
+            if node.right is not None:
+                queue.append(node.right)
+            tmp_arr.append(node.val)
+        res.append(tmp_arr[-1])
+    return res
+```
+
+```rust
+use std::collections::VecDeque;
+use std::rc::Rc;
+use std::cell::RefCell;
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<TreeNode>>>,
+    pub right: Option<Rc<RefCell<TreeNode>>>,
+}
+
+impl TreeNode {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
+    }
+}
+
+pub fn right_side_view(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+    let mut res: Vec<i32> = Vec::new();
+    if root.is_none() {
+        return res;
+    }
+    let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
+    queue.push_back(root.unwrap());
+    while !queue.is_empty() {
+        let length = queue.len();
+        let mut tmp_arr: Vec<i32> = Vec::new();
+        for _ in 0..length {
+            let node = queue.pop_front().unwrap();
+            let node_ref = node.borrow();
+            if node_ref.left.is_some() {
+                queue.push_back(node_ref.left.clone().unwrap());
+            }
+            if node_ref.right.is_some() {
+                queue.push_back(node_ref.right.clone().unwrap());
+            }
+            tmp_arr.push(node_ref.val);
+        }
+        res.push(tmp_arr[tmp_arr.len() - 1]);
+    }
+    res
 }
 ```
 
@@ -2975,6 +5555,103 @@ func getAvg(tmp []int) float64 {
 }
 ```
 
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+from collections import deque
+
+
+def averageOfLevels(root):
+    res = []
+    if root is None:
+        return res
+    queue = deque()
+    queue.append(root)
+    while queue:
+        tmpArr = []
+        length = len(queue)
+        for _ in range(length):
+            node = queue.popleft()
+            if node.left is not None:
+                queue.append(node.left)
+            if node.right is not None:
+                queue.append(node.right)
+            tmpArr.append(node.val)
+        res.append(getAvg(tmpArr))
+    return res
+
+
+def getAvg(tmp):
+    total = 0
+    n = len(tmp)
+    for v in tmp:
+        total += v
+    return total / n
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//   pub val: i32,
+//   pub left: Option<Rc<RefCell<TreeNode>>>,
+//   pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//   #[inline]
+//   pub fn new(val: i32) -> Self {
+//     TreeNode {
+//       val,
+//       left: None,
+//       right: None,
+//     }
+//   }
+// }
+use std::collections::VecDeque;
+use std::rc::Rc;
+use std::cell::RefCell;
+
+pub fn average_of_levels(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<f64> {
+    let mut res: Vec<f64> = Vec::new();
+    if root.is_none() {
+        return res;
+    }
+    let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
+    queue.push_back(root.unwrap());
+    while !queue.is_empty() {
+        let mut tmp_arr: Vec<i32> = Vec::new();
+        let length = queue.len();
+        for _ in 0..length {
+            let node = queue.pop_front().unwrap();
+            let node_ref = node.borrow();
+            if let Some(left) = node_ref.left.clone() {
+                queue.push_back(left);
+            }
+            if let Some(right) = node_ref.right.clone() {
+                queue.push_back(right);
+            }
+            tmp_arr.push(node_ref.val);
+        }
+        res.push(get_avg(&tmp_arr));
+    }
+    res
+}
+
+pub fn get_avg(tmp: &[i32]) -> f64 {
+    let mut sum: i64 = 0;
+    let n = tmp.len();
+    for &v in tmp {
+        sum += v as i64;
+    }
+    sum as f64 / n as f64
+}
+```
+
 #### [429. N 叉树的层序遍历](https://leetcode-cn.com/problems/n-ary-tree-level-order-traversal/)
 
 给定一个 N 叉树，返回其节点值的*层序遍历*。（即从左到右，逐层遍历）。
@@ -3026,6 +5703,82 @@ func levelOrder(root *Node) [][]int {
 		res = append(res, tmpArr)
 	}
 	return res
+}
+```
+
+```python
+from typing import List
+from collections import deque
+
+
+class Node:
+    def __init__(self, val=None, children=None):
+        self.val = val
+        self.children = children if children is not None else []
+
+
+def levelOrder(root: 'Node') -> List[List[int]]:
+    res = []
+    if root is None:
+        return res
+    queue = deque([root])
+    while queue:
+        length = len(queue)
+        tmpArr = []
+        for _ in range(length):
+            node = queue.popleft()
+            tmpArr.append(node.val)
+            for child in node.children:
+                queue.append(child)
+        res.append(tmpArr)
+    return res
+```
+
+```rust
+use std::collections::VecDeque;
+
+// Definition for a Node.
+// #[derive(Debug)]
+// pub struct Node {
+//     pub val: i32,
+//     pub children: Vec<Rc<RefCell<Node>>>,
+// }
+//
+// impl Node {
+//     #[inline]
+//     pub fn new(val: i32) -> Self {
+//         Node {
+//             val,
+//             children: Vec::new(),
+//         }
+//     }
+// }
+
+use std::rc::Rc;
+use std::cell::RefCell;
+
+pub fn level_order(root: Option<Rc<RefCell<Node>>>) -> Vec<Vec<i32>> {
+    let mut res: Vec<Vec<i32>> = Vec::new();
+    let root = match root {
+        Some(n) => n,
+        None => return res,
+    };
+    let mut queue: VecDeque<Rc<RefCell<Node>>> = VecDeque::new();
+    queue.push_back(root);
+    while !queue.is_empty() {
+        let length = queue.len();
+        let mut tmp_arr: Vec<i32> = Vec::with_capacity(length);
+        for _ in 0..length {
+            let node_rc = queue.pop_front().unwrap();
+            let node = node_rc.borrow();
+            tmp_arr.push(node.val);
+            for child in node.children.iter() {
+                queue.push_back(Rc::clone(child));
+            }
+        }
+        res.push(tmp_arr);
+    }
+    res
 }
 ```
 
@@ -3124,6 +5877,101 @@ func getMax(tmpArr []int) int {
 }
 ```
 
+```python
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def largestValues(root):
+    res = []
+    if root is None:
+        return res
+    queue = [root]
+    while queue:
+        tmpArr = []
+        length = len(queue)
+        for i in range(length):
+            node = queue.pop(0)
+            if node.left is not None:
+                queue.append(node.left)
+            if node.right is not None:
+                queue.append(node.right)
+            tmpArr.append(node.val)
+        res.append(getMax(tmpArr))
+    return res
+
+
+def getMax(tmpArr):
+    maxVal = tmpArr[0]
+    for v in tmpArr:
+        if v > maxVal:
+            maxVal = v
+    return maxVal
+```
+
+```rust
+use std::collections::VecDeque;
+use std::rc::Rc;
+use std::cell::RefCell;
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<TreeNode>>>,
+    pub right: Option<Rc<RefCell<TreeNode>>>,
+}
+
+impl TreeNode {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
+    }
+}
+
+pub fn largest_values(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+    let mut res: Vec<i32> = Vec::new();
+    if root.is_none() {
+        return res;
+    }
+    let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
+    queue.push_back(root.unwrap());
+    while !queue.is_empty() {
+        let mut tmp_arr: Vec<i32> = Vec::new();
+        let length = queue.len();
+        for _ in 0..length {
+            let node = queue.pop_front().unwrap();
+            let node_ref = node.borrow();
+            if node_ref.left.is_some() {
+                queue.push_back(node_ref.left.as_ref().unwrap().clone());
+            }
+            if node_ref.right.is_some() {
+                queue.push_back(node_ref.right.as_ref().unwrap().clone());
+            }
+            tmp_arr.push(node_ref.val);
+        }
+        res.push(get_max(&tmp_arr));
+    }
+    res
+}
+
+fn get_max(tmp_arr: &[i32]) -> i32 {
+    let mut max = tmp_arr[0];
+    for &v in tmp_arr {
+        if v > max {
+            max = v;
+        }
+    }
+    max
+}
+```
+
 #### [116. 填充每个节点的下一个右侧节点指针](https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node/)
 
 给定一个 **完美二叉树** ，其所有叶子节点都在同一层，每个父节点都有两个子节点。二叉树定义如下：
@@ -3191,6 +6039,99 @@ func connect(root *Node) *Node {
 		}
 	}
 	return root
+}
+```
+
+```python
+class Node:
+    def __init__(self, val=0, left=None, right=None, next=None):
+        self.val = val
+        self.left = left
+        self.right = right
+        self.next = next
+
+
+def connect(root):
+    res = []
+    if root is None:
+        return root
+    queue = [root]
+    while queue:
+        tmp = []
+        length = len(queue)
+        for i in range(length):
+            node = queue.pop(0)
+            tmp.append(node)
+            if node.left is not None:
+                queue.append(node.left)
+            if node.right is not None:
+                queue.append(node.right)
+        res.append(tmp)
+
+    for i in range(len(res)):
+        for j in range(len(res[i]) - 1):
+            res[i][j].next = res[i][j + 1]
+    return root
+```
+
+```rust
+use std::collections::VecDeque;
+use std::rc::Rc;
+use std::cell::RefCell;
+
+#[derive(Debug)]
+pub struct Node {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<Node>>>,
+    pub right: Option<Rc<RefCell<Node>>>,
+    pub next: Option<Rc<RefCell<Node>>>,
+}
+
+impl Node {
+    #[inline]
+    pub fn new(val: i32) -> Option<Rc<RefCell<Node>>> {
+        Some(Rc::new(RefCell::new(Node {
+            val,
+            left: None,
+            right: None,
+            next: None,
+        })))
+    }
+}
+
+pub fn connect(root: Option<Rc<RefCell<Node>>>) -> Option<Rc<RefCell<Node>>> {
+    if root.is_none() {
+        return root;
+    }
+    let mut res: Vec<Vec<Rc<RefCell<Node>>>> = Vec::new();
+    let mut queue: VecDeque<Rc<RefCell<Node>>> = VecDeque::new();
+    queue.push_back(root.clone().unwrap());
+    while !queue.is_empty() {
+        let mut tmp: Vec<Rc<RefCell<Node>>> = Vec::new();
+        let length = queue.len();
+        for _ in 0..length {
+            let node = queue.pop_front().unwrap();
+            let (left, right) = {
+                let n = node.borrow();
+                (n.left.clone(), n.right.clone())
+            };
+            tmp.push(node);
+            if let Some(l) = left {
+                queue.push_back(l);
+            }
+            if let Some(r) = right {
+                queue.push_back(r);
+            }
+        }
+        res.push(tmp);
+    }
+
+    for layer in res.iter_mut() {
+        for j in 0..layer.len() - 1 {
+            layer[j].borrow_mut().next = Some(layer[j + 1].clone());
+        }
+    }
+    root
 }
 ```
 
@@ -3264,6 +6205,99 @@ func connect(root *Node) *Node {
 }
 ```
 
+```python
+class Node:
+    def __init__(self, val=0, left=None, right=None, next=None):
+        self.val = val
+        self.left = left
+        self.right = right
+        self.next = next
+
+
+def connect(root):
+    res = []
+    if root is None:
+        return root
+    queue = [root]
+    while queue:
+        tmp = []
+        length = len(queue)
+        for i in range(length):
+            node = queue.pop(0)
+            tmp.append(node)
+            if node.left is not None:
+                queue.append(node.left)
+            if node.right is not None:
+                queue.append(node.right)
+        res.append(tmp)
+
+    for i in range(len(res)):
+        for j in range(len(res[i]) - 1):
+            res[i][j].next = res[i][j + 1]
+    return root
+```
+
+```rust
+use std::collections::VecDeque;
+use std::rc::Rc;
+use std::cell::RefCell;
+
+#[derive(Debug)]
+pub struct Node {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<Node>>>,
+    pub right: Option<Rc<RefCell<Node>>>,
+    pub next: Option<Rc<RefCell<Node>>>,
+}
+
+impl Node {
+    #[inline]
+    pub fn new(val: i32) -> Option<Rc<RefCell<Node>>> {
+        Some(Rc::new(RefCell::new(Node {
+            val,
+            left: None,
+            right: None,
+            next: None,
+        })))
+    }
+}
+
+pub fn connect(root: Option<Rc<RefCell<Node>>>) -> Option<Rc<RefCell<Node>>> {
+    if root.is_none() {
+        return root;
+    }
+    let mut res: Vec<Vec<Rc<RefCell<Node>>>> = Vec::new();
+    let mut queue: VecDeque<Rc<RefCell<Node>>> = VecDeque::new();
+    queue.push_back(root.clone().unwrap());
+    while !queue.is_empty() {
+        let mut tmp: Vec<Rc<RefCell<Node>>> = Vec::new();
+        let length = queue.len();
+        for _ in 0..length {
+            let node = queue.pop_front().unwrap();
+            let (left, right) = {
+                let n = node.borrow();
+                (n.left.clone(), n.right.clone())
+            };
+            tmp.push(node);
+            if let Some(l) = left {
+                queue.push_back(l);
+            }
+            if let Some(r) = right {
+                queue.push_back(r);
+            }
+        }
+        res.push(tmp);
+    }
+
+    for layer in res.iter_mut() {
+        for j in 0..layer.len() - 1 {
+            layer[j].borrow_mut().next = Some(layer[j + 1].clone());
+        }
+    }
+    root
+}
+```
+
 #### [104. 二叉树的最大深度](https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/)
 
 给定一个二叉树，找出其最大深度。
@@ -3322,6 +6356,53 @@ func max(x, y int) int {
 		return x
 	}
 	return y
+}
+```
+
+```python
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def maxDepth(root: TreeNode) -> int:
+    if root is None:
+        return 0
+    return max(maxDepth(root.left), maxDepth(root.right)) + 1
+```
+
+```rust
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<TreeNode>>>,
+    pub right: Option<Rc<RefCell<TreeNode>>>,
+}
+
+impl TreeNode {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
+    }
+}
+
+use std::rc::Rc;
+use std::cell::RefCell;
+
+pub fn max_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    if root.is_none() {
+        return 0;
+    }
+    let node = root.unwrap();
+    let left = node.borrow().left.clone();
+    let right = node.borrow().right.clone();
+    std::cmp::max(max_depth(left), max_depth(right)) + 1
 }
 ```
 
@@ -3407,6 +6488,91 @@ func min(x, y int) int {
 }
 ```
 
+```python
+import collections
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def minDepth(root):
+    res = 0
+    if root is None:
+        return res
+    queue = collections.deque()
+    queue.append(root)
+    while queue:
+        length = len(queue)
+        for _ in range(length):
+            node = queue.popleft()
+            if node.left is None and node.right is None:
+                return res + 1
+            if node.left is not None:
+                queue.append(node.left)
+            if node.right is not None:
+                queue.append(node.right)
+        res += 1
+    return res
+```
+
+```rust
+use std::rc::Rc;
+use std::cell::RefCell;
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<TreeNode>>>,
+    pub right: Option<Rc<RefCell<TreeNode>>>,
+}
+
+impl TreeNode {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
+    }
+}
+
+use std::collections::VecDeque;
+
+pub fn min_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    let mut res = 0;
+    if root.is_none() {
+        return res;
+    }
+    let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
+    queue.push_back(root.unwrap());
+    while !queue.is_empty() {
+        let length = queue.len();
+        for _ in 0..length {
+            let node = queue.pop_front().unwrap();
+            let node_ref = node.borrow();
+            let left_is_none = node_ref.left.is_none();
+            let right_is_none = node_ref.right.is_none();
+            if left_is_none && right_is_none {
+                return res + 1;
+            }
+            if let Some(left) = node_ref.left.clone() {
+                queue.push_back(left);
+            }
+            if let Some(right) = node_ref.right.clone() {
+                queue.push_back(right);
+            }
+        }
+        res += 1;
+    }
+    res
+}
+```
+
 #### [559. N 叉树的最大深度](https://leetcode-cn.com/problems/maximum-depth-of-n-ary-tree/)
 
 给定一个 N 叉树，找到其最大深度。
@@ -3458,6 +6624,58 @@ func max(x, y int) int {
 }
 ```
 
+```python
+# Definition for a Node.
+class Node:
+    def __init__(self, val=None, children=None):
+        self.val = val
+        self.children = children if children is not None else []
+
+
+def maxDepth(root: 'Node') -> int:
+    if root is None:
+        return 0
+    dep = 0
+    for child in root.children:
+        dep = max(dep, maxDepth(child))
+    return dep + 1
+```
+
+```rust
+use std::rc::Rc;
+use std::cell::RefCell;
+
+// Definition for a Node.
+#[derive(Debug)]
+pub struct Node {
+    pub val: i32,
+    pub children: Vec<Option<Rc<RefCell<Node>>>>,
+}
+
+impl Node {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        Node {
+            val,
+            children: Vec::new(),
+        }
+    }
+}
+
+pub fn max_depth(root: Option<Rc<RefCell<Node>>>) -> i32 {
+    if root.is_none() {
+        return 0;
+    }
+    let node = root.unwrap();
+    let node = node.borrow();
+    let mut dep = 0;
+    for child in node.children.iter() {
+        dep = dep.max(max_depth(child.clone()));
+    }
+    dep + 1
+}
+```
+
 #### [226. 翻转二叉树](https://leetcode-cn.com/problems/invert-binary-tree/)
 
 翻转一棵二叉树。
@@ -3496,6 +6714,64 @@ func invertTree(root *TreeNode) *TreeNode {
 	return root
 }
 
+```
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+def invertTree(root):
+    if root is None:
+        return root
+
+    root.left, root.right = root.right, root.left
+    invertTree(root.left)
+    invertTree(root.right)
+    return root
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//     pub val: i32,
+//     pub left: Option<Rc<RefCell<TreeNode>>>,
+//     pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//     #[inline]
+//     pub fn new(val: i32) -> Self {
+//         TreeNode {
+//             val,
+//             left: None,
+//             right: None,
+//         }
+//     }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+pub fn invertTree(root: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
+    if let Some(node) = root.as_ref() {
+        let mut node_borrowed = node.borrow_mut();
+        let left = node_borrowed.left.take();
+        let right = node_borrowed.right.take();
+        node_borrowed.left = right;
+        node_borrowed.right = left;
+        drop(node_borrowed);
+    }
+
+    if let Some(node) = root.as_ref() {
+        let mut node_borrowed = node.borrow_mut();
+        node_borrowed.left = invertTree(node_borrowed.left.take());
+        node_borrowed.right = invertTree(node_borrowed.right.take());
+    }
+
+    root
+}
 ```
 
 #### [101. 对称二叉树](https://leetcode-cn.com/problems/symmetric-tree/)
@@ -3544,6 +6820,82 @@ func dfs(left, right *TreeNode) bool {
 	in := dfs(left.Right, right.Left)
 	return in && out
 
+}
+```
+
+```python
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def isSymmetric(root: TreeNode) -> bool:
+    return dfs(root.left, root.right)
+
+
+def dfs(left: TreeNode, right: TreeNode) -> bool:
+    if left is None and right is None:
+        return True
+
+    if left is None or right is None:
+        return False
+
+    if left.val != right.val:
+        return False
+
+    out = dfs(left.left, right.right)
+    inside = dfs(left.right, right.left)
+    return inside and out
+```
+
+```rust
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<TreeNode>>>,
+    pub right: Option<Rc<RefCell<TreeNode>>>,
+}
+
+impl TreeNode {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
+    }
+}
+
+use std::rc::Rc;
+use std::cell::RefCell;
+
+pub fn is_symmetric(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
+    if let Some(node) = root {
+        let node = node.borrow();
+        dfs(node.left.clone(), node.right.clone())
+    } else {
+        true
+    }
+}
+
+pub fn dfs(left: Option<Rc<RefCell<TreeNode>>>, right: Option<Rc<RefCell<TreeNode>>>) -> bool {
+    match (left, right) {
+        (None, None) => true,
+        (Some(l), Some(r)) => {
+            let l = l.borrow();
+            let r = r.borrow();
+            if l.val != r.val {
+                return false;
+            }
+            let out = dfs(l.left.clone(), r.right.clone());
+            let inside = dfs(l.right.clone(), r.left.clone());
+            inside && out
+        }
+        _ => false,
+    }
 }
 ```
 
@@ -3633,6 +6985,54 @@ func max(a, b int) int {
 }
 ```
 
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+
+def countNodes(root):
+    if root is None:
+        return 0
+    return countNodes(root.left) + countNodes(root.right) + 1
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//     pub val: i32,
+//     pub left: Option<Rc<RefCell<TreeNode>>>,
+//     pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//     #[inline]
+//     pub fn new(val: i32) -> Self {
+//         TreeNode {
+//             val,
+//             left: None,
+//             right: None,
+//         }
+//     }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+
+pub fn count_nodes(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    match root {
+        None => 0,
+        Some(node) => {
+            let node = node.borrow();
+            count_nodes(node.left.clone()) + count_nodes(node.right.clone()) + 1
+        }
+    }
+}
+```
+
 #### [257. 二叉树的所有路径](https://leetcode-cn.com/problems/binary-tree-paths/)
 
 给你一个二叉树的根节点 `root` ，按 **任意顺序** ，返回所有从根节点到叶子节点的路径。
@@ -3683,6 +7083,73 @@ func binaryTreePaths(root *TreeNode) []string {
 }
 ```
 
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+def binaryTreePaths(root):
+    res = []
+    def run(node, s):
+        if node.left is None and node.right is None:
+            s += str(node.val)
+            res.append(s)
+        s += str(node.val) + "->"
+        if node.left is not None:
+            run(node.left, s)
+        if node.right is not None:
+            run(node.right, s)
+    run(root, "")
+    return res
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//     pub val: i32,
+//     pub left: Option<Rc<RefCell<TreeNode>>>,
+//     pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//     #[inline]
+//     pub fn new(val: i32) -> Self {
+//         TreeNode {
+//             val,
+//             left: None,
+//             right: None,
+//         }
+//     }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+
+pub fn binary_tree_paths(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<String> {
+    let mut res: Vec<String> = Vec::new();
+    fn run(node: &Option<Rc<RefCell<TreeNode>>>, s: String, res: &mut Vec<String>) {
+        if let Some(n) = node {
+            let n = n.borrow();
+            if n.left.is_none() && n.right.is_none() {
+                let leaf = format!("{}{}", s, n.val);
+                res.push(leaf);
+            }
+            let next = format!("{}{}->", s, n.val);
+            if n.left.is_some() {
+                run(&n.left, next.clone(), res);
+            }
+            if n.right.is_some() {
+                run(&n.right, next.clone(), res);
+            }
+        }
+    }
+    run(&root, String::new(), &mut res);
+    res
+}
+```
+
 #### [404. 左叶子之和](https://leetcode-cn.com/problems/sum-of-left-leaves/)
 
 计算给定二叉树的所有左叶子之和。
@@ -3716,6 +7183,73 @@ func sumOfLeftLeaves(root *TreeNode) int {
 	return res
 }
 
+```
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+def sumOfLeftLeaves(root):
+    res = 0
+    if root.left is not None and root.left.right is None and root.left.left is None:
+        res += root.left.val
+
+    if root.left is not None:
+        res += sumOfLeftLeaves(root.left)
+
+    if root.right is not None:
+        res += sumOfLeftLeaves(root.right)
+    return res
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//   pub val: i32,
+//   pub left: Option<Rc<RefCell<TreeNode>>>,
+//   pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//   #[inline]
+//   pub fn new(val: i32) -> Self {
+//     TreeNode {
+//       val,
+//       left: None,
+//       right: None
+//     }
+//   }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+pub fn sum_of_left_leaves(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    let root = match root {
+        Some(n) => n,
+        None => return 0,
+    };
+    let root = root.borrow();
+    let mut res = 0;
+
+    if let Some(left) = &root.left {
+        let lb = left.borrow();
+        if lb.left.is_none() && lb.right.is_none() {
+            res += lb.val;
+        }
+    }
+
+    if root.left.is_some() {
+        res += sum_of_left_leaves(root.left.clone());
+    }
+
+    if root.right.is_some() {
+        res += sum_of_left_leaves(root.right.clone());
+    }
+    return res;
+}
 ```
 
 #### [513. 找树左下角的值](https://leetcode-cn.com/problems/find-bottom-left-tree-value/)
@@ -3771,6 +7305,102 @@ func findBottomLeftValue(root *TreeNode) int {
 }
 ```
 
+```python
+from collections import deque
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def findBottomLeftValue(root):
+    res = 0
+    queue = deque([root])
+    while queue:
+        length = len(queue)
+        for i in range(length):
+            node = queue.popleft()
+            if i == 0:
+                res = node.val
+            if node.left is not None:
+                queue.append(node.left)
+            if node.right is not None:
+                queue.append(node.right)
+    return res
+```
+
+```rust
+use std::rc::Rc;
+use std::cell::RefCell;
+use std::collections::VecDeque;
+
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//   pub val: i32,
+//   pub left: Option<Rc<RefCell<TreeNode>>>,
+//   pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//   #[inline]
+//   pub fn new(val: i32) -> Self {
+//     TreeNode {
+//       val,
+//       left: None,
+//       right: None,
+//     }
+//   }
+// }
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<TreeNode>>>,
+    pub right: Option<Rc<RefCell<TreeNode>>>,
+}
+
+impl TreeNode {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
+    }
+}
+
+pub fn find_bottom_left_value(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    let mut res = 0;
+    let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
+    queue.push_back(root.unwrap());
+    while !queue.is_empty() {
+        let length = queue.len();
+        for i in 0..length {
+            let node = queue.pop_front().unwrap();
+            if i == 0 {
+                res = node.borrow().val;
+            }
+            if let Some(left) = node.borrow().left.clone() {
+                queue.push_back(left);
+            }
+            if let Some(right) = node.borrow().right.clone() {
+                queue.push_back(right);
+            }
+        }
+    }
+    res
+}
+```
+
 #### [112. 路径总和](https://leetcode-cn.com/problems/path-sum/)
 
 给你二叉树的根节点 `root` 和一个表示目标和的整数 `targetSum` 。判断该树中是否存在 **根节点到叶子节点** 的路径，这条路径上所有节点值相加等于目标和 `targetSum` 。如果存在，返回 `true` ；否则，返回 `false` 。
@@ -3817,6 +7447,62 @@ func hasPathSum(root *TreeNode, targetSum int) bool {
 		return true
 	}
 	return hasPathSum(root.Left, targetSum-root.Val) || hasPathSum(root.Right, targetSum-root.Val)
+}
+```
+
+```python
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def hasPathSum(root: "TreeNode", targetSum: int) -> bool:
+    if root is None:
+        return False
+    if root.left is None and root.right is None and targetSum == root.val:
+        return True
+    return hasPathSum(root.left, targetSum - root.val) or hasPathSum(
+        root.right, targetSum - root.val
+    )
+```
+
+```rust
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<TreeNode>>>,
+    pub right: Option<Rc<RefCell<TreeNode>>>,
+}
+
+impl TreeNode {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
+    }
+}
+
+use std::rc::Rc;
+use std::cell::RefCell;
+
+pub fn has_path_sum(root: Option<Rc<RefCell<TreeNode>>>, target_sum: i32) -> bool {
+    match root {
+        None => false,
+        Some(node) => {
+            let node = node.borrow();
+            let is_leaf = node.left.is_none() && node.right.is_none();
+            if is_leaf && target_sum == node.val {
+                return true;
+            }
+            has_path_sum(node.left.clone(), target_sum - node.val)
+                || has_path_sum(node.right.clone(), target_sum - node.val)
+        }
+    }
 }
 ```
 
@@ -3869,6 +7555,76 @@ func buildTree(preorder []int, inorder []int) *TreeNode {
 }
 ```
 
+```python
+from typing import List, Optional
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def buildTree(preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
+    if not preorder:
+        return None
+    root = TreeNode(preorder[0])
+    i = 0
+    while i < len(inorder):
+        if preorder[0] == inorder[i]:
+            break
+        i += 1
+
+    root.left = buildTree(preorder[1:i + 1], inorder[:i])
+    root.right = buildTree(preorder[i + 1:], inorder[i + 1:])
+    return root
+```
+
+```rust
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<TreeNode>>>,
+    pub right: Option<Rc<RefCell<TreeNode>>>,
+}
+
+impl TreeNode {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
+    }
+}
+
+use std::cell::RefCell;
+use std::rc::Rc;
+
+pub fn build_tree(
+    preorder: Vec<i32>,
+    inorder: Vec<i32>,
+) -> Option<Rc<RefCell<TreeNode>>> {
+    if preorder.is_empty() {
+        return None;
+    }
+    let root = Rc::new(RefCell::new(TreeNode::new(preorder[0])));
+    let mut i = 0;
+    while i < inorder.len() {
+        if preorder[0] == inorder[i] {
+            break;
+        }
+        i += 1;
+    }
+
+    root.borrow_mut().left = build_tree(preorder[1..i + 1].to_vec(), inorder[..i].to_vec());
+    root.borrow_mut().right = build_tree(preorder[i + 1..].to_vec(), inorder[i + 1..].to_vec());
+    Some(root)
+}
+```
+
 #### [106. 从中序与后序遍历序列构造二叉树](https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)
 
 根据一棵树的中序遍历与后序遍历构造二叉树。
@@ -3909,6 +7665,70 @@ func buildTree(inorder []int, postorder []int) *TreeNode {
 	root.Left = buildTree(inorder[:i], postorder[:i])
 	root.Right = buildTree(inorder[i+1:], postorder[i:len(postorder)-1])
 	return root
+}
+```
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+def buildTree(inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
+    if not postorder:
+        return None
+
+    root = TreeNode(postorder[-1])
+    i = 0
+    while i < len(inorder) and inorder[i] != postorder[-1]:
+        i += 1
+    root.left = buildTree(inorder[:i], postorder[:i])
+    root.right = buildTree(inorder[i + 1:], postorder[i:len(postorder) - 1])
+    return root
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//   pub val: i32,
+//   pub left: Option<Rc<RefCell<TreeNode>>>,
+//   pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//   #[inline]
+//   pub fn new(val: i32) -> Self {
+//     TreeNode {
+//       val,
+//       left: None,
+//       right: None,
+//     }
+//   }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+pub fn build_tree(inorder: Vec<i32>, postorder: Vec<i32>) -> Option<Rc<RefCell<TreeNode>>> {
+    if postorder.is_empty() {
+        return None;
+    }
+
+    let root_val = postorder[postorder.len() - 1];
+    let root = Rc::new(RefCell::new(TreeNode::new(root_val)));
+    let mut i = 0usize;
+    while i < inorder.len() && inorder[i] != root_val {
+        i += 1;
+    }
+
+    let left_inorder = inorder[..i].to_vec();
+    let right_inorder = inorder[i + 1..].to_vec();
+    let left_postorder = postorder[..i].to_vec();
+    let right_postorder = postorder[i..postorder.len() - 1].to_vec();
+
+    root.borrow_mut().left = build_tree(left_inorder, left_postorder);
+    root.borrow_mut().right = build_tree(right_inorder, right_postorder);
+    root
 }
 ```
 
@@ -3982,6 +7802,75 @@ func findMax(nums []int) int {
 }
 ```
 
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+def constructMaximumBinaryTree(nums):
+    if len(nums) < 1:
+        return None
+    index = findMax(nums)
+    root = TreeNode(nums[index])
+    root.left = constructMaximumBinaryTree(nums[:index])
+    root.right = constructMaximumBinaryTree(nums[index + 1:])
+    return root
+
+
+def findMax(nums):
+    index = 0
+    for i in range(len(nums)):
+        if nums[i] > nums[index]:
+            index = i
+    return index
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//   pub val: i32,
+//   pub left: Option<Rc<RefCell<TreeNode>>>,
+//   pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//   #[inline]
+//   pub fn new(val: i32) -> Self {
+//     TreeNode {
+//       val,
+//       left: None,
+//       right: None
+//     }
+//   }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+
+pub fn construct_maximum_binary_tree(nums: Vec<i32>) -> Option<Rc<RefCell<TreeNode>>> {
+    if nums.is_empty() {
+        return None;
+    }
+    let index = find_max(&nums);
+    let root = Rc::new(RefCell::new(TreeNode::new(nums[index])));
+    root.borrow_mut().left = construct_maximum_binary_tree(nums[..index].to_vec());
+    root.borrow_mut().right = construct_maximum_binary_tree(nums[index + 1..].to_vec());
+    Some(root)
+}
+
+pub fn find_max(nums: &[i32]) -> usize {
+    let mut index = 0;
+    for i in 0..nums.len() {
+        if nums[i] > nums[index] {
+            index = i;
+        }
+    }
+    index
+}
+```
+
 #### [617. 合并二叉树](https://leetcode-cn.com/problems/merge-two-binary-trees/)
 
 给定两个二叉树，想象当你将它们中的一个覆盖到另一个上时，两个二叉树的一些节点便会重叠。
@@ -4024,6 +7913,71 @@ func mergeTrees(root1 *TreeNode, root2 *TreeNode) *TreeNode {
 }
 ```
 
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+def mergeTrees(root1, root2):
+    if root1 is None:
+        return root2
+    if root2 is None:
+        return root1
+    root1.val += root2.val
+    root1.left = mergeTrees(root1.left, root2.left)
+    root1.right = mergeTrees(root1.right, root2.right)
+    return root1
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Clone)]
+// pub struct TreeNode {
+//     pub val: i32,
+//     pub left: Option<Rc<RefCell<TreeNode>>>,
+//     pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//     #[inline]
+//     fn new(val: i32) -> Self {
+//         TreeNode {
+//             val,
+//             left: None,
+//             right: None,
+//         }
+//     }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+impl Solution {
+    pub fn merge_trees(
+        root1: Option<Rc<RefCell<TreeNode>>>,
+        root2: Option<Rc<RefCell<TreeNode>>>,
+    ) -> Option<Rc<RefCell<TreeNode>>> {
+        match (root1, root2) {
+            (None, None) => None,
+            (None, Some(r)) => Some(r),
+            (Some(l), None) => Some(l),
+            (Some(l), Some(r)) => {
+                {
+                    let mut lb = l.borrow_mut();
+                    let rb = r.borrow();
+                    lb.val += rb.val;
+                    let left = Self::merge_trees(lb.left.take(), rb.left.clone());
+                    let right = Self::merge_trees(lb.right.take(), rb.right.clone());
+                    lb.left = left;
+                    lb.right = right;
+                }
+                Some(l)
+            }
+        }
+    }
+}
+```
+
 #### [700. 二叉搜索树中的搜索](https://leetcode-cn.com/problems/search-in-a-binary-search-tree/)
 
 给定二叉搜索树（BST）的根节点和一个值。 你需要在BST中找到节点值等于给定值的节点。 返回以该节点为根的子树。 如果节点不存在，则返回 NULL。
@@ -4063,6 +8017,66 @@ func searchBST(root *TreeNode, val int) *TreeNode {
 	}
 
 	return searchBST(root.Right, val)
+}
+```
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+
+def searchBST(root, val):
+    if root is None or root.val == val:
+        return root
+
+    if val < root.val:
+        return searchBST(root.left, val)
+
+    return searchBST(root.right, val)
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Clone)]
+// pub struct TreeNode {
+//     pub val: i32,
+//     pub left: Option<Rc<RefCell<TreeNode>>>,
+//     pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//     #[inline]
+//     pub fn new(val: i32) -> Self {
+//         TreeNode {
+//             val,
+//             left: None,
+//             right: None,
+//         }
+//     }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+
+pub fn searchBST(root: Option<Rc<RefCell<TreeNode>>>, val: i32) -> Option<Rc<RefCell<TreeNode>>> {
+    let root = match root {
+        Some(node) => node,
+        None => return None,
+    };
+
+    let node = root.borrow();
+    if node.val == val {
+        return Some(Rc::clone(&root));
+    }
+
+    if val < node.val {
+        searchBST(node.left.clone(), val)
+    } else {
+        searchBST(node.right.clone(), val)
+    }
 }
 ```
 
@@ -4138,6 +8152,109 @@ func isBST(root *TreeNode, min, max int) bool {
 }
 ```
 
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+# 递归
+def isValidBST(root):
+    return isBST(root, -float('inf'), float('inf'))
+
+
+def isBST(root, min_val, max_val):
+    if root is None:
+        return True
+    if root.val <= min_val or root.val >= max_val:
+        return False
+
+    return isBST(root.left, min_val, root.val) and isBST(root.right, root.val, max_val)
+
+
+# 中序遍历
+def isValidBSTInorder(root):
+    res = []
+
+    def run(node):
+        if node is None:
+            return
+        run(node.left)
+        res.append(node.val)
+        run(node.right)
+
+    run(root)
+    for i in range(len(res) - 1):
+        if res[i] >= res[i + 1]:
+            return False
+    return True
+```
+
+```rust
+use std::rc::Rc;
+use std::cell::RefCell;
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<TreeNode>>>,
+    pub right: Option<Rc<RefCell<TreeNode>>>,
+}
+
+impl TreeNode {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
+    }
+}
+
+// 中序遍历
+pub fn is_valid_bst(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
+    let mut res: Vec<i32> = Vec::new();
+    run(&root, &mut res);
+    for i in 0..res.len() - 1 {
+        if res[i] >= res[i + 1] {
+            return false;
+        }
+    }
+    true
+}
+
+fn run(root: &Option<Rc<RefCell<TreeNode>>>, res: &mut Vec<i32>) {
+    if let Some(node) = root {
+        let node = node.borrow();
+        run(&node.left, res);
+        res.push(node.val);
+        run(&node.right, res);
+    }
+}
+
+// 递归
+pub fn is_valid_bst_rec(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
+    is_bst(&root, i64::MIN, i64::MAX)
+}
+
+fn is_bst(root: &Option<Rc<RefCell<TreeNode>>>, min: i64, max: i64) -> bool {
+    match root {
+        None => true,
+        Some(node) => {
+            let node = node.borrow();
+            let val = node.val as i64;
+            if val <= min || val >= max {
+                return false;
+            }
+            is_bst(&node.left, min, val) && is_bst(&node.right, val, max)
+        }
+    }
+}
+```
+
 #### [530. 二叉搜索树的最小绝对差](https://leetcode-cn.com/problems/minimum-absolute-difference-in-bst/)
 
 给你一个二叉搜索树的根节点 `root` ，返回 **树中任意两不同节点值之间的最小差值** 。
@@ -4192,6 +8309,99 @@ func min(x, y int) int {
 		return x
 	}
 	return y
+}
+```
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def getMinimumDifference(root: TreeNode) -> int:
+    res = []
+
+    def run(node: TreeNode):
+        if node is None:
+            return
+        run(node.left)
+        res.append(node.val)
+        run(node.right)
+
+    run(root)
+    ans = float('inf')
+    for i in range(len(res) - 1):
+        ans = min(ans, res[i + 1] - res[i])
+    return ans
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//   pub val: i32,
+//   pub left: Option<Rc<RefCell<TreeNode>>>,
+//   pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//   #[inline]
+//   pub fn new(val: i32) -> Self {
+//     TreeNode {
+//       val,
+//       left: None,
+//       right: None,
+//     }
+//   }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+use std::cmp;
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<TreeNode>>>,
+    pub right: Option<Rc<RefCell<TreeNode>>>,
+}
+
+impl TreeNode {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
+    }
+}
+
+pub fn getMinimumDifference(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    let mut res: Vec<i32> = Vec::new();
+
+    fn run(node: &Option<Rc<RefCell<TreeNode>>>, res: &mut Vec<i32>) {
+        if let Some(n) = node {
+            let n = n.borrow();
+            run(&n.left, res);
+            res.push(n.val);
+            run(&n.right, res);
+        }
+    }
+
+    run(&root, &mut res);
+    let mut ans = i32::MAX;
+    for i in 0..res.len() - 1 {
+        ans = cmp::min(ans, res[i + 1] - res[i]);
+    }
+    ans
 }
 ```
 
@@ -4254,6 +8464,124 @@ func findMode(root *TreeNode) []int {
 }
 ```
 
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+from typing import List, Optional
+
+
+def findMode(root: Optional[TreeNode]) -> List[int]:
+    res: List[int] = []
+    count = 1
+    mx = 1
+    pre = None
+
+    def run(node: Optional[TreeNode]) -> None:
+        nonlocal count, mx, pre
+        if node is None:
+            return
+        run(node.left)
+
+        if pre is not None and pre.val == node.val:
+            count += 1
+        else:
+            count = 1
+
+        if count >= mx:
+            if count > mx and len(res) > 0:
+                res.clear()
+                res.append(node.val)
+            else:
+                res.append(node.val)
+            mx = count
+
+        pre = node
+        run(node.right)
+
+    run(root)
+    return res
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//   pub val: i32,
+//   pub left: Option<Rc<RefCell<TreeNode>>>,
+//   pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//   #[inline]
+//   pub fn new(val: i32) -> Self {
+//     TreeNode {
+//       val,
+//       left: None,
+//       right: None,
+//     }
+//   }
+// }
+use std::cell::RefCell;
+use std::rc::Rc;
+use std::cmp::Ordering;
+
+pub fn find_mode(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+    let mut res: Vec<i32> = Vec::new();
+    let mut count: i32 = 1;
+    let mut max: i32 = 1;
+    let mut pre: Option<Rc<RefCell<TreeNode>>> = None;
+
+    fn run(
+        root: Option<Rc<RefCell<TreeNode>>>,
+        res: &mut Vec<i32>,
+        count: &mut i32,
+        max: &mut i32,
+        pre: &mut Option<Rc<RefCell<TreeNode>>>,
+    ) {
+        let node = match root {
+            Some(n) => n,
+            None => return,
+        };
+
+        run(node.borrow().left.clone(), res, count, max, pre);
+
+        let cur_val = node.borrow().val;
+        if let Some(p) = pre {
+            if p.borrow().val == cur_val {
+                *count += 1;
+            } else {
+                *count = 1;
+            }
+        } else {
+            *count = 1;
+        }
+
+        if *count >= *max {
+            match (*count).cmp(max) {
+                Ordering::Greater if !res.is_empty() => {
+                    res.clear();
+                    res.push(cur_val);
+                }
+                _ => {
+                    res.push(cur_val);
+                }
+            }
+            *max = *count;
+        }
+
+        *pre = Some(node.clone());
+        run(node.borrow().right.clone(), res, count, max, pre);
+    }
+
+    run(root, &mut res, &mut count, &mut max, &mut pre);
+    res
+}
+```
+
 #### [236. 二叉树的最近公共祖先](https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/)
 
 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
@@ -4312,6 +8640,80 @@ func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
 }
 ```
 
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+
+def lowestCommonAncestor(root, p, q):
+    if root is None or root is p or root is q:
+        return root
+    left = lowestCommonAncestor(root.left, p, q)
+    right = lowestCommonAncestor(root.right, p, q)
+    if left is not None and right is not None:
+        return root
+    if left is None:
+        return right
+    return left
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//     pub val: i32,
+//     pub left: Option<Rc<RefCell<TreeNode>>>,
+//     pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//     #[inline]
+//     pub fn new(val: i32) -> Self {
+//         TreeNode {
+//             val,
+//             left: None,
+//             right: None,
+//         }
+//     }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+
+pub fn lowestCommonAncestor(
+    root: Option<Rc<RefCell<TreeNode>>>,
+    p: Option<Rc<RefCell<TreeNode>>>,
+    q: Option<Rc<RefCell<TreeNode>>>,
+) -> Option<Rc<RefCell<TreeNode>>> {
+    let root = root?;
+    let p = p?;
+    let q = q?;
+    if Rc::ptr_eq(&root, &p) || Rc::ptr_eq(&root, &q) {
+        return Some(root);
+    }
+    let left = lowestCommonAncestor(
+        root.borrow().left.clone(),
+        Some(p.clone()),
+        Some(q.clone()),
+    );
+    let right = lowestCommonAncestor(
+        root.borrow().right.clone(),
+        Some(p.clone()),
+        Some(q.clone()),
+    );
+    if left.is_some() && right.is_some() {
+        return Some(root);
+    }
+    if left.is_none() {
+        return right;
+    }
+    left
+}
+```
+
 #### [235. 二叉搜索树的最近公共祖先](https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-search-tree/)
 
 给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先。
@@ -4357,6 +8759,90 @@ func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
 		return right
 	}
 	return left
+}
+```
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+
+def lowestCommonAncestor(root, p, q):
+    if root is None or root == q or root == p:
+        return root
+    left = lowestCommonAncestor(root.left, p, q)
+    right = lowestCommonAncestor(root.right, p, q)
+    if left is not None and right is not None:
+        return root
+    if left is None:
+        return right
+    return left
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//     pub val: i32,
+//     pub left: Option<Rc<RefCell<TreeNode>>>,
+//     pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//     #[inline]
+//     pub fn new(val: i32) -> Self {
+//         TreeNode {
+//             val,
+//             left: None,
+//             right: None,
+//         }
+//     }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+use std::ptr;
+
+impl Solution {
+    pub fn lowestCommonAncestor(
+        root: Option<Rc<RefCell<TreeNode>>>,
+        p: Option<Rc<RefCell<TreeNode>>>,
+        q: Option<Rc<RefCell<TreeNode>>>,
+    ) -> Option<Rc<RefCell<TreeNode>>> {
+        let root = match root {
+            None => return None,
+            Some(r) => r,
+        };
+        let p = match p {
+            None => return None,
+            Some(n) => n,
+        };
+        let q = match q {
+            None => return None,
+            Some(n) => n,
+        };
+        if Rc::ptr_eq(&root, &p) || Rc::ptr_eq(&root, &q) {
+            return Some(root);
+        }
+        let left_node = {
+            let cell = root.borrow();
+            cell.left.clone()
+        };
+        let right_node = {
+            let cell = root.borrow();
+            cell.right.clone()
+        };
+        let left = Solution::lowestCommonAncestor(left_node, Some(p.clone()), Some(q.clone()));
+        let right = Solution::lowestCommonAncestor(right_node, Some(p.clone()), Some(q.clone()));
+        match (left, right) {
+            (Some(l), Some(_)) => Some(root),
+            (None, r) => r,
+            (l, None) => l,
+        }
+    }
 }
 ```
 
@@ -4409,6 +8895,65 @@ func insertIntoBST(root *TreeNode, val int) *TreeNode {
 		root.Right = insertIntoBST(root.Right, val)
 	}
 	return root
+}
+```
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def insertIntoBST(self, root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
+        if root is None:
+            return TreeNode(val)
+        if root.val > val:
+            root.left = self.insertIntoBST(root.left, val)
+        else:
+            root.right = self.insertIntoBST(root.right, val)
+        return root
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Clone)]
+// pub struct TreeNode {
+//     pub val: i32,
+//     pub left: Option<Rc<RefCell<TreeNode>>>,
+//     pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//     #[inline]
+//     pub fn new(val: i32) -> Self {
+//         TreeNode {
+//             val,
+//             left: None,
+//             right: None,
+//         }
+//     }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+impl Solution {
+    pub fn insert_into_bst(
+        root: Option<Rc<RefCell<TreeNode>>>,
+        val: i32,
+    ) -> Option<Rc<RefCell<TreeNode>>> {
+        match root {
+            None => Some(Rc::new(RefCell::new(TreeNode::new(val)))),
+            Some(node) => {
+                if node.borrow().val > val {
+                    node.borrow_mut().left = Self::insert_into_bst(node.borrow().left.clone(), val);
+                } else {
+                    node.borrow_mut().right = Self::insert_into_bst(node.borrow().right.clone(), val);
+                }
+                Some(node)
+            }
+        }
+    }
 }
 ```
 
@@ -4489,6 +9034,103 @@ func deleteNode(root *TreeNode, key int) *TreeNode {
 }
 ```
 
+```python
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def deleteNode(root: TreeNode, key: int) -> TreeNode:
+    if root is None:
+        return None
+    if root.val == key:
+        if root.left is None and root.right is None:
+            return None
+        if root.left is None:
+            return root.right
+        if root.right is None:
+            return root.left
+        curr = root.right
+        while curr.left is not None:
+            curr = curr.left
+        curr.left = root.left
+        return root.right
+    if root.val > key:
+        root.left = deleteNode(root.left, key)
+    else:
+        root.right = deleteNode(root.right, key)
+    return root
+```
+
+```rust
+// Definition for a binary tree node.
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<TreeNode>>>,
+    pub right: Option<Rc<RefCell<TreeNode>>>,
+}
+
+impl TreeNode {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
+    }
+}
+
+use std::rc::Rc;
+use std::cell::RefCell;
+
+pub fn delete_node(
+    root: Option<Rc<RefCell<TreeNode>>>,
+    key: i32,
+) -> Option<Rc<RefCell<TreeNode>>> {
+    let root = match root {
+        Some(node) => node,
+        None => return None,
+    };
+
+    let node_val = root.borrow().val;
+    if node_val == key {
+        let mut root_borrow = root.borrow_mut();
+        let left = root_borrow.left.take();
+        let right = root_borrow.right.take();
+        drop(root_borrow);
+
+        match (left, right) {
+            (None, None) => None,
+            (None, Some(r)) => Some(r),
+            (Some(l), None) => Some(l),
+            (Some(l), Some(r)) => {
+                let mut curr = r.clone();
+                while let Some(curr_left) = curr.borrow().left.clone() {
+                    curr = curr_left;
+                }
+                curr.borrow_mut().left = Some(l);
+                Some(r)
+            }
+        }
+    } else if node_val > key {
+        let mut root_borrow = root.borrow_mut();
+        root_borrow.left = delete_node(root_borrow.left.take(), key);
+        drop(root_borrow);
+        Some(root)
+    } else {
+        let mut root_borrow = root.borrow_mut();
+        root_borrow.right = delete_node(root_borrow.right.take(), key);
+        drop(root_borrow);
+        Some(root)
+    }
+}
+```
+
 #### [669. 修剪二叉搜索树](https://leetcode-cn.com/problems/trim-a-binary-search-tree/)
 
 给你二叉搜索树的根节点 `root` ，同时给定最小边界 `low` 和最大边界 `high`。通过修剪二叉搜索树，使得所有节点的值在 `[low, high]`中。修剪树不应该改变保留在树中的元素的相对结构（即，如果没有被移除，原有的父代子代关系都应当保留）。 可以证明，存在唯一的答案。
@@ -4559,6 +9201,70 @@ func trimBST(root *TreeNode, low int, high int) *TreeNode {
 }
 ```
 
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+def trimBST(root, low, high):
+    if root is None:
+        return None
+    if root.val < low:
+        return trimBST(root.right, low, high)
+    if root.val > high:
+        return trimBST(root.left, low, high)
+    root.left = trimBST(root.left, low, high)
+    root.right = trimBST(root.right, low, high)
+    return root
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//     pub val: i32,
+//     pub left: Option<Rc<RefCell<TreeNode>>>,
+//     pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//     #[inline]
+//     pub fn new(val: i32) -> Self {
+//         TreeNode {
+//             val,
+//             left: None,
+//             right: None,
+//         }
+//     }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+
+pub fn trimBST(
+    root: Option<Rc<RefCell<TreeNode>>>,
+    low: i32,
+    high: i32,
+) -> Option<Rc<RefCell<TreeNode>>> {
+    match root {
+        None => None,
+        Some(node) => {
+            let val = node.borrow().val;
+            if val < low {
+                return trimBST(node.borrow_mut().right.take(), low, high);
+            }
+            if val > high {
+                return trimBST(node.borrow_mut().left.take(), low, high);
+            }
+            node.borrow_mut().left = trimBST(node.borrow_mut().left.take(), low, high);
+            node.borrow_mut().right = trimBST(node.borrow_mut().right.take(), low, high);
+            Some(node)
+        }
+    }
+}
+```
+
 #### [108. 将有序数组转换为二叉搜索树](https://leetcode-cn.com/problems/convert-sorted-array-to-binary-search-tree/)
 
 给你一个整数数组 `nums` ，其中元素已经按 **升序** 排列，请你将其转换为一棵 **高度平衡** 二叉搜索树。
@@ -4600,6 +9306,65 @@ func sortedArrayToBST(nums []int) *TreeNode {
 	root.Left = sortedArrayToBST(nums[:len(nums)/2])
 	root.Right = sortedArrayToBST(nums[len(nums)/2+1:])
 	return root
+}
+```
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def sortedArrayToBST(nums):
+    if len(nums) == 0:
+        return None
+    mid = len(nums) // 2
+    root = TreeNode(nums[mid])
+    root.left = sortedArrayToBST(nums[:mid])
+    root.right = sortedArrayToBST(nums[mid + 1:])
+    return root
+```
+
+```rust
+// Definition for a binary tree node.
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<TreeNode>>>,
+    pub right: Option<Rc<RefCell<TreeNode>>>,
+}
+
+impl TreeNode {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
+    }
+}
+
+use std::cell::RefCell;
+use std::rc::Rc;
+
+pub fn sorted_array_to_bst(nums: Vec<i32>) -> Option<Rc<RefCell<TreeNode>>> {
+    if nums.is_empty() {
+        return None;
+    }
+    let mid = nums.len() / 2;
+    let root = Rc::new(RefCell::new(TreeNode::new(nums[mid])));
+    root.borrow_mut().left = sorted_array_to_bst(nums[..mid].to_vec());
+    root.borrow_mut().right = sorted_array_to_bst(nums[mid + 1..].to_vec());
+    Some(root)
 }
 ```
 
@@ -4667,6 +9432,74 @@ func convertBST(root *TreeNode) *TreeNode {
 }
 ```
 
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def convertBST(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        sum = 0
+
+        def run(node):
+            nonlocal sum
+            if node is None:
+                return
+            run(node.right)
+            tmp = sum
+            sum += node.val
+            node.val += tmp
+            run(node.left)
+
+        run(root)
+        return root
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//     pub val: i32,
+//     pub left: Option<Rc<RefCell<TreeNode>>>,
+//     pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//     #[inline]
+//     pub fn new(val: i32) -> Self {
+//         TreeNode {
+//             val,
+//             left: None,
+//             right: None,
+//         }
+//     }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+use std::cell::RefMut;
+
+impl Solution {
+    pub fn convert_bst(root: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
+        let mut sum: i32 = 0;
+        Self::run(&root, &mut sum);
+        root
+    }
+
+    fn run(root: &Option<Rc<RefCell<TreeNode>>>, sum: &mut i32) {
+        if let Some(node) = root {
+            let mut node = node.borrow_mut();
+            Self::run(&node.right, sum);
+            let tmp = *sum;
+            *sum += node.val;
+            node.val += tmp;
+            Self::run(&node.left, sum);
+        }
+    }
+}
+```
+
 ## 回溯算法
 
 #### [77. 组合](https://leetcode-cn.com/problems/combinations/)
@@ -4727,6 +9560,49 @@ func backtracking(n, k, index int, tarck []int, res *[][]int) {
 }
 ```
 
+```python
+def combine(n: int, k: int):
+    res = []
+    if n < 1 or k < 1 or k > n:
+        return res
+
+    def backtracking(index: int, track: list):
+        if len(track) == k:
+            res.append(track[:])
+            return
+        for i in range(index, n + 1):
+            track.append(i)
+            backtracking(i + 1, track)
+            track.pop()
+
+    backtracking(1, [])
+    return res
+```
+
+```rust
+pub fn combine(n: i32, k: i32) -> Vec<Vec<i32>> {
+    let mut res: Vec<Vec<i32>> = Vec::new();
+    if n < 1 || k < 1 || k > n {
+        return res;
+    }
+    let mut track: Vec<i32> = Vec::new();
+    backtracking(n, k, 1, &mut track, &mut res);
+    res
+}
+
+fn backtracking(n: i32, k: i32, index: i32, track: &mut Vec<i32>, res: &mut Vec<Vec<i32>>) {
+    if track.len() == k as usize {
+        res.push(track.clone());
+        return;
+    }
+    for i in index..=n {
+        track.push(i);
+        backtracking(n, k, i + 1, track, res);
+        track.pop();
+    }
+}
+```
+
 #### [216. 组合总和 III](https://leetcode-cn.com/problems/combination-sum-iii/)
 
 找出所有相加之和为 ***n*** 的 k个数的组合。组合中只允许含有 1 - 9 的正整数，并且每种组合中不存在重复的数字。
@@ -4779,6 +9655,54 @@ func backtracking(k, n, index int, track []int, res *[][]int) {
 		backtracking(k, n, i+1, track, res)
 		track = track[:len(track)-1]
 	}
+}
+```
+
+```python
+def combinationSum3(k: int, n: int) -> list[list[int]]:
+    res = []
+    if k == 0 or n == 0 or n < k:
+        return res
+    backtracking(k, n, 1, [], res)
+    return res
+
+
+def backtracking(k, n, index, track, res):
+    if len(track) == k:
+        if sum(track) == n:
+            res.append(track[:])
+        return
+
+    for i in range(index, 10):
+        track.append(i)
+        backtracking(k, n, i + 1, track, res)
+        track.pop()
+```
+
+```rust
+pub fn combination_sum3(k: i32, n: i32) -> Vec<Vec<i32>> {
+    let mut res: Vec<Vec<i32>> = Vec::new();
+    if k == 0 || n == 0 || n < k {
+        return res;
+    }
+    backtracking(k, n, 1, &mut Vec::new(), &mut res);
+    res
+}
+
+fn backtracking(k: i32, n: i32, index: i32, track: &mut Vec<i32>, res: &mut Vec<Vec<i32>>) {
+    if track.len() as i32 == k {
+        let sum: i32 = track.iter().sum();
+        if sum == n {
+            res.push(track.clone());
+        }
+        return;
+    }
+
+    for i in index..=9 {
+        track.push(i);
+        backtracking(k, n, i + 1, track, res);
+        track.pop();
+    }
 }
 ```
 
@@ -4852,6 +9776,86 @@ func backtracking(index int, track, digits string, digitsMap map[byte]string, re
 		backtracking(index+1, track, digits, digitsMap, res)
 		track = track[:len(track)-1]
 	}
+}
+```
+
+```python
+def letterCombinations(digits: str) -> list[str]:
+    digitsMap = {
+        '0': "",
+        '1': "",
+        '2': "abc",
+        '3': "def",
+        '4': "ghi",
+        '5': "jkl",
+        '6': "mno",
+        '7': "pqrs",
+        '8': "tuv",
+        '9': "wxyz",
+    }
+    res = []
+    if len(digits) == 0:
+        return res
+
+    def backtracking(index: int, track: str) -> None:
+        if len(track) == len(digits):
+            res.append(track)
+            return
+
+        lettr = digitsMap[digits[index]]
+        for i in range(len(lettr)):
+            track = track + lettr[i]
+            backtracking(index + 1, track)
+            track = track[:len(track) - 1]
+
+    backtracking(0, "")
+    return res
+```
+
+```rust
+use std::collections::HashMap;
+
+pub fn letter_combinations(digits: String) -> Vec<String> {
+    let mut digits_map: HashMap<char, &str> = HashMap::new();
+    digits_map.insert('0', "");
+    digits_map.insert('1', "");
+    digits_map.insert('2', "abc");
+    digits_map.insert('3', "def");
+    digits_map.insert('4', "ghi");
+    digits_map.insert('5', "jkl");
+    digits_map.insert('6', "mno");
+    digits_map.insert('7', "pqrs");
+    digits_map.insert('8', "tuv");
+    digits_map.insert('9', "wxyz");
+
+    let mut res: Vec<String> = Vec::new();
+    if digits.is_empty() {
+        return res;
+    }
+
+    let digits_chars: Vec<char> = digits.chars().collect();
+    backtracking(0, String::new(), &digits_chars, &digits_map, &mut res);
+    res
+}
+
+fn backtracking(
+    index: usize,
+    mut track: String,
+    digits: &[char],
+    digits_map: &HashMap<char, &str>,
+    res: &mut Vec<String>,
+) {
+    if track.len() == digits.len() {
+        res.push(track);
+        return;
+    }
+
+    let lettr = digits_map[&digits[index]];
+    for ch in lettr.chars() {
+        track.push(ch);
+        backtracking(index + 1, track.clone(), digits, digits_map, res);
+        track.pop();
+    }
 }
 ```
 
@@ -4936,6 +9940,57 @@ func backtracking(candidates, track []int, target, index, sum int, res *[][]int)
 }
 ```
 
+```python
+def combinationSum(candidates, target):
+    res = []
+    backtracking(candidates, [], target, 0, 0, res)
+    return res
+
+
+def backtracking(candidates, track, target, index, sum_val, res):
+    if sum_val == target:
+        res.append(list(track))
+    if sum_val > target:
+        return
+
+    for i in range(index, len(candidates)):
+        track.append(candidates[i])
+        sum_val += candidates[i]
+        backtracking(candidates, track, target, i, sum_val, res)
+        sum_val -= candidates[i]
+        track.pop()
+```
+
+```rust
+pub fn combination_sum(candidates: Vec<i32>, target: i32) -> Vec<Vec<i32>> {
+    let mut res: Vec<Vec<i32>> = Vec::new();
+    backtracking(&candidates, &mut Vec::new(), target, 0, 0, &mut res);
+    res
+}
+
+fn backtracking(
+    candidates: &[i32],
+    track: &mut Vec<i32>,
+    target: i32,
+    index: usize,
+    sum: i32,
+    res: &mut Vec<Vec<i32>>,
+) {
+    if sum == target {
+        res.push(track.clone());
+    }
+    if sum > target {
+        return;
+    }
+
+    for i in index..candidates.len() {
+        track.push(candidates[i]);
+        backtracking(candidates, track, target, i, sum + candidates[i], res);
+        track.pop();
+    }
+}
+```
+
 #### [40. 组合总和 II](https://leetcode-cn.com/problems/combination-sum-ii/)
 
 给定一个数组 `candidates` 和一个目标数 `target` ，找出 `candidates` 中所有可以使数字和为 `target` 的组合。
@@ -5005,6 +10060,77 @@ func backtracking(index, target, sum int, track, candidates []int, use map[int]b
 		sum -= candidates[i]
 		track = track[:len(track)-1]
 	}
+}
+```
+
+```python
+def combinationSum2(candidates, target):
+    res = []
+    candidates.sort()
+    use = [False] * len(candidates)
+    backtracking(0, target, 0, [], candidates, use, res)
+    return res
+
+
+def backtracking(index, target, total, track, candidates, use, res):
+    if total == target:
+        res.append(list(track))
+        return
+    if total > target:
+        return
+    for i in range(index, len(candidates)):
+        if i > 0 and candidates[i] == candidates[i - 1] and use[i - 1] == False:
+            continue
+        track.append(candidates[i])
+        total += candidates[i]
+        use[i] = True
+        backtracking(i + 1, target, total, track, candidates, use, res)
+        use[i] = False
+        total -= candidates[i]
+        track.pop()
+```
+
+```rust
+pub fn combination_sum2(candidates: Vec<i32>, target: i32) -> Vec<Vec<i32>> {
+    let mut res: Vec<Vec<i32>> = Vec::new();
+    let mut candidates = candidates;
+    candidates.sort();
+    let mut use_ = vec![false; candidates.len()];
+    let mut track: Vec<i32> = Vec::new();
+    backtracking(0, target, 0, &mut track, &candidates, &mut use_, &mut res);
+    res
+}
+
+fn backtracking(
+    index: usize,
+    target: i32,
+    sum: i32,
+    track: &mut Vec<i32>,
+    candidates: &[i32],
+    use_: &mut [bool],
+    res: &mut Vec<Vec<i32>>,
+) {
+    if sum == target {
+        res.push(track.clone());
+        return;
+    }
+    if sum > target {
+        return;
+    }
+    let mut i = index;
+    while i < candidates.len() {
+        if i > 0 && candidates[i] == candidates[i - 1] && use_[i - 1] == false {
+            i += 1;
+            continue;
+        }
+        track.push(candidates[i]);
+        let sum = sum + candidates[i];
+        use_[i] = true;
+        backtracking(i + 1, target, sum, track, candidates, use_, res);
+        use_[i] = false;
+        track.pop();
+        i += 1;
+    }
 }
 ```
 
@@ -5084,6 +10210,80 @@ func isIP(s string, index, end int) bool {
 }
 ```
 
+```python
+def backtracking(s, path, index, res):
+    if index == len(s) and len(path) == 4:
+        tmp = path[0] + "." + path[1] + "." + path[2] + "." + path[3]
+        res.append(tmp)
+
+    for i in range(index, len(s)):
+        path.append(s[index:i + 1])
+        if i - index + 1 <= 3 and isIP(s, index, i) and len(path) <= 4:
+            backtracking(s, path, i + 1, res)
+        path.pop()
+
+
+def isIP(s, index, end):
+    checkInt = int(s[index:end + 1])
+    if end - index > 0 and s[index] == '0':
+        return False
+    if checkInt > 255:
+        return False
+    return True
+
+
+def restoreIpAddresses(s):
+    res = []
+    backtracking(s, [], 0, res)
+    return res
+```
+
+```rust
+pub fn restore_ip_addresses(s: String) -> Vec<String> {
+    let mut res: Vec<String> = Vec::new();
+    let mut path: Vec<String> = Vec::new();
+    backtracking(&s, &mut path, 0, &mut res);
+    res
+}
+
+fn backtracking(s: &str, path: &mut Vec<String>, index: usize, res: &mut Vec<String>) {
+    if index == s.len() && path.len() == 4 {
+        let tmp = format!(
+            "{}.{}.{}.{}",
+            path[0], path[1], path[2], path[3]
+        );
+        res.push(tmp);
+    }
+
+    let bytes = s.as_bytes();
+    let mut i = index;
+    while i < s.len() {
+        let seg = String::from_utf8(bytes[index..=i].to_vec()).unwrap();
+        path.push(seg);
+        if i - index + 1 <= 3 && is_ip(s, index, i) && path.len() <= 4 {
+            backtracking(s, path, i + 1, res);
+        }
+        path.pop();
+        i += 1;
+    }
+}
+
+fn is_ip(s: &str, index: usize, end: usize) -> bool {
+    let bytes = s.as_bytes();
+    let check_int: i32 = String::from_utf8(bytes[index..=end].to_vec())
+        .unwrap()
+        .parse()
+        .unwrap();
+    if end - index > 0 && bytes[index] == b'0' {
+        return false;
+    }
+    if check_int > 255 {
+        return false;
+    }
+    true
+}
+```
+
 #### [78. 子集](https://leetcode-cn.com/problems/subsets/)
 
 给你一个整数数组 `nums` ，数组中的元素 **互不相同** 。返回该数组所有可能的子集（幂集）。
@@ -5126,6 +10326,39 @@ func backtracking(nums, track []int, index int, res *[][]int) {
 		backtracking(nums, track, i+1, res)
 		track = track[:len(track)-1]
 	}
+}
+```
+
+```python
+def subsets(nums):
+    res = []
+
+    def backtracking(index, track):
+        res.append(track[:])
+        for i in range(index, len(nums)):
+            track.append(nums[i])
+            backtracking(i + 1, track)
+            track.pop()
+
+    backtracking(0, [])
+    return res
+```
+
+```rust
+pub fn subsets(nums: Vec<i32>) -> Vec<Vec<i32>> {
+    let mut res: Vec<Vec<i32>> = Vec::new();
+    let mut track: Vec<i32> = Vec::new();
+    backtracking(&nums, &mut track, 0, &mut res);
+    res
+}
+
+fn backtracking(nums: &Vec<i32>, track: &mut Vec<i32>, index: usize, res: &mut Vec<Vec<i32>>) {
+    res.push(track.clone());
+    for i in index..nums.len() {
+        track.push(nums[i]);
+        backtracking(nums, track, i + 1, res);
+        track.pop();
+    }
 }
 ```
 
@@ -5178,6 +10411,48 @@ func backtracking(nums, track []int, index int, res *[][]int) {
 }
 ```
 
+```python
+def subsetsWithDup(nums):
+    res = []
+    nums.sort()
+    backtracking(nums, [], 0, res)
+    return res
+
+
+def backtracking(nums, track, index, res):
+    res.append(list(track))
+
+    for i in range(index, len(nums)):
+        if i > index and nums[i] == nums[i - 1]:
+            continue
+        track.append(nums[i])
+        backtracking(nums, track, i + 1, res)
+        track.pop()
+```
+
+```rust
+pub fn subsets_with_dup(nums: Vec<i32>) -> Vec<Vec<i32>> {
+    let mut nums = nums;
+    nums.sort();
+    let mut res: Vec<Vec<i32>> = Vec::new();
+    backtracking(&nums, &mut Vec::new(), 0, &mut res);
+    res
+}
+
+fn backtracking(nums: &[i32], track: &mut Vec<i32>, index: usize, res: &mut Vec<Vec<i32>>) {
+    res.push(track.clone());
+
+    for i in index..nums.len() {
+        if i > index && nums[i] == nums[i - 1] {
+            continue;
+        }
+        track.push(nums[i]);
+        backtracking(nums, track, i + 1, res);
+        track.pop();
+    }
+}
+```
+
 #### [491. 递增子序列](https://leetcode-cn.com/problems/increasing-subsequences/)
 
 给你一个整数数组 `nums` ，找出并返回所有该数组中不同的递增子序列，递增子序列中 **至少有两个元素** 。你可以按 **任意顺序** 返回答案。
@@ -5226,6 +10501,55 @@ func backtracking(track, nums []int, index int, res *[][]int) {
 		backtracking(track, nums, i+1, res)
 		track = track[:len(track)-1]
 	}
+}
+```
+
+```python
+from typing import List
+
+
+def findSubsequences(nums: List[int]) -> List[List[int]]:
+    res = []
+    backtracking([], nums, 0, res)
+    return res
+
+
+def backtracking(track, nums, index, res):
+    if len(track) > 1:
+        res.append(track[:])
+    history = [0] * 201
+    for i in range(index, len(nums)):
+        if (len(track) > 0 and nums[i] < track[-1]) or history[nums[i] + 100] == 1:
+            continue
+        history[nums[i] + 100] = 1
+        track.append(nums[i])
+        backtracking(track, nums, i + 1, res)
+        track.pop()
+```
+
+```rust
+pub fn find_subsequences(nums: Vec<i32>) -> Vec<Vec<i32>> {
+    let mut res: Vec<Vec<i32>> = Vec::new();
+    backtracking(&mut Vec::new(), &nums, 0, &mut res);
+    res
+}
+
+fn backtracking(track: &mut Vec<i32>, nums: &[i32], index: usize, res: &mut Vec<Vec<i32>>) {
+    if track.len() > 1 {
+        res.push(track.clone());
+    }
+    let mut history = [0; 201];
+    for i in index..nums.len() {
+        if (!track.is_empty() && nums[i] < *track.last().unwrap())
+            || history[(nums[i] + 100) as usize] == 1
+        {
+            continue;
+        }
+        history[(nums[i] + 100) as usize] = 1;
+        track.push(nums[i]);
+        backtracking(track, nums, i + 1, res);
+        track.pop();
+    }
 }
 ```
 
@@ -5289,6 +10613,56 @@ func backtracking(track, nums []int, used map[int]bool, res *[][]int) {
 }
 ```
 
+```python
+def permute(nums):
+    res = []
+    track = []
+    used = [False] * len(nums)
+    backtracking(track, nums, used, res)
+    return res
+
+
+def backtracking(track, nums, used, res):
+    if len(track) == len(nums):
+        res.append(list(track))
+        return
+    for i in range(len(nums)):
+        if used[i]:
+            continue
+        used[i] = True
+        track.append(nums[i])
+        backtracking(track, nums, used, res)
+        used[i] = False
+        track.pop()
+```
+
+```rust
+pub fn permute(nums: Vec<i32>) -> Vec<Vec<i32>> {
+    let mut res: Vec<Vec<i32>> = Vec::new();
+    let mut track: Vec<i32> = Vec::new();
+    let mut used = vec![false; nums.len()];
+    backtracking(&mut track, &nums, &mut used, &mut res);
+    res
+}
+
+fn backtracking(track: &mut Vec<i32>, nums: &Vec<i32>, used: &mut Vec<bool>, res: &mut Vec<Vec<i32>>) {
+    if track.len() == nums.len() {
+        res.append(&mut vec![track.clone()]);
+        return;
+    }
+    for i in 0..nums.len() {
+        if used[i] {
+            continue;
+        }
+        used[i] = true;
+        track.push(nums[i]);
+        backtracking(track, nums, used, res);
+        used[i] = false;
+        track.pop();
+    }
+}
+```
+
 #### [47. 全排列 II](https://leetcode-cn.com/problems/permutations-ii/)
 
 给定一个可包含重复数字的序列 `nums` ，**按任意顺序** 返回所有不重复的全排列。
@@ -5345,6 +10719,67 @@ func backtracking(track, nums []int, used map[int]bool, res *[][]int) {
 		used[i] = false
 		track = track[:len(track)-1]
 	}
+}
+```
+
+```python
+from typing import List
+
+
+def permuteUnique(nums: List[int]) -> List[List[int]]:
+    res = []
+    track = []
+    nums.sort()
+    used = [False] * len(nums)
+    backtracking(track, nums, used, res)
+    return res
+
+
+def backtracking(track, nums, used, res):
+    if len(track) == len(nums):
+        res.append(track[:])
+        return
+    for i in range(len(nums)):
+        if i > 0 and nums[i] == nums[i - 1] and used[i - 1] is False:
+            continue
+        if used[i] is True:
+            continue
+        used[i] = True
+        track.append(nums[i])
+        backtracking(track, nums, used, res)
+        used[i] = False
+        track.pop()
+```
+
+```rust
+pub fn permute_unique(nums: Vec<i32>) -> Vec<Vec<i32>> {
+    let mut nums = nums;
+    nums.sort_unstable();
+    let mut res: Vec<Vec<i32>> = Vec::new();
+    let track: Vec<i32> = Vec::new();
+    let used = vec![false; nums.len()];
+    backtracking(track, &nums, &mut used, &mut res);
+    res
+}
+
+fn backtracking(mut track: Vec<i32>, nums: &[i32], used: &mut [bool], res: &mut Vec<Vec<i32>>) {
+    if track.len() == nums.len() {
+        res.push(track.clone());
+        return;
+    }
+    for i in 0..nums.len() {
+        if i > 0 && nums[i] == nums[i - 1] && used[i - 1] == false {
+            continue;
+        }
+        if used[i] == true {
+            continue;
+        }
+        used[i] = true;
+        track.push(nums[i]);
+        backtracking(track.clone(), nums, used, res);
+        used[i] = false;
+        track.pop();
+    }
 }
 ```
 
@@ -5420,6 +10855,83 @@ func findItinerary(tickets [][]string) []string {
 		right--
 	}
 	return res
+}
+```
+
+```python
+def findItinerary(tickets):
+    import collections
+
+    m = collections.defaultdict(list)
+    res = []
+
+    for src, dst in tickets:
+        m[src].append(dst)
+    for key in m:
+        m[key].sort()
+
+    def dfs(curr):
+        while m.get(curr):
+            tmp = m[curr].pop(0)
+            dfs(tmp)
+        res.append(curr)
+
+    dfs("JFK")
+
+    left = 0
+    right = len(res) - 1
+    while left < right:
+        res[left], res[right] = res[right], res[left]
+        left += 1
+        right -= 1
+
+    return res
+```
+
+```rust
+use std::collections::HashMap;
+
+pub fn find_itinerary(tickets: Vec<Vec<String>>) -> Vec<String> {
+    let mut m: HashMap<String, Vec<String>> = HashMap::new();
+    let mut res: Vec<String> = Vec::new();
+
+    for ticket in &tickets {
+        let src = ticket[0].clone();
+        let dst = ticket[1].clone();
+        m.entry(src).or_insert_with(Vec::new).push(dst);
+    }
+    for v in m.values_mut() {
+        v.sort();
+    }
+
+    fn dfs(m: &mut HashMap<String, Vec<String>>, res: &mut Vec<String>, curr: &str) {
+        loop {
+            let next = {
+                let v = match m.get_mut(curr) {
+                    Some(v) => v,
+                    None => break,
+                };
+                if v.is_empty() {
+                    break;
+                }
+                v.remove(0)
+            };
+            dfs(m, res, &next);
+        }
+        res.push(curr.to_string());
+    }
+
+    dfs(&mut m, &mut res, "JFK");
+
+    let mut left = 0;
+    let mut right = res.len() as isize - 1;
+    while left < right {
+        res.swap(left as usize, right as usize);
+        left += 1;
+        right -= 1;
+    }
+
+    res
 }
 ```
 
@@ -5519,6 +11031,112 @@ func isValid(board [][]string, row, col int) bool {
 }
 ```
 
+```python
+def solveNQueens(n):
+    res = []
+    board = [["."] * n for _ in range(n)]
+    backtracking(board, 0, res)
+    return res
+
+
+def backtracking(board, row, res):
+    size = len(board)
+    if row == size:
+        res.append(["".join(r) for r in board])
+        return
+
+    for col in range(size):
+        if not isValid(board, row, col):
+            continue
+        board[row][col] = "Q"
+        backtracking(board, row + 1, res)
+        board[row][col] = "."
+
+
+def isValid(board, row, col):
+    n = len(board)
+    for i in range(row):
+        if board[i][col] == "Q":
+            return False
+    for i in range(n):
+        if board[row][i] == "Q":
+            return False
+
+    i, j = row, col
+    while i >= 0 and j >= 0:
+        if board[i][j] == "Q":
+            return False
+        i -= 1
+        j -= 1
+    i, j = row, col
+    while i >= 0 and j < n:
+        if board[i][j] == "Q":
+            return False
+        i -= 1
+        j += 1
+    return True
+```
+
+```rust
+pub fn solve_n_queens(n: i32) -> Vec<Vec<String>> {
+    let size = n as usize;
+    let mut board = vec![vec![".".to_string(); size]; size];
+    let mut res: Vec<Vec<String>> = Vec::new();
+    backtracking(&mut board, 0, &mut res);
+    res
+}
+
+fn backtracking(board: &mut Vec<Vec<String>>, row: usize, res: &mut Vec<Vec<String>>) {
+    let size = board.len();
+    if row == size {
+        let tmp = board.iter().map(|r| r.join("")).collect();
+        res.push(tmp);
+        return;
+    }
+
+    for col in 0..size {
+        if !is_valid(board, row, col) {
+            continue;
+        }
+        board[row][col] = "Q".to_string();
+        backtracking(board, row + 1, res);
+        board[row][col] = ".".to_string();
+    }
+}
+
+fn is_valid(board: &Vec<Vec<String>>, row: usize, col: usize) -> bool {
+    let n = board.len();
+    for i in 0..row {
+        if board[i][col] == "Q" {
+            return false;
+        }
+    }
+    for i in 0..n {
+        if board[row][i] == "Q" {
+            return false;
+        }
+    }
+
+    let (mut i, mut j) = (row as isize, col as isize);
+    while i >= 0 && j >= 0 {
+        if board[i as usize][j as usize] == "Q" {
+            return false;
+        }
+        i -= 1;
+        j -= 1;
+    }
+    let (mut i, mut j) = (row as isize, col as isize);
+    while i >= 0 && (j as usize) < n {
+        if board[i as usize][j as usize] == "Q" {
+            return false;
+        }
+        i -= 1;
+        j += 1;
+    }
+    true
+}
+```
+
 #### [37. 解数独](https://leetcode-cn.com/problems/sudoku-solver/)
 
 编写一个程序，通过填充空格来解决数独问题。
@@ -5600,6 +11218,98 @@ func isValid(row, col int, k byte, board [][]byte) bool {
 }
 ```
 
+```python
+def solveSudoku(board):
+    backtracking(board)
+
+
+def backtracking(board):
+    for i in range(9):
+        for j in range(9):
+            if board[i][j] != '.':
+                continue
+            for k in range(9):
+                c = chr(ord('1') + k)
+                if isValid(i, j, c, board):
+                    board[i][j] = c
+                    if backtracking(board):
+                        return True
+                    board[i][j] = '.'
+            return False
+    return True
+
+
+def isValid(row, col, k, board):
+    for i in range(9):
+        if board[row][i] == k:
+            return False
+    for i in range(9):
+        if board[i][col] == k:
+            return False
+
+    startrow = (row // 3) * 3
+    startcol = (col // 3) * 3
+    for i in range(startrow, startrow + 3):
+        for j in range(startcol, startcol + 3):
+            if board[i][j] == k:
+                return False
+
+    return True
+```
+
+```rust
+pub fn solve_sudoku(board: &mut Vec<Vec<char>>) {
+    backtracking(board);
+}
+
+fn backtracking(board: &mut Vec<Vec<char>>) -> bool {
+    for i in 0..9 {
+        for j in 0..9 {
+            if board[i][j] != '.' {
+                continue;
+            }
+            for k in b'1'..=b'9' {
+                let k = k as char;
+                if is_valid(i, j, k, board) {
+                    board[i][j] = k;
+                    if backtracking(board) {
+                        return true;
+                    }
+                    board[i][j] = '.';
+                }
+            }
+            return false;
+        }
+    }
+    true
+}
+
+fn is_valid(row: usize, col: usize, k: char, board: &Vec<Vec<char>>) -> bool {
+    for i in 0..9 {
+        if board[row][i] == k {
+            return false;
+        }
+    }
+    for i in 0..9 {
+        if board[i][col] == k {
+            return false;
+        }
+    }
+
+    let startrow = (row / 3) * 3;
+    let startcol = (col / 3) * 3;
+    for i in startrow..startrow + 3 {
+        for j in startcol..startcol + 3 {
+            if board[i][j] == k {
+                return false;
+            }
+        }
+    }
+
+    true
+}
+```
+
 ## 贪心
 
 #### [455. 分发饼干](https://leetcode-cn.com/problems/assign-cookies/)
@@ -5647,6 +11357,35 @@ func findContentChildren(g []int, s []int) int {
 		}
 	}
 	return child
+}
+```
+
+```python
+def findContentChildren(g, s):
+    g.sort()
+    s.sort()
+    child = 0
+    i = 0
+    while child < len(g) and i < len(s):
+        if s[i] >= g[child]:
+            child += 1
+        i += 1
+    return child
+```
+
+```rust
+pub fn find_content_children(mut g: Vec<i32>, mut s: Vec<i32>) -> i32 {
+    g.sort();
+    s.sort();
+    let mut child = 0;
+    let mut i = 0;
+    while child < g.len() && i < s.len() {
+        if s[i] >= g[child] {
+            child += 1;
+        }
+        i += 1;
+    }
+    child as i32
 }
 ```
 
@@ -5709,6 +11448,42 @@ func wiggleMaxLength(nums []int) int {
 }
 ```
 
+```python
+def wiggleMaxLength(nums):
+    count = 1
+    pre = 0
+    cur = 0
+    if len(nums) < 2:
+        return count
+
+    for i in range(len(nums) - 1):
+        cur = nums[i + 1] - nums[i]
+        if (cur > 0 and pre <= 0) or (cur < 0 and pre >= 0):
+            pre = cur
+            count += 1
+    return count
+```
+
+```rust
+pub fn wiggle_max_length(nums: Vec<i32>) -> i32 {
+    let mut count = 1;
+    let mut pre = 0;
+    let mut cur;
+    if nums.len() < 2 {
+        return count;
+    }
+
+    for i in 0..nums.len() - 1 {
+        cur = nums[i + 1] - nums[i];
+        if (cur > 0 && pre <= 0) || (cur < 0 && pre >= 0) {
+            pre = cur;
+            count += 1;
+        }
+    }
+    count
+}
+```
+
 #### [53. 最大子数组和](https://leetcode-cn.com/problems/maximum-subarray/)
 
 给你一个整数数组 `nums` ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
@@ -5754,6 +11529,32 @@ func maxSubArray(nums []int) int {
 		}
 	}
 	return maxSum
+}
+```
+
+```python
+def maxSubArray(nums):
+    maxSum = nums[0]
+    for i in range(1, len(nums)):
+        if nums[i] + nums[i - 1] > nums[i]:
+            nums[i] += nums[i - 1]
+        if nums[i] > maxSum:
+            maxSum = nums[i]
+    return maxSum
+```
+
+```rust
+pub fn max_sub_array(mut nums: Vec<i32>) -> i32 {
+    let mut max_sum = nums[0];
+    for i in 1..nums.len() {
+        if nums[i] + nums[i - 1] > nums[i] {
+            nums[i] += nums[i - 1];
+        }
+        if nums[i] > max_sum {
+            max_sum = nums[i];
+        }
+    }
+    max_sum
 }
 ```
 
@@ -5805,6 +11606,27 @@ func maxProfit(prices []int) int {
 		}
 	}
 	return result
+}
+```
+
+```python
+def maxProfit(prices):
+    result = 0
+    for i in range(len(prices) - 1):
+        if prices[i + 1] - prices[i] > 0:
+            result += prices[i + 1] - prices[i]
+    return result
+```
+
+```rust
+pub fn max_profit(prices: Vec<i32>) -> i32 {
+    let mut result = 0;
+    for i in 0..prices.len() - 1 {
+        if prices[i + 1] - prices[i] > 0 {
+            result += prices[i + 1] - prices[i];
+        }
+    }
+    result
 }
 ```
 
@@ -5875,6 +11697,39 @@ func canJump(nums []int) bool {
 		}
 	}
 	return dp[len(nums)-1]
+}
+```
+
+```python
+def canJump(nums):
+    if len(nums) < 1:
+        return True
+    cover = 0
+    for i in range(len(nums)):
+        if i > cover:
+            break
+        cover = max(nums[i] + i, cover)
+        if cover >= len(nums) - 1:
+            return True
+    return False
+```
+
+```rust
+pub fn can_jump(nums: Vec<i32>) -> bool {
+    if nums.is_empty() {
+        return true;
+    }
+    let n = nums.len();
+    let mut cover: usize = 0;
+    let mut i: usize = 0;
+    while i <= cover {
+        cover = std::cmp::max((nums[i] + i as i32) as usize, cover);
+        if cover >= n - 1 {
+            return true;
+        }
+        i += 1;
+    }
+    false
 }
 ```
 
@@ -5956,6 +11811,35 @@ func min(x, y int) int {
 }
 ```
 
+```python
+def jump(nums):
+    cur = 0
+    next = 0
+    ans = 0
+    for i in range(len(nums) - 1):
+        next = max(nums[i] + i, next)
+        if i == cur:
+            cur = next
+            ans += 1
+    return ans
+```
+
+```rust
+pub fn jump(nums: Vec<i32>) -> i32 {
+    let mut cur = 0;
+    let mut next = 0;
+    let mut ans = 0;
+    for i in 0..nums.len() - 1 {
+        next = std::cmp::max(nums[i] + i as i32, next);
+        if i == cur {
+            cur = next;
+            ans += 1;
+        }
+    }
+    ans
+}
+```
+
 #### [1005. K 次取反后最大化的数组和](https://leetcode-cn.com/problems/maximize-sum-of-array-after-k-negations/)
 
 给你一个整数数组 `nums` 和一个整数 `k` ，按以下方法修改该数组：
@@ -6016,6 +11900,48 @@ func largestSumAfterKNegations(nums []int, k int) int {
 		restul += nums[i]
 	}
 	return restul
+}
+```
+
+```python
+def largestSumAfterKNegations(nums, k):
+    nums.sort(key=lambda x: -abs(x))
+
+    for i in range(len(nums)):
+        if k > 0 and nums[i] < 0:
+            nums[i] = -nums[i]
+            k -= 1
+
+    if k % 2 == 1:
+        nums[len(nums) - 1] = -nums[len(nums) - 1]
+
+    result = 0
+    for i in range(len(nums)):
+        result += nums[i]
+    return result
+```
+
+```rust
+pub fn largest_sum_after_k_negations(mut nums: Vec<i32>, mut k: i32) -> i32 {
+    nums.sort_by(|a, b| b.abs().cmp(&a.abs()));
+
+    for i in 0..nums.len() {
+        if k > 0 && nums[i] < 0 {
+            nums[i] = -nums[i];
+            k -= 1;
+        }
+    }
+
+    if k % 2 == 1 {
+        let last = nums.len() - 1;
+        nums[last] = -nums[last];
+    }
+
+    let mut result = 0;
+    for i in 0..nums.len() {
+        result += nums[i];
+    }
+    result
 }
 ```
 
@@ -6090,6 +12016,42 @@ func canCompleteCircuit(gas []int, cost []int) int {
 }
 ```
 
+```python
+def canCompleteCircuit(gas: list[int], cost: list[int]) -> int:
+    curSum = 0
+    totalSum = 0
+    start = 0
+    for i in range(len(gas)):
+        curSum += gas[i] - cost[i]
+        totalSum += gas[i] - cost[i]
+        if curSum < 0:
+            start = i + 1
+            curSum = 0
+    if totalSum < 0:
+        return -1
+    return start
+```
+
+```rust
+pub fn can_complete_circuit(gas: Vec<i32>, cost: Vec<i32>) -> i32 {
+    let mut cur_sum = 0;
+    let mut total_sum = 0;
+    let mut start = 0;
+    for i in 0..gas.len() {
+        cur_sum += gas[i] - cost[i];
+        total_sum += gas[i] - cost[i];
+        if cur_sum < 0 {
+            start = i + 1;
+            cur_sum = 0;
+        }
+    }
+    if total_sum < 0 {
+        return -1;
+    }
+    start as i32
+}
+```
+
 #### [135. 分发糖果](https://leetcode-cn.com/problems/candy/)
 
 老师想给孩子们分发糖果，有 *N* 个孩子站成了一条直线，老师会根据每个孩子的表现，预先给他们评分。
@@ -6147,6 +12109,35 @@ func max(x, y int) int {
 	}
 	return y
 
+}
+```
+
+```python
+def candy(ratings):
+    need = [1] * len(ratings)
+    for i in range(len(ratings) - 1):
+        if ratings[i + 1] > ratings[i]:
+            need[i + 1] = need[i] + 1
+    for i in range(len(ratings) - 1, 0, -1):
+        if ratings[i - 1] > ratings[i]:
+            need[i - 1] = max(need[i - 1], need[i] + 1)
+    return sum(need)
+```
+
+```rust
+pub fn candy(ratings: Vec<i32>) -> i32 {
+    let mut need = vec![1; ratings.len()];
+    for i in 0..ratings.len() - 1 {
+        if ratings[i + 1] > ratings[i] {
+            need[i + 1] = need[i] + 1;
+        }
+    }
+    for i in (1..ratings.len()).rev() {
+        if ratings[i - 1] > ratings[i] {
+            need[i - 1] = need[i - 1].max(need[i] + 1);
+        }
+    }
+    need.iter().sum()
 }
 ```
 
@@ -6243,6 +12234,77 @@ func lemonadeChange(bills []int) bool {
 }
 ```
 
+```python
+def lemonadeChange(bills):
+    left = [0, 0]
+    if bills[0] != 5:
+        return False
+    for v in bills:
+        if v == 5:
+            left[0] += 1
+
+        if v == 10:
+            left[1] += 1
+
+        tmp = v - 5
+
+        if tmp == 5:
+            if left[0] > 0:
+                left[0] -= 1
+            else:
+                return False
+
+        if tmp == 15:
+            if left[0] > 0 and left[1] > 0:
+                left[0] -= 1
+                left[1] -= 1
+            elif left[1] == 0 and left[0] > 2:
+                left[0] -= 3
+            else:
+                return False
+    return True
+```
+
+```rust
+pub fn lemonade_change(bills: Vec<i32>) -> bool {
+    let mut left = [0i32, 0i32];
+    if bills[0] != 5 {
+        return false;
+    }
+    for v in bills {
+        if v == 5 {
+            left[0] += 1;
+        }
+
+        if v == 10 {
+            left[1] += 1;
+        }
+
+        let tmp = v - 5;
+
+        if tmp == 5 {
+            if left[0] > 0 {
+                left[0] -= 1;
+            } else {
+                return false;
+            }
+        }
+
+        if tmp == 15 {
+            if left[0] > 0 && left[1] > 0 {
+                left[0] -= 1;
+                left[1] -= 1;
+            } else if left[1] == 0 && left[0] > 2 {
+                left[0] -= 3;
+            } else {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+```
+
 #### [406. 根据身高重建队列](https://leetcode-cn.com/problems/queue-reconstruction-by-height/)
 
 假设有打乱顺序的一群人站成一个队列，数组 `people` 表示队列中一些人的属性（不一定按顺序）。每个 `people[i] = [hi, ki]` 表示第 `i` 个人的身高为 `hi` ，前面 **正好** 有 `ki` 个身高大于或等于 `hi` 的人。
@@ -6294,6 +12356,34 @@ func reconstructQueue(people [][]int) [][]int {
 		result[info[1]] = info
 	}
 	return result
+}
+```
+
+```python
+def reconstructQueue(people):
+    people.sort(key=lambda x: (-x[0], x[1]))
+    result = []
+    for info in people:
+        result.insert(info[1], info)
+    return result
+```
+
+```rust
+pub fn reconstruct_queue(mut people: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
+    people.sort_by(|a, b| {
+        if a[0] == b[0] {
+            a[1].cmp(&b[1])
+        } else {
+            b[0].cmp(&a[0])
+        }
+    });
+
+    let mut result: Vec<Vec<i32>> = Vec::new();
+    for info in people {
+        let pos = info[1] as usize;
+        result.insert(pos, info);
+    }
+    result
 }
 ```
 
@@ -6372,6 +12462,36 @@ func min(x, y int) int {
 }
 ```
 
+```python
+def findMinArrowShots(points):
+    res = 1
+    points.sort(key=lambda x: x[0])
+
+    for i in range(1, len(points)):
+        if points[i - 1][1] < points[i][0]:
+            res += 1
+        else:
+            points[i][1] = min(points[i][1], points[i - 1][1])
+
+    return res
+```
+
+```rust
+pub fn find_min_arrow_shots(mut points: Vec<Vec<i32>>) -> i32 {
+    let mut res = 1;
+    points.sort_by_key(|p| p[0]);
+
+    for i in 1..points.len() {
+        if points[i - 1][1] < points[i][0] {
+            res += 1;
+        } else {
+            points[i][1] = points[i][1].min(points[i - 1][1]);
+        }
+    }
+    res
+}
+```
+
 #### [435. 无重叠区间](https://leetcode-cn.com/problems/non-overlapping-intervals/)
 
 给定一个区间的集合，找到需要移除区间的最小数量，使剩余区间互不重叠。
@@ -6435,6 +12555,37 @@ func min(x, y int) int {
 }
 ```
 
+```python
+class Interval:
+    pass
+
+def eraseOverlapIntervals(intervals):
+    res = 0
+    intervals.sort(key=lambda x: x[0])
+
+    for i in range(1, len(intervals)):
+        if intervals[i - 1][1] > intervals[i][0]:
+            res += 1
+            intervals[i][1] = min(intervals[i][1], intervals[i - 1][1])
+
+    return res
+```
+
+```rust
+pub fn erase_overlap_intervals(mut intervals: Vec<Vec<i32>>) -> i32 {
+    let mut res = 0;
+    intervals.sort_by_key(|x| x[0]);
+
+    for i in 1..intervals.len() {
+        if intervals[i - 1][1] > intervals[i][0] {
+            res += 1;
+            intervals[i][1] = intervals[i][1].min(intervals[i - 1][1]);
+        }
+    }
+    res
+}
+```
+
 #### [763. 划分字母区间](https://leetcode-cn.com/problems/partition-labels/)
 
 字符串 `S` 由小写字母组成。我们要把这个字符串划分为尽可能多的片段，同一字母最多出现在一个片段中。返回一个表示每个字符串片段的长度的列表。
@@ -6479,6 +12630,44 @@ func max(x,y int) int{
         return x
     }
     return y
+}
+```
+
+```python
+def partitionLabels(s: str) -> list[int]:
+    res = []
+    marks = [0] * 26
+    size, left, right = len(s), 0, 0
+    for i in range(size):
+        marks[ord(s[i]) - ord('a')] = i
+
+    for i in range(size):
+        right = max(right, marks[ord(s[i]) - ord('a')])
+        if i == right:
+            res.append(right - left + 1)
+            left = i + 1
+    return res
+```
+
+```rust
+pub fn partition_labels(s: String) -> Vec<i32> {
+    let mut res: Vec<i32> = Vec::new();
+    let mut marks = [0usize; 26];
+    let size = s.len();
+    let mut left = 0;
+    let mut right = 0;
+    for i in 0..size {
+        marks[(s.as_bytes()[i] - b'a') as usize] = i;
+    }
+
+    for i in 0..size {
+        right = right.max(marks[(s.as_bytes()[i] - b'a') as usize]);
+        if i == right {
+            res.push((right - left + 1) as i32);
+            left = i + 1;
+        }
+    }
+    res
 }
 ```
 
@@ -6532,6 +12721,45 @@ func max(x, y int) int {
 }
 ```
 
+```python
+from typing import List
+
+
+def merge(intervals: List[List[int]]) -> List[List[int]]:
+    intervals.sort(key=lambda x: x[0])
+
+    i = 0
+    while i < len(intervals) - 1:
+        if intervals[i][1] >= intervals[i + 1][0]:
+            intervals[i][1] = max(intervals[i][1], intervals[i + 1][1])
+            del intervals[i + 1]
+            i -= 1
+        i += 1
+    return intervals
+```
+
+```rust
+pub fn merge(mut intervals: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
+    intervals.sort_by_key(|x| x[0]);
+
+    let mut i = 0;
+    while i + 1 < intervals.len() {
+        if intervals[i][1] >= intervals[i + 1][0] {
+            if intervals[i + 1][1] > intervals[i][1] {
+                intervals[i][1] = intervals[i + 1][1];
+            }
+            intervals.remove(i + 1);
+            if i > 0 {
+                i -= 1;
+            }
+        } else {
+            i += 1;
+        }
+    }
+    intervals
+}
+```
+
 #### [738. 单调递增的数字](https://leetcode-cn.com/problems/monotone-increasing-digits/)
 
 给定一个非负整数 `N`，找出小于或等于 `N` 的最大的整数，同时这个整数需要满足其各个位数上的数字是单调递增。
@@ -6578,6 +12806,38 @@ func monotoneIncreasingDigits(n int) int {
 	}
 	res, _ := strconv.Atoi(string(ss))
 	return res
+}
+```
+
+```python
+def monotoneIncreasingDigits(n: int) -> int:
+    s = list(str(n))
+    if len(s) <= 1:
+        return n
+    for i in range(len(s) - 1, 0, -1):
+        if s[i - 1] > s[i]:
+            s[i - 1] = chr(ord(s[i - 1]) - 1)
+            for j in range(i, len(s)):
+                s[j] = '9'
+    return int(''.join(s))
+```
+
+```rust
+pub fn monotone_increasing_digits(n: i32) -> i32 {
+    let mut ss: Vec<char> = n.to_string().chars().collect();
+    if ss.len() <= 1 {
+        return n;
+    }
+    let len = ss.len();
+    for i in (1..len).rev() {
+        if ss[i - 1] > ss[i] {
+            ss[i - 1] = char::from_u32(ss[i - 1] as u32 - 1).unwrap();
+            for j in i..len {
+                ss[j] = '9';
+            }
+        }
+    }
+    ss.iter().collect::<String>().parse::<i32>().unwrap()
 }
 ```
 
@@ -6634,6 +12894,41 @@ func maxProfit(prices []int, fee int) int {
 		}
 	}
 	return res
+}
+```
+
+```python
+def maxProfit(prices, fee):
+    min_buy = prices[0]
+    res = 0
+    for i in range(len(prices)):
+        if prices[i] < min_buy:
+            min_buy = prices[i]
+        if prices[i] >= min_buy and prices[i] - min_buy - fee <= 0:
+            continue
+        if prices[i] - min_buy - fee > 0:
+            res += prices[i] - min_buy - fee
+            min_buy = prices[i] - fee
+    return res
+```
+
+```rust
+pub fn max_profit(prices: Vec<i32>, fee: i32) -> i32 {
+    let mut min_buy = prices[0];
+    let mut res = 0;
+    for i in 0..prices.len() {
+        if prices[i] < min_buy {
+            min_buy = prices[i];
+        }
+        if prices[i] >= min_buy && prices[i] - min_buy - fee <= 0 {
+            continue;
+        }
+        if prices[i] - min_buy - fee > 0 {
+            res += prices[i] - min_buy - fee;
+            min_buy = prices[i] - fee;
+        }
+    }
+    res
 }
 ```
 
@@ -6703,6 +12998,98 @@ func minCameraCover(root *TreeNode) int {
 }
 ```
 
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+def minCameraCover(root):
+    res = 0
+
+    def run(node):
+        nonlocal res
+        if node is None:
+            return 2
+        left = run(node.left)
+        right = run(node.right)
+
+        if left == 2 and right == 2:
+            return 0
+
+        if left == 0 or right == 0:
+            res += 1
+            return 1
+
+        if left == 1 or right == 1:
+            return 2
+        return -1
+
+    num = run(root)
+    if num == 0:
+        res += 1
+    return res
+```
+
+```rust
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//   pub val: i32,
+//   pub left: Option<Rc<RefCell<TreeNode>>>,
+//   pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+//
+// impl TreeNode {
+//   #[inline]
+//   pub fn new(val: i32) -> Self {
+//     TreeNode {
+//       val,
+//       left: None,
+//       right: None,
+//     }
+//   }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+use std::mem;
+
+pub fn min_camera_cover(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    let mut res = 0;
+
+    fn run(node: &Option<Rc<RefCell<TreeNode>>>, res: &mut i32) -> i32 {
+        if let Some(n) = node {
+            let n = n.borrow();
+            let left = run(&n.left, res);
+            let right = run(&n.right, res);
+
+            if left == 2 && right == 2 {
+                return 0;
+            }
+
+            if left == 0 || right == 0 {
+                *res += 1;
+                return 1;
+            }
+
+            if left == 1 || right == 1 {
+                return 2;
+            }
+            return -1;
+        }
+        2
+    }
+
+    let num = run(&root, &mut res);
+    if num == 0 {
+        res += 1;
+    }
+    mem::forget(root);
+    res
+}
+```
+
 ## 动态规划
 
 #### [509. 斐波那契数](https://leetcode-cn.com/problems/fibonacci-number/)
@@ -6759,6 +13146,34 @@ func fib(n int) int {
 }
 ```
 
+```python
+def fib(n: int) -> int:
+    if n <= 1:
+        return n
+    dp = [0] * (n + 1)
+    dp[0] = 0
+    dp[1] = 1
+    for i in range(2, n + 1):
+        dp[i] = dp[i - 1] + dp[i - 2]
+    return dp[n]
+```
+
+```rust
+pub fn fib(n: i32) -> i32 {
+    if n <= 1 {
+        return n;
+    }
+    let n = n as usize;
+    let mut dp = vec![0i32; n + 1];
+    dp[0] = 0;
+    dp[1] = 1;
+    for i in 2..=n {
+        dp[i] = dp[i - 1] + dp[i - 2];
+    }
+    dp[n]
+}
+```
+
 #### [70. 爬楼梯](https://leetcode-cn.com/problems/climbing-stairs/)
 
 假设你正在爬楼梯。需要 *n* 阶你才能到达楼顶。
@@ -6800,6 +13215,34 @@ func climbStairs(n int) int {
 		dp[i] = dp[i-1] + dp[i-2]
 	}
 	return dp[n]
+}
+```
+
+```python
+def climbStairs(n: int) -> int:
+    if n < 2:
+        return n
+    dp = [0] * (n + 1)
+    dp[1] = 1
+    dp[2] = 2
+    for i in range(3, n + 1):
+        dp[i] = dp[i - 1] + dp[i - 2]
+    return dp[n]
+```
+
+```rust
+pub fn climb_stairs(n: i32) -> i32 {
+    if n < 2 {
+        return n;
+    }
+    let n = n as usize;
+    let mut dp = vec![0; n + 1];
+    dp[1] = 1;
+    dp[2] = 2;
+    for i in 3..=n {
+        dp[i] = dp[i - 1] + dp[i - 2];
+    }
+    dp[n]
 }
 ```
 
@@ -6850,6 +13293,30 @@ func min(x, y int) int {
 	return y
 }
 
+```
+
+```python
+def minCostClimbingStairs(cost):
+    n = len(cost)
+    dp = [0] * n
+    dp[0] = cost[0]
+    dp[1] = cost[1]
+    for i in range(2, n):
+        dp[i] = min(dp[i - 1], dp[i - 2]) + cost[i]
+    return min(dp[n - 1], dp[n - 2])
+```
+
+```rust
+pub fn min_cost_climbing_stairs(cost: Vec<i32>) -> i32 {
+    let n = cost.len();
+    let mut dp = vec![0; n];
+    dp[0] = cost[0];
+    dp[1] = cost[1];
+    for i in 2..n {
+        dp[i] = dp[i - 1].min(dp[i - 2]) + cost[i];
+    }
+    dp[n - 1].min(dp[n - 2])
+}
 ```
 
 #### [62. 不同路径](https://leetcode-cn.com/problems/unique-paths/)
@@ -6917,6 +13384,41 @@ func uniquePaths(m int, n int) int {
 		}
 	}
 	return dp[m-1][n-1]
+}
+```
+
+```python
+def uniquePaths(m: int, n: int) -> int:
+    dp = [[0] * n for _ in range(m)]
+    for i in range(m):
+        dp[i][0] = 1
+    for j in range(n):
+        dp[0][j] = 1
+
+    for i in range(1, m):
+        for j in range(1, n):
+            dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
+    return dp[m - 1][n - 1]
+```
+
+```rust
+pub fn unique_paths(m: i32, n: i32) -> i32 {
+    let m = m as usize;
+    let n = n as usize;
+    let mut dp = vec![vec![0; n]; m];
+    for i in 0..m {
+        dp[i][0] = 1;
+    }
+    for j in 0..n {
+        dp[0][j] = 1;
+    }
+
+    for i in 1..m {
+        for j in 1..n {
+            dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+        }
+    }
+    dp[m - 1][n - 1]
 }
 ```
 
@@ -6993,6 +13495,55 @@ func uniquePathsWithObstacles(obstacleGrid [][]int) int {
 }
 ```
 
+```python
+def uniquePathsWithObstacles(obstacleGrid):
+    m, n = len(obstacleGrid), len(obstacleGrid[0])
+    dp = [[0] * n for _ in range(m)]
+
+    for i in range(m):
+        if obstacleGrid[i][0] == 1:
+            break
+        dp[i][0] = 1
+    for j in range(n):
+        if obstacleGrid[0][j] == 1:
+            break
+        dp[0][j] = 1
+    for i in range(1, m):
+        for j in range(1, n):
+            if obstacleGrid[i][j] != 1:
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
+    return dp[m - 1][n - 1]
+```
+
+```rust
+pub fn unique_paths_with_obstacles(obstacle_grid: Vec<Vec<i32>>) -> i32 {
+    let m = obstacle_grid.len();
+    let n = obstacle_grid[0].len();
+    let mut dp = vec![vec![0; n]; m];
+
+    for i in 0..m {
+        if obstacle_grid[i][0] == 1 {
+            break;
+        }
+        dp[i][0] = 1;
+    }
+    for j in 0..n {
+        if obstacle_grid[0][j] == 1 {
+            break;
+        }
+        dp[0][j] = 1;
+    }
+    for i in 1..m {
+        for j in 1..n {
+            if obstacle_grid[i][j] != 1 {
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+            }
+        }
+    }
+    dp[m - 1][n - 1]
+}
+```
+
 #### [343. 整数拆分](https://leetcode-cn.com/problems/integer-break/)
 
 给定一个正整数 *n*，将其拆分为**至少**两个正整数的和，并使这些整数的乘积最大化。 返回你可以获得的最大乘积。
@@ -7036,6 +13587,32 @@ func max(x, y int) int {
 }
 ```
 
+```python
+def integerBreak(n: int) -> int:
+    dp = [0] * (n + 1)
+    dp[1] = 1
+    dp[2] = 1
+    for i in range(3, n + 1):
+        for j in range(1, i - 1):
+            dp[i] = max(dp[i], j * (i - j), j * dp[i - j])
+    return dp[n]
+```
+
+```rust
+pub fn integer_break(n: i32) -> i32 {
+    let n = n as usize;
+    let mut dp = vec![0; n + 1];
+    dp[1] = 1;
+    dp[2] = 1;
+    for i in 3..n + 1 {
+        for j in 1..i - 1 {
+            dp[i] = dp[i].max((j * (i - j)).max(j * dp[i - j]));
+        }
+    }
+    dp[n] as i32
+}
+```
+
 #### [96. 不同的二叉搜索树](https://leetcode-cn.com/problems/unique-binary-search-trees/)
 
 给你一个整数 `n` ，求恰由 `n` 个节点组成且节点值从 `1` 到 `n` 互不相同的 **二叉搜索树** 有多少种？返回满足题意的二叉搜索树的种数。
@@ -7071,6 +13648,32 @@ func numTrees(n int) int {
 		}
 	}
 	return dp[n]
+}
+```
+
+```python
+def numTrees(n: int) -> int:
+    dp = [0] * (n + 1)
+    dp[0] = 1
+    dp[1] = 1
+    for i in range(2, n + 1):
+        for j in range(1, i + 1):
+            dp[i] += dp[j - 1] * dp[i - j]
+    return dp[n]
+```
+
+```rust
+pub fn num_trees(n: i32) -> i32 {
+    let n = n as usize;
+    let mut dp = vec![0i32; n + 1];
+    dp[0] = 1;
+    dp[1] = 1;
+    for i in 2..n + 1 {
+        for j in 1..=i {
+            dp[i] += dp[j - 1] * dp[i - j];
+        }
+    }
+    dp[n]
 }
 ```
 
@@ -7123,6 +13726,37 @@ func max(x, y int) int {
 		return x
 	}
 	return y
+}
+```
+
+```python
+def canPartition(nums):
+    s = sum(nums)
+    if s % 2 == 1:
+        return False
+    target = s // 2
+    dp = [0] * (target + 1)
+    for num in nums:
+        for i in range(target, num - 1, -1):
+            dp[i] = max(dp[i], dp[i - num] + num)
+    return dp[target] == target
+```
+
+```rust
+pub fn can_partition(nums: Vec<i32>) -> bool {
+    let sum: i32 = nums.iter().sum();
+    if sum % 2 == 1 {
+        return false;
+    }
+    let target = (sum / 2) as usize;
+    let mut dp = vec![0i32; target + 1];
+    for &num in &nums {
+        let n = num as usize;
+        for i in (n..=target).rev() {
+            dp[i] = dp[i].max(dp[i - n] + num);
+        }
+    }
+    dp[target] == target as i32
 }
 ```
 
@@ -7189,6 +13823,34 @@ func max(x, y int) int {
 		return x
 	}
 	return y
+}
+```
+
+```python
+def lastStoneWeightII(stones):
+    total = sum(stones)
+    target = total // 2
+    dp = [0] * (target + 1)
+    for v in stones:
+        for i in range(target, v - 1, -1):
+            dp[i] = max(dp[i], dp[i - v] + v)
+    return total - 2 * dp[target]
+```
+
+```rust
+pub fn last_stone_weight_ii(stones: Vec<i32>) -> i32 {
+    let sum: i32 = stones.iter().sum();
+    let target = (sum / 2) as usize;
+    let mut dp = vec![0i32; target + 1];
+    for &v in &stones {
+        let v = v as usize;
+        let mut i = target;
+        while i >= v {
+            dp[i] = dp[i].max(dp[i - v] + v as i32);
+            i -= 1;
+        }
+    }
+    sum - 2 * dp[target]
 }
 ```
 
@@ -7278,6 +13940,44 @@ func abs(x int) int {
 }
 ```
 
+```python
+def findTargetSumWays(nums, target):
+    total = sum(nums)
+    if abs(target) > total:
+        return 0
+    if (target + total) % 2 == 1:
+        return 0
+    bag = (target + total) // 2
+    dp = [0] * (bag + 1)
+    dp[0] = 1
+    for num in nums:
+        for i in range(bag, num - 1, -1):
+            dp[i] += dp[i - num]
+    return dp[bag]
+```
+
+```rust
+pub fn find_target_sum_ways(nums: Vec<i32>, target: i32) -> i32 {
+    let sum: i32 = nums.iter().sum();
+    if target.abs() > sum {
+        return 0;
+    }
+    if (target + sum) % 2 == 1 {
+        return 0;
+    }
+    let bag = ((target + sum) / 2) as usize;
+    let mut dp = vec![0i32; bag + 1];
+    dp[0] = 1;
+    for &num in nums.iter() {
+        let num = num as usize;
+        for i in (num..=bag).rev() {
+            dp[i] += dp[i - num];
+        }
+    }
+    dp[bag]
+}
+```
+
 #### [474. 一和零](https://leetcode-cn.com/problems/ones-and-zeroes/)
 
 给你一个二进制字符串数组 `strs` 和两个整数 `m` 和 `n` 。
@@ -7341,6 +14041,43 @@ func max(x, y int) int {
 }
 ```
 
+```python
+def findMaxForm(strs, m, n):
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+
+    for s in strs:
+        zero_num = s.count('0')
+        one_num = len(s) - zero_num
+        for i in range(m, zero_num - 1, -1):
+            for j in range(n, one_num - 1, -1):
+                if dp[i - zero_num][j - one_num] + 1 > dp[i][j]:
+                    dp[i][j] = dp[i - zero_num][j - one_num] + 1
+
+    return dp[m][n]
+```
+
+```rust
+pub fn find_max_form(strs: Vec<String>, m: i32, n: i32) -> i32 {
+    let m = m as usize;
+    let n = n as usize;
+    let mut dp = vec![vec![0; n + 1]; m + 1];
+
+    for s in strs {
+        let zero_num = s.bytes().filter(|&b| b == b'0').count();
+        let one_num = s.len() - zero_num;
+        for i in (zero_num..=m).rev() {
+            for j in (one_num..=n).rev() {
+                let val = dp[i - zero_num][j - one_num] + 1;
+                if val > dp[i][j] {
+                    dp[i][j] = val;
+                }
+            }
+        }
+    }
+    dp[m][n]
+}
+```
+
 #### [518. 零钱兑换 II](https://leetcode-cn.com/problems/coin-change-2/)
 
 给你一个整数数组 `coins` 表示不同面额的硬币，另给一个整数 `amount` 表示总金额。
@@ -7398,6 +14135,31 @@ func change(amount int, coins []int) int {
 
 ```
 
+```python
+def change(amount: int, coins: list[int]) -> int:
+    dp = [0] * (amount + 1)
+    dp[0] = 1
+    for coin in coins:
+        for i in range(coin, amount + 1):
+            dp[i] += dp[i - coin]
+    return dp[amount]
+```
+
+```rust
+pub fn change(amount: i32, coins: Vec<i32>) -> i32 {
+    let amount = amount as usize;
+    let mut dp = vec![0i64; amount + 1];
+    dp[0] = 1;
+    for coin in coins {
+        let coin = coin as usize;
+        for i in coin..=amount {
+            dp[i] += dp[i - coin];
+        }
+    }
+    dp[amount] as i32
+}
+```
+
 #### [377. 组合总和 Ⅳ](https://leetcode-cn.com/problems/combination-sum-iv/)
 
 给你一个由 **不同** 整数组成的数组 `nums` ，和一个目标整数 `target` 。请你从 `nums` 中找出并返回总和为 `target` 的元素组合的个数。
@@ -7447,6 +14209,36 @@ func combinationSum4(nums []int, target int) int {
 		}
 	}
 	return dp[target]
+}
+```
+
+```python
+def combinationSum4(nums: list[int], target: int) -> int:
+    dp = [0] * (target + 1)
+    dp[0] = 1
+    for i in range(target + 1):
+        for num in nums:
+            if i >= num:
+                dp[i] += dp[i - num]
+    return dp[target]
+```
+
+```rust
+impl Solution {
+    pub fn combination_sum4(nums: Vec<i32>, target: i32) -> i32 {
+        let target = target as usize;
+        let mut dp = vec![0i32; target + 1];
+        dp[0] = 1;
+        for i in 0..=target {
+            for &num in &nums {
+                let num = num as usize;
+                if i >= num {
+                    dp[i] += dp[i - num];
+                }
+            }
+        }
+        dp[target]
+    }
 }
 ```
 
@@ -7528,6 +14320,38 @@ func min(x, y int) int {
 }
 ```
 
+```python
+def coinChange(coins, amount):
+    INF = float('inf')
+    dp = [0] + [INF] * amount
+    for coin in coins:
+        for i in range(coin, amount + 1):
+            if dp[i - coin] != INF:
+                dp[i] = min(dp[i], dp[i - coin] + 1)
+    return -1 if dp[amount] == INF else dp[amount]
+```
+
+```rust
+pub fn coin_change(coins: Vec<i32>, amount: i32) -> i32 {
+    let amount = amount as usize;
+    let mut dp = vec![i32::MAX; amount + 1];
+    dp[0] = 0;
+    for coin in coins {
+        let coin = coin as usize;
+        for i in coin..=amount {
+            if dp[i - coin] != i32::MAX {
+                dp[i] = dp[i].min(dp[i - coin] + 1);
+            }
+        }
+    }
+    if dp[amount] == i32::MAX {
+        -1
+    } else {
+        dp[amount]
+    }
+}
+```
+
 #### [279. 完全平方数](https://leetcode-cn.com/problems/perfect-squares/)
 
 给定正整数 *n*，找到若干个完全平方数（比如 `1, 4, 9, 16, ...`）使得它们的和等于 *n*。你需要让组成和的完全平方数的个数最少。
@@ -7576,6 +14400,36 @@ func min(x, y int) int {
 		return x
 	}
 	return y
+}
+```
+
+```python
+import math
+
+
+def numSquares(n: int) -> int:
+    dp = [0] + [math.inf] * n
+    for i in range(1, n + 1):
+        square = i * i
+        for j in range(square, n + 1):
+            dp[j] = min(dp[j], dp[j - square] + 1)
+    return dp[n]
+```
+
+```rust
+pub fn num_squares(n: i32) -> i32 {
+    let n = n as usize;
+    let mut dp = vec![i32::MAX; n + 1];
+    dp[0] = 0;
+    for i in 1..=n {
+        let square = i * i;
+        let mut j = square;
+        while j <= n {
+            dp[j] = dp[j].min(dp[j - square] + 1);
+            j += 1;
+        }
+    }
+    dp[n] as i32
 }
 ```
 
@@ -7638,6 +14492,43 @@ func wordBreak(s string, wordDict []string) bool {
 }
 ```
 
+```python
+def wordBreak(s: str, wordDict: list[str]) -> bool:
+    wordDictSet = set(wordDict)
+
+    dp = [False] * (len(s) + 1)
+    dp[0] = True
+
+    for i in range(1, len(s) + 1):
+        for j in range(i):
+            if dp[j] and s[j:i] in wordDictSet:
+                dp[i] = True
+
+    return dp[len(s)]
+```
+
+```rust
+use std::collections::HashSet;
+
+pub fn word_break(s: String, word_dict: Vec<String>) -> bool {
+    let word_dict_set: HashSet<&str> = word_dict.iter().map(|w| w.as_str()).collect();
+
+    let n = s.len();
+    let mut dp = vec![false; n + 1];
+    dp[0] = true;
+
+    for i in 1..=n {
+        for j in 0..i {
+            if dp[j] && word_dict_set.contains(&s[j..i]) {
+                dp[i] = true;
+            }
+        }
+    }
+
+    dp[n]
+}
+```
+
 #### [198. 打家劫舍](https://leetcode-cn.com/problems/house-robber/)
 
 你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，**如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警**。
@@ -7692,6 +14583,43 @@ func max(x, y int) int {
 		return x
 	}
 	return y
+}
+```
+
+```python
+def rob(nums):
+    if len(nums) < 1:
+        return 0
+    if len(nums) == 1:
+        return nums[0]
+    if len(nums) == 2:
+        return max(nums[0], nums[1])
+    dp = [0] * len(nums)
+    dp[0] = nums[0]
+    dp[1] = max(nums[0], nums[1])
+    for i in range(2, len(nums)):
+        dp[i] = max(dp[i - 2] + nums[i], dp[i - 1])
+    return dp[len(nums) - 1]
+```
+
+```rust
+pub fn rob(nums: Vec<i32>) -> i32 {
+    if nums.len() < 1 {
+        return 0;
+    }
+    if nums.len() == 1 {
+        return nums[0];
+    }
+    if nums.len() == 2 {
+        return nums[0].max(nums[1]);
+    }
+    let mut dp = vec![0; nums.len()];
+    dp[0] = nums[0];
+    dp[1] = nums[0].max(nums[1]);
+    for i in 2..nums.len() {
+        dp[i] = (dp[i - 2] + nums[i]).max(dp[i - 1]);
+    }
+    dp[nums.len() - 1]
 }
 ```
 
@@ -7764,6 +14692,64 @@ func max(x, y int) int {
 }
 ```
 
+```python
+def rob(nums):
+    if len(nums) < 1:
+        return 0
+    if len(nums) == 1:
+        return nums[0]
+    res1 = robRange(nums, 0, len(nums) - 2)
+    res2 = robRange(nums, 1, len(nums) - 1)
+    return max(res1, res2)
+
+
+def robRange(nums, start, end):
+    if start == end:
+        return nums[start]
+    dp = [0] * len(nums)
+    dp[start] = nums[start]
+    dp[start + 1] = max(nums[start], nums[start + 1])
+    for i in range(start + 2, end + 1):
+        dp[i] = max(dp[i - 2] + nums[i], dp[i - 1])
+    return dp[end]
+```
+
+```rust
+pub fn rob(nums: Vec<i32>) -> i32 {
+    if nums.is_empty() {
+        return 0;
+    }
+    if nums.len() == 1 {
+        return nums[0];
+    }
+    let res1 = rob_range(&nums, 0, nums.len() - 2);
+    let res2 = rob_range(&nums, 1, nums.len() - 1);
+    max(res1, res2)
+}
+
+fn rob_range(nums: &Vec<i32>, start: usize, end: usize) -> i32 {
+    if start == end {
+        return nums[start];
+    }
+    let n = nums.len();
+    let mut dp = vec![0; n];
+    dp[start] = nums[start];
+    dp[start + 1] = max(nums[start], nums[start + 1]);
+    for i in (start + 2)..=end {
+        dp[i] = max(dp[i - 2] + nums[i], dp[i - 1]);
+    }
+    dp[end]
+}
+
+fn max(x: i32, y: i32) -> i32 {
+    if x > y {
+        x
+    } else {
+        y
+    }
+}
+```
+
 #### [337. 打家劫舍 III](https://leetcode-cn.com/problems/house-robber-iii/)
 
 在上次打劫完一条街道之后和一圈房屋后，小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为“根”。 除了“根”之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。 如果两个直接相连的房子在同一天晚上被打劫，房屋将自动报警。
@@ -7821,6 +14807,74 @@ func max(x, y int) int {
 		return x
 	}
 	return y
+}
+```
+
+```python
+from typing import Optional, List
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def rob(root: Optional[TreeNode]) -> int:
+    res = robTree(root)
+    return max(res[0], res[1])
+
+
+def robTree(cur: Optional[TreeNode]) -> List[int]:
+    if cur is None:
+        return [0, 0]
+    left = robTree(cur.left)
+    right = robTree(cur.right)
+    notRobCur = max(left[0], left[1]) + max(right[0], right[1])
+    robCur = cur.val + left[0] + right[0]
+    return [notRobCur, robCur]
+```
+
+```rust
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<TreeNode>>>,
+    pub right: Option<Rc<RefCell<TreeNode>>>,
+}
+
+impl TreeNode {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
+    }
+}
+
+use std::cell::RefCell;
+use std::rc::Rc;
+
+pub fn rob(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    let res = rob_tree(root);
+    res.0.max(res.1)
+}
+
+fn rob_tree(cur: Option<Rc<RefCell<TreeNode>>>) -> (i32, i32) {
+    match cur {
+        None => (0, 0),
+        Some(node) => {
+            let mut node = node.borrow_mut();
+            let left = rob_tree(node.left.take());
+            let right = rob_tree(node.right.take());
+            let not_rob_cur = left.0.max(left.1) + right.0.max(right.1);
+            let rob_cur = node.val + left.0 + right.0;
+            (not_rob_cur, rob_cur)
+        }
+    }
 }
 ```
 
@@ -7902,6 +14956,28 @@ func max(x, y int) int {
 }
 ```
 
+```python
+def maxProfit(prices):
+    result = 0
+    low = float('inf')
+    for i in range(len(prices)):
+        low = min(low, prices[i])
+        result = max(result, prices[i] - low)
+    return result
+```
+
+```rust
+pub fn max_profit(prices: Vec<i32>) -> i32 {
+    let mut result = 0;
+    let mut low = i32::MAX;
+    for i in 0..prices.len() {
+        low = low.min(prices[i]);
+        result = result.max(prices[i] - low);
+    }
+    result
+}
+```
+
 #### [122. 买卖股票的最佳时机 II](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/)
 
 给定一个数组 `prices` ，其中 `prices[i]` 是一支给定股票第 `i` 天的价格。
@@ -7972,6 +15048,27 @@ func max(x, y int) int {
 		return x
 	}
 	return y
+}
+```
+
+```python
+def maxProfit(prices):
+    result = 0
+    for i in range(len(prices) - 1):
+        if prices[i + 1] - prices[i] > 0:
+            result += prices[i + 1] - prices[i]
+    return result
+```
+
+```rust
+pub fn max_profit(prices: Vec<i32>) -> i32 {
+    let mut result = 0;
+    for i in 0..prices.len() - 1 {
+        if prices[i + 1] - prices[i] > 0 {
+            result += prices[i + 1] - prices[i];
+        }
+    }
+    result
 }
 ```
 
@@ -8051,6 +15148,44 @@ func max(x, y int) int {
 }
 ```
 
+```python
+def maxProfit(prices):
+    n = len(prices)
+    dp = [[0] * 5 for _ in range(n)]
+    dp[0][0] = 0
+    dp[0][1] = -prices[0]
+    dp[0][2] = 0
+    dp[0][3] = -prices[0]
+    dp[0][4] = 0
+    for i in range(1, n):
+        dp[i][0] = dp[i-1][0]
+        dp[i][1] = max(dp[i-1][1], dp[i-1][0] - prices[i])
+        dp[i][2] = max(dp[i-1][2], dp[i-1][1] + prices[i])
+        dp[i][3] = max(dp[i-1][3], dp[i-1][2] - prices[i])
+        dp[i][4] = max(dp[i-1][4], dp[i-1][3] + prices[i])
+    return dp[n-1][4]
+```
+
+```rust
+pub fn max_profit(prices: Vec<i32>) -> i32 {
+    let n = prices.len();
+    let mut dp = vec![[0i32; 5]; n];
+    dp[0][0] = 0;
+    dp[0][1] = -prices[0];
+    dp[0][2] = 0;
+    dp[0][3] = -prices[0];
+    dp[0][4] = 0;
+    for i in 1..n {
+        dp[i][0] = dp[i-1][0];
+        dp[i][1] = dp[i-1][1].max(dp[i-1][0] - prices[i]);
+        dp[i][2] = dp[i-1][2].max(dp[i-1][1] + prices[i]);
+        dp[i][3] = dp[i-1][3].max(dp[i-1][2] - prices[i]);
+        dp[i][4] = dp[i-1][4].max(dp[i-1][3] + prices[i]);
+    }
+    dp[n-1][4]
+}
+```
+
 #### [188. 买卖股票的最佳时机 IV](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/)
 
 给定一个整数数组 `prices` ，它的第 `i` 个元素 `prices[i]` 是一支给定的股票在第 `i` 天的价格。
@@ -8112,6 +15247,47 @@ func max(x, y int) int {
 }
 ```
 
+```python
+def maxProfit(k: int, prices: list[int]) -> int:
+    if len(prices) < 1:
+        return 0
+    dp = [[0] * (2 * k + 1) for _ in range(len(prices))]
+    for j in range(1, 2 * k, 2):
+        dp[0][j] = -prices[0]
+
+    for i in range(1, len(prices)):
+        for j in range(0, 2 * k - 1, 2):
+            dp[i][j + 1] = max(dp[i - 1][j + 1], dp[i - 1][j] - prices[i])
+            dp[i][j + 2] = max(dp[i - 1][j + 2], dp[i - 1][j + 1] + prices[i])
+    return dp[len(prices) - 1][2 * k]
+```
+
+```rust
+pub fn max_profit(k: i32, prices: Vec<i32>) -> i32 {
+    if prices.is_empty() {
+        return 0;
+    }
+    let k = k as usize;
+    let n = prices.len();
+    let mut dp = vec![vec![0; 2 * k + 1]; n];
+    let mut j = 1;
+    while j < 2 * k {
+        dp[0][j] = -prices[0];
+        j += 2;
+    }
+
+    for i in 1..n {
+        let mut j = 0;
+        while j < 2 * k - 1 {
+            dp[i][j + 1] = dp[i - 1][j + 1].max(dp[i - 1][j] - prices[i]);
+            dp[i][j + 2] = dp[i - 1][j + 2].max(dp[i - 1][j + 1] + prices[i]);
+            j += 2;
+        }
+    }
+    dp[n - 1][2 * k]
+}
+```
+
 #### [309. 最佳买卖股票时机含冷冻期](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/)
 
 给定一个整数数组，其中第 *i* 个元素代表了第 *i* 天的股票价格 。
@@ -8150,6 +15326,40 @@ func max(x, y int) int {
 		return x
 	}
 	return y
+}
+```
+
+```python
+from typing import List
+
+
+def maxProfit(prices: List[int]) -> int:
+    n = len(prices)
+    if n == 0:
+        return 0
+    dp = [[0] * 3 for _ in range(n)]
+    dp[0][0] = -prices[0]
+    for i in range(1, n):
+        dp[i][0] = max(dp[i - 1][0], dp[i - 1][2] - prices[i])
+        dp[i][1] = dp[i - 1][0] + prices[i]
+        dp[i][2] = max(dp[i - 1][1], dp[i - 1][2])
+    return max(dp[n - 1][1], dp[n - 1][2])
+```
+
+```rust
+pub fn max_profit(prices: Vec<i32>) -> i32 {
+    let n = prices.len();
+    if n == 0 {
+        return 0;
+    }
+    let mut dp = vec![[0; 3]; n];
+    dp[0][0] = -prices[0];
+    for i in 1..n {
+        dp[i][0] = dp[i - 1][0].max(dp[i - 1][2] - prices[i]);
+        dp[i][1] = dp[i - 1][0] + prices[i];
+        dp[i][2] = dp[i - 1][1].max(dp[i - 1][2]);
+    }
+    dp[n - 1][1].max(dp[n - 1][2])
 }
 ```
 
@@ -8206,6 +15416,41 @@ func max(x, y int) int {
 		return x
 	}
 	return y
+}
+```
+
+```python
+def maxProfit(prices, fee):
+    min_buy = prices[0]
+    res = 0
+    for i in range(len(prices)):
+        if prices[i] < min_buy:
+            min_buy = prices[i]
+        if prices[i] >= min_buy and prices[i] - min_buy - fee <= 0:
+            continue
+        if prices[i] - min_buy - fee > 0:
+            res += prices[i] - min_buy - fee
+            min_buy = prices[i] - fee
+    return res
+```
+
+```rust
+pub fn max_profit(prices: Vec<i32>, fee: i32) -> i32 {
+    let mut min_buy = prices[0];
+    let mut res = 0;
+    for i in 0..prices.len() {
+        if prices[i] < min_buy {
+            min_buy = prices[i];
+        }
+        if prices[i] >= min_buy && prices[i] - min_buy - fee <= 0 {
+            continue;
+        }
+        if prices[i] - min_buy - fee > 0 {
+            res += prices[i] - min_buy - fee;
+            min_buy = prices[i] - fee;
+        }
+    }
+    res
 }
 ```
 
@@ -8271,6 +15516,42 @@ func max(x, y int) int {
 		return x
 	}
 	return y
+}
+```
+
+```python
+def lengthOfLIS(nums):
+    if len(nums) <= 1:
+        return len(nums)
+    dp = [1] * len(nums)
+    res = 0
+    for i in range(1, len(nums)):
+        for j in range(i):
+            if nums[i] > nums[j]:
+                dp[i] = max(dp[i], dp[j] + 1)
+        if dp[i] > res:
+            res = dp[i]
+    return res
+```
+
+```rust
+pub fn length_of_lis(nums: Vec<i32>) -> i32 {
+    if nums.len() <= 1 {
+        return nums.len() as i32;
+    }
+    let mut dp = vec![1; nums.len()];
+    let mut res = 0;
+    for i in 1..nums.len() {
+        for j in 0..i {
+            if nums[i] > nums[j] {
+                dp[i] = dp[i].max(dp[j] + 1);
+            }
+        }
+        if dp[i] > res {
+            res = dp[i];
+        }
+    }
+    res
 }
 ```
 
@@ -8340,6 +15621,42 @@ func findLengthOfLCIS(nums []int) int {
 
 ```
 
+```python
+def findLengthOfLCIS(nums):
+    if len(nums) <= 1:
+        return len(nums)
+    count, res = 1, 1
+    for i in range(len(nums) - 1):
+        if nums[i + 1] > nums[i]:
+            count += 1
+        else:
+            count = 1
+        if count > res:
+            res = count
+    return res
+```
+
+```rust
+pub fn find_length_of_lcis(nums: Vec<i32>) -> i32 {
+    if nums.len() <= 1 {
+        return nums.len() as i32;
+    }
+    let mut count = 1;
+    let mut res = 1;
+    for i in 0..nums.len() - 1 {
+        if nums[i + 1] > nums[i] {
+            count += 1;
+        } else {
+            count = 1;
+        }
+        if count > res {
+            res = count;
+        }
+    }
+    res
+}
+```
+
 #### [718. 最长重复子数组](https://leetcode-cn.com/problems/maximum-length-of-repeated-subarray/)
 
 给两个整数数组 `A` 和 `B` ，返回两个数组中公共的、长度最长的子数组的长度。
@@ -8379,6 +15696,39 @@ func findLength(nums1 []int, nums2 []int) int {
 		}
 	}
 	return res
+}
+```
+
+```python
+def findLength(nums1, nums2):
+    m, n = len(nums1), len(nums2)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    res = 0
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if nums1[i - 1] == nums2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            if dp[i][j] > res:
+                res = dp[i][j]
+    return res
+```
+
+```rust
+pub fn find_length(nums1: Vec<i32>, nums2: Vec<i32>) -> i32 {
+    let (m, n) = (nums1.len(), nums2.len());
+    let mut dp = vec![vec![0; n + 1]; m + 1];
+    let mut res = 0;
+    for i in 1..=m {
+        for j in 1..=n {
+            if nums1[i - 1] == nums2[j - 1] {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            }
+            if dp[i][j] > res {
+                res = dp[i][j];
+            }
+        }
+    }
+    res
 }
 ```
 
@@ -8449,6 +15799,40 @@ func max(x, y int) int {
 
 ```
 
+```python
+def longestCommonSubsequence(text1: str, text2: str) -> int:
+    t1 = len(text1)
+    t2 = len(text2)
+    dp = [[0] * (t2 + 1) for _ in range(t1 + 1)]
+    for i in range(1, t1 + 1):
+        for j in range(1, t2 + 1):
+            if text1[i - 1] == text2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            else:
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+    return dp[t1][t2]
+```
+
+```rust
+pub fn longest_common_subsequence(text1: String, text2: String) -> i32 {
+    let t1 = text1.len();
+    let t2 = text2.len();
+    let t1b = text1.as_bytes();
+    let t2b = text2.as_bytes();
+    let mut dp = vec![vec![0i32; t2 + 1]; t1 + 1];
+    for i in 1..=t1 {
+        for j in 1..=t2 {
+            if t1b[i - 1] == t2b[j - 1] {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = dp[i - 1][j].max(dp[i][j - 1]);
+            }
+        }
+    }
+    dp[t1][t2]
+}
+```
+
 #### [1035. 不相交的线](https://leetcode-cn.com/problems/uncrossed-lines/)
 
 在两条独立的水平线上按给定的顺序写下 `nums1` 和 `nums2` 中的整数。
@@ -8517,6 +15901,38 @@ func max(x, y int) int {
 		return x
 	}
 	return y
+}
+```
+
+```python
+def maxUncrossedLines(nums1: list[int], nums2: list[int]) -> int:
+    t1 = len(nums1)
+    t2 = len(nums2)
+    dp = [[0] * (t2 + 1) for _ in range(t1 + 1)]
+    for i in range(1, t1 + 1):
+        for j in range(1, t2 + 1):
+            if nums1[i - 1] == nums2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            else:
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+    return dp[t1][t2]
+```
+
+```rust
+pub fn max_uncrossed_lines(nums1: Vec<i32>, nums2: Vec<i32>) -> i32 {
+    let t1 = nums1.len();
+    let t2 = nums2.len();
+    let mut dp = vec![vec![0; t2 + 1]; t1 + 1];
+    for i in 1..=t1 {
+        for j in 1..=t2 {
+            if nums1[i - 1] == nums2[j - 1] {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = dp[i - 1][j].max(dp[i][j - 1]);
+            }
+        }
+    }
+    dp[t1][t2]
 }
 ```
 
@@ -8592,6 +16008,32 @@ func maxSubArray(nums []int) int {
 }
 ```
 
+```python
+def maxSubArray(nums):
+    maxSum = nums[0]
+    for i in range(1, len(nums)):
+        if nums[i] + nums[i - 1] > nums[i]:
+            nums[i] += nums[i - 1]
+        if nums[i] > maxSum:
+            maxSum = nums[i]
+    return maxSum
+```
+
+```rust
+pub fn max_sub_array(mut nums: Vec<i32>) -> i32 {
+    let mut max_sum = nums[0];
+    for i in 1..nums.len() {
+        if nums[i] + nums[i - 1] > nums[i] {
+            nums[i] += nums[i - 1];
+        }
+        if nums[i] > max_sum {
+            max_sum = nums[i];
+        }
+    }
+    max_sum
+}
+```
+
 #### [392. 判断子序列](https://leetcode-cn.com/problems/is-subsequence/)
 
 给定字符串 **s** 和 **t** ，判断 **s** 是否为 **t** 的子序列。
@@ -8648,6 +16090,36 @@ func isSubsequence(s string, t string) bool {
 		j++
 	}
 	return i == lens
+}
+```
+
+```python
+def isSubsequence(s: str, t: str) -> bool:
+    lens = len(s)
+    lent = len(t)
+    i, j = 0, 0
+    while i < lens and j < lent:
+        if s[i] == t[j]:
+            i += 1
+        j += 1
+    return i == lens
+```
+
+```rust
+pub fn is_subsequence(s: String, t: String) -> bool {
+    let s = s.as_bytes();
+    let t = t.as_bytes();
+    let lens = s.len();
+    let lent = t.len();
+    let mut i = 0;
+    let mut j = 0;
+    while i < lens && j < lent {
+        if s[i] == t[j] {
+            i += 1;
+        }
+        j += 1;
+    }
+    i == lens
 }
 ```
 
@@ -8711,6 +16183,48 @@ func numDistinct(s string, t string) int {
 }
 ```
 
+```python
+def numDistinct(s: str, t: str) -> int:
+    dp = [[0] * (len(t) + 1) for _ in range(len(s) + 1)]
+    for i in range(len(dp)):
+        dp[i][0] = 1
+
+    for i in range(1, len(dp)):
+        for j in range(1, len(dp[i])):
+            if s[i - 1] == t[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j]
+            else:
+                dp[i][j] = dp[i - 1][j]
+
+    return dp[len(s)][len(t)]
+```
+
+```rust
+pub fn num_distinct(s: String, t: String) -> i32 {
+    let n = s.len();
+    let m = t.len();
+    let s = s.as_bytes();
+    let t = t.as_bytes();
+
+    let mut dp = vec![vec![0i32; m + 1]; n + 1];
+    for i in 0..=n {
+        dp[i][0] = 1;
+    }
+
+    for i in 1..=n {
+        for j in 1..=m {
+            if s[i - 1] == t[j - 1] {
+                dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+            } else {
+                dp[i][j] = dp[i - 1][j];
+            }
+        }
+    }
+
+    dp[n][m]
+}
+```
+
 #### [583. 两个字符串的删除操作](https://leetcode-cn.com/problems/delete-operation-for-two-strings/)
 
 给定两个单词 *word1* 和 *word2*，找到使得 *word1* 和 *word2* 相同所需的最小步数，每步可以删除任意一个字符串中的一个字符。
@@ -8758,6 +16272,60 @@ func min(x, y int) int {
 		return x
 	}
 	return y
+}
+```
+
+```python
+def minDistance(word1: str, word2: str) -> int:
+    m, n = len(word1), len(word2)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    for i in range(m + 1):
+        dp[i][0] = i
+    for j in range(n + 1):
+        dp[0][j] = j
+
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if word1[i - 1] == word2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1]
+            else:
+                dp[i][j] = min(min(dp[i - 1][j] + 1, dp[i][j - 1] + 1), dp[i - 1][j - 1] + 2)
+
+    return dp[m][n]
+```
+
+```rust
+pub fn min_distance(word1: String, word2: String) -> i32 {
+    let n1 = word1.len();
+    let n2 = word2.len();
+    let w1: Vec<char> = word1.chars().collect();
+    let w2: Vec<char> = word2.chars().collect();
+    let mut dp = vec![vec![0i32; n2 + 1]; n1 + 1];
+    for i in 0..=n1 {
+        dp[i][0] = i as i32;
+    }
+    for j in 0..=n2 {
+        dp[0][j] = j as i32;
+    }
+
+    for i in 1..=n1 {
+        for j in 1..=n2 {
+            if w1[i - 1] == w2[j - 1] {
+                dp[i][j] = dp[i - 1][j - 1];
+            } else {
+                dp[i][j] = min(min(dp[i - 1][j] + 1, dp[i][j - 1] + 1), dp[i - 1][j - 1] + 2);
+            }
+        }
+    }
+    dp[n1][n2]
+}
+
+fn min(x: i32, y: i32) -> i32 {
+    if x < y {
+        x
+    } else {
+        y
+    }
 }
 ```
 
@@ -8832,6 +16400,48 @@ func min(x, y int) int {
 }
 ```
 
+```python
+def minDistance(word1: str, word2: str) -> int:
+    dp = [[0] * (len(word2) + 1) for _ in range(len(word1) + 1)]
+    for i in range(len(dp)):
+        dp[i][0] = i
+    for j in range(len(dp[0])):
+        dp[0][j] = j
+    for i in range(1, len(dp)):
+        for j in range(1, len(dp[i])):
+            if word1[i - 1] == word2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1]
+            else:
+                dp[i][j] = min(min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]) + 1
+    return dp[len(word1)][len(word2)]
+```
+
+```rust
+pub fn min_distance(word1: String, word2: String) -> i32 {
+    let n = word1.len();
+    let m = word2.len();
+    let w1: Vec<char> = word1.chars().collect();
+    let w2: Vec<char> = word2.chars().collect();
+    let mut dp = vec![vec![0i32; m + 1]; n + 1];
+    for i in 0..=n {
+        dp[i][0] = i as i32;
+    }
+    for j in 0..=m {
+        dp[0][j] = j as i32;
+    }
+    for i in 1..=n {
+        for j in 1..=m {
+            if w1[i - 1] == w2[j - 1] {
+                dp[i][j] = dp[i - 1][j - 1];
+            } else {
+                dp[i][j] = dp[i - 1][j].min(dp[i][j - 1]).min(dp[i - 1][j - 1]) + 1;
+            }
+        }
+    }
+    dp[n][m]
+}
+```
+
 #### [647. 回文子串](https://leetcode-cn.com/problems/palindromic-substrings/)
 
 给你一个字符串 `s` ，请你统计并返回这个字符串中 **回文子串** 的数目。
@@ -8884,6 +16494,46 @@ func countSubstrings(s string) int {
 		}
 	}
 	return res
+}
+```
+
+```python
+def countSubstrings(s: str) -> int:
+    n = len(s)
+    dp = [[False] * n for _ in range(n)]
+    res = 0
+    for i in range(n, -1, -1):
+        for j in range(i, n):
+            if s[i] == s[j]:
+                if j - i <= 1:
+                    res += 1
+                    dp[i][j] = True
+                elif dp[i + 1][j - 1]:
+                    res += 1
+                    dp[i][j] = True
+    return res
+```
+
+```rust
+pub fn count_substrings(s: String) -> i32 {
+    let s = s.as_bytes();
+    let n = s.len();
+    let mut dp = vec![vec![false; n]; n];
+    let mut res = 0i32;
+    for i in (0..=n).rev() {
+        for j in i..n {
+            if s[i] == s[j] {
+                if j - i <= 1 {
+                    res += 1;
+                    dp[i][j] = true;
+                } else if dp[i + 1][j - 1] {
+                    res += 1;
+                    dp[i][j] = true;
+                }
+            }
+        }
+    }
+    res
 }
 ```
 
@@ -8944,6 +16594,44 @@ func max(x, y int) int {
 }
 ```
 
+```python
+def longestPalindromeSubseq(s: str) -> int:
+    n = len(s)
+    dp = [[0] * n for _ in range(n)]
+    for i in range(n):
+        dp[i][i] = 1
+
+    for i in range(n - 1, -1, -1):
+        for j in range(i + 1, n):
+            if s[i] == s[j]:
+                dp[i][j] = dp[i + 1][j - 1] + 2
+            else:
+                dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
+    return dp[0][n - 1]
+```
+
+```rust
+pub fn longest_palindrome_subseq(s: String) -> i32 {
+    let s = s.as_bytes();
+    let n = s.len();
+    let mut dp = vec![vec![0; n]; n];
+    for i in 0..n {
+        dp[i][i] = 1;
+    }
+
+    for i in (0..n).rev() {
+        for j in (i + 1)..n {
+            if s[i] == s[j] {
+                dp[i][j] = dp[i + 1][j - 1] + 2;
+            } else {
+                dp[i][j] = dp[i + 1][j].max(dp[i][j - 1]);
+            }
+        }
+    }
+    dp[0][n - 1]
+}
+```
+
 ## 单调栈
 
 #### [739. 每日温度](https://leetcode-cn.com/problems/daily-temperatures/)
@@ -8990,6 +16678,37 @@ func dailyTemperatures(temperatures []int) []int {
 		stack = append(stack, i)
 	}
 	return ans
+}
+```
+
+```python
+def dailyTemperatures(temperatures):
+    ans = [0] * len(temperatures)
+    stack = []
+    for i, v in enumerate(temperatures):
+        while stack and v > temperatures[stack[-1]]:
+            top = stack.pop()
+            ans[top] = i - top
+        stack.append(i)
+    return ans
+```
+
+```rust
+pub fn daily_temperatures(temperatures: Vec<i32>) -> Vec<i32> {
+    let mut ans = vec![0; temperatures.len()];
+    let mut stack: Vec<usize> = Vec::new();
+    for (i, &v) in temperatures.iter().enumerate() {
+        while let Some(&top) = stack.last() {
+            if v > temperatures[top] {
+                stack.pop();
+                ans[top] = (i - top) as i32;
+            } else {
+                break;
+            }
+        }
+        stack.push(i);
+    }
+    ans
 }
 ```
 
@@ -9057,6 +16776,45 @@ func nextGreaterElement(nums1 []int, nums2 []int) []int {
 }
 ```
 
+```python
+def nextGreaterElement(nums1, nums2):
+    ans = [-1] * len(nums1)
+    stack = []
+    mp = {v: k for k, v in enumerate(nums1)}
+
+    for k, v in enumerate(nums2):
+        while len(stack) > 0 and v > nums2[stack[-1]]:
+            top = stack.pop()
+            if nums2[top] in mp:
+                ans[mp[nums2[top]]] = v
+        stack.append(k)
+    return ans
+```
+
+```rust
+use std::collections::HashMap;
+
+pub fn next_greater_element(nums1: Vec<i32>, nums2: Vec<i32>) -> Vec<i32> {
+    let mut ans = vec![-1; nums1.len()];
+    let mut stack: Vec<usize> = vec![];
+    let mut mp: HashMap<i32, usize> = HashMap::new();
+    for (k, &v) in nums1.iter().enumerate() {
+        mp.insert(v, k);
+    }
+
+    for (k, &v) in nums2.iter().enumerate() {
+        while !stack.is_empty() && v > nums2[*stack.last().unwrap()] {
+            let top = stack.pop().unwrap();
+            if let Some(&index) = mp.get(&nums2[top]) {
+                ans[index] = v;
+            }
+        }
+        stack.push(k);
+    }
+    ans
+}
+```
+
 #### [503. 下一个更大元素 II](https://leetcode-cn.com/problems/next-greater-element-ii/)
 
 给定一个循环数组（最后一个元素的下一个元素是数组的第一个元素），输出每个元素的下一个更大元素。数字 x 的下一个更大的元素是按数组遍历顺序，这个数字之后的第一个比它更大的数，这意味着你应该循环地搜索它的下一个更大的数。如果不存在，则输出 -1。
@@ -9092,6 +16850,41 @@ func nextGreaterElements(nums []int) []int {
 	}
 	return ans
 
+}
+```
+
+```python
+def nextGreaterElements(nums):
+    length = len(nums)
+    ans = [-1] * length
+    stack = []
+
+    for i in range(length * 2):
+        while len(stack) > 0 and nums[i % length] > nums[stack[len(stack) - 1]]:
+            top = stack[len(stack) - 1]
+            stack.pop()
+            ans[top] = nums[i % length]
+        stack.append(i % length)
+
+    return ans
+```
+
+```rust
+pub fn next_greater_elements(nums: Vec<i32>) -> Vec<i32> {
+    let length = nums.len();
+    let mut ans = vec![-1; length];
+    let mut stack: Vec<usize> = Vec::new();
+
+    for i in 0..length * 2 {
+        while !stack.is_empty() && nums[i % length] > nums[*stack.last().unwrap()] {
+            let top = *stack.last().unwrap();
+            stack.pop();
+            ans[top] = nums[i % length];
+        }
+        stack.push(i % length);
+    }
+
+    ans
 }
 ```
 
@@ -9150,6 +16943,38 @@ func max(x, y int) int {
 }
 ```
 
+```python
+def largestRectangleArea(heights):
+    heights = heights + [0]
+    stack = [-1]
+    res = 0
+    for i in range(len(heights)):
+        while len(stack) > 1 and heights[i] < heights[stack[-1]]:
+            top = stack.pop()
+            l = stack[-1]
+            res = max(res, (i - l - 1) * heights[top])
+        stack.append(i)
+    return res
+```
+
+```rust
+pub fn largest_rectangle_area(mut heights: Vec<i32>) -> i32 {
+    heights.push(0);
+    let mut stack: Vec<i32> = vec![-1];
+    let mut res = 0;
+    for i in 0..heights.len() {
+        while stack.len() > 1 && heights[i] < heights[stack[stack.len() - 1] as usize] {
+            let top = stack.pop().unwrap();
+            let l = *stack.last().unwrap();
+            let width = (i as i32 - l - 1) as usize;
+            res = res.max(width as i32 * heights[top as usize]);
+        }
+        stack.push(i as i32);
+    }
+    res
+}
+```
+
 #### [42. 接雨水](https://leetcode-cn.com/problems/trapping-rain-water/)
 
 给定 `n` 个非负整数表示每个宽度为 `1` 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
@@ -9204,5 +17029,38 @@ func min(x, y int) int {
 		return x
 	}
 	return y
+}
+```
+
+```python
+def trap(height):
+    ans = 0
+    n = len(height)
+    for i in range(1, n - 1):
+        left_max, right_max = 0, 0
+        for j in range(i, -1, -1):
+            left_max = max(left_max, height[j])
+        for j in range(i, n):
+            right_max = max(right_max, height[j])
+        ans += min(left_max, right_max) - height[i]
+    return ans
+```
+
+```rust
+pub fn trap(height: Vec<i32>) -> i32 {
+    let mut ans = 0;
+    let n = height.len();
+    for i in 1..n - 1 {
+        let mut left_max = 0;
+        let mut right_max = 0;
+        for j in (0..=i).rev() {
+            left_max = left_max.max(height[j]);
+        }
+        for j in i..n {
+            right_max = right_max.max(height[j]);
+        }
+        ans += left_max.min(right_max) - height[i];
+    }
+    ans
 }
 ```
